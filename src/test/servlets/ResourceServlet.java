@@ -1,4 +1,4 @@
-package test;
+package test.servlets;
 
 import java.io.BufferedInputStream;
 import java.io.File;

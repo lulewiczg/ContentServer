@@ -1,14 +1,20 @@
-angular.module('app').controller("fileController", function($http, $location, $scope) {
+angular.module('app').controller("fileController", function($http, $location, $scope, $modal, $window) {
 	$scope.files = [];
+	$scope.user;
 	$scope.initPerformed = false;
 	$scope.actualFolder;
 	$scope.folders;
 	$scope.roots = [];
 	$scope.init = function() {
-
+		$http.get('rest/login').then(function(result) {
+			$scope.user = result.data;
+			if ($scope.user == "") {
+				$scope.user = undefined;
+			}
+		});
 	};
 
-	$scope.$on('$locationChangeSuccess', function() {
+	$scope.reload = function() {
 		if (!$scope.initPerformed) {
 			$scope.initPerformed = true;
 			$http.get('rest/roots').then(function(result) {
@@ -27,6 +33,9 @@ angular.module('app').controller("fileController", function($http, $location, $s
 
 		var path = $location.search().path;
 		$scope.prepareItems(path);
+	}
+	$scope.$on('$locationChangeSuccess', function() {
+		$scope.reload();
 	});
 
 	$scope.prepareItems = function(path) {
@@ -65,4 +74,28 @@ angular.module('app').controller("fileController", function($http, $location, $s
 			return "?path=" + file.path;
 		}
 	}
+
+	$scope.logout = function() {
+		$scope.user = undefined;
+		$http.get('rest/logout');
+		$window.location.href = $window.location.href.split("?")[0];
+	}
+
+	$scope.login = function() {
+		var modalInstance = $modal.open({
+			templateUrl : 'login.html',
+			controller : 'loginController',
+			size : 'lg',
+			resolve : {
+				items : function() {
+					return $scope.user;
+				}
+			}
+		}).result.then(function(result) {
+			console.log(result);
+			$scope.user = result;
+			$scope.initPerformed = false;
+			$scope.reload();
+		});
+	};
 });

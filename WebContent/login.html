@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+<div class="modal-header">
+	<div class="modal-body">
+		<form name="form">
+			<div class="form-group row">
+				<label for="example-text-input" class="col-2 col-form-label">Login</label>
+				<div class="col-10">
+					<input ng-model="data.login" class="form-control" type="text" placeholder="Login" id="example-text-input">
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="example-search-input" class="col-2 col-form-label">Hasło</label>
+				<div class="col-10">
+					<input ng-model="data.password" class="form-control" type="password" placeholder="Hasło">
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-10">
+					<button class="form-control" ng-click="login()">Zaloguj</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-large btn-info" ng-click="close() ">Zamknij</button>
+	</div>
+</div>
+</body>
+
+</html>

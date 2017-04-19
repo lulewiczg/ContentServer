@@ -68,6 +68,7 @@ public class Dir {
 			case "png":
 			case "gif":
 			case "svg":
+			case "tga":
 				return "image/" + type;
 			case "wmv":
 			case "mp4":

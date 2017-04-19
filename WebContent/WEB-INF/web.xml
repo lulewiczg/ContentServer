@@ -6,7 +6,7 @@
 
 	<servlet>
 		<servlet-name>ResourceServlet</servlet-name>
-		<servlet-class>test.ResourceServlet</servlet-class>
+		<servlet-class>test.servlets.ResourceServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>ResourceServlet</servlet-name>
@@ -15,16 +15,34 @@
 
 	<servlet>
 		<servlet-name>RootsServlet</servlet-name>
-		<servlet-class>test.RootsServlet</servlet-class>
+		<servlet-class>test.servlets.RootsServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>RootsServlet</servlet-name>
 		<url-pattern>/rest/roots</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>LoginServlet</servlet-name>
+		<servlet-class>test.servlets.LoginServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LoginServlet</servlet-name>
+		<url-pattern>/rest/login</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>LogoutServlet</servlet-name>
+		<servlet-class>test.servlets.LogoutServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LogoutServlet</servlet-name>
+		<url-pattern>/rest/logout</url-pattern>
+	</servlet-mapping>
+
 	<filter>
 		<filter-name>ResourceFilter</filter-name>
-		<filter-class>test.ResourceFilter</filter-class>
+		<filter-class>test.servlets.ResourceFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>ResourceFilter</filter-name>

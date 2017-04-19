@@ -1,5 +1,6 @@
-package test;
+package test.servlets;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -8,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import test.utils.PathSettings;
+import test.permissions.PermissionsResolver;
 
 public class RootsServlet extends HttpServlet {
 
@@ -16,10 +17,14 @@ public class RootsServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		List<String> dmz = PathSettings.getInstance(null).getDmz();
+		String user = (String) req.getSession().getAttribute("user");
+		List<String> dmz = PermissionsResolver.getInstance(null).getAvailablePaths(user);
 		String json = "[";
 		boolean first = true;
 		for (String s : dmz) {
+			if (!new File(s).exists()) {
+				continue;
+			}
 			if (!first) {
 				json += ",";
 			}
