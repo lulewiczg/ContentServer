@@ -44,7 +44,8 @@
 
 	<div class="container">
 		<ul class="nav nav-pills">
-			<li ng-repeat="path in folders track by path.name"><a href="?path={{path.path}}">{{path.name}}/</a></li>
+			<li ng-repeat="path in folders track by path.name" ng-class="{disabled: path.disabled }"><a
+				ng-href="{{path.disabled ? '' : '?path='+path.path}}">{{path.name}}/</a></li>
 		</ul>
 		<h2>{{folders[folders.length-1].name}} :</h2>
 		<div class="modal-body">

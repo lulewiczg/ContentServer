@@ -23,10 +23,6 @@ angular.module('app').controller("fileController", function($http, $location, $s
 					if ($location.search().path === undefined) {
 						$location.search("path", $scope.roots[0]);
 					}
-					if ($scope.folders === undefined) {
-						var path = $location.search().path;
-						$scope.prepareItems(path);
-					}
 				}
 			});
 		}
@@ -34,27 +30,36 @@ angular.module('app').controller("fileController", function($http, $location, $s
 		var path = $location.search().path;
 		$scope.prepareItems(path);
 	}
+
 	$scope.$on('$locationChangeSuccess', function() {
 		$scope.reload();
 	});
 
 	$scope.prepareItems = function(path) {
-		if (path != undefined) {
-			if (path.endsWith("/")) {
-				path = path.slice(0, -1);
-			}
-			var folders = path.split("/");
+		if (path.endsWith("/")) {
+			path = path.slice(0, -1);
+		}
+		var folders = path.split("/");
+		var limit;
+		var url = "rest/roots?path=" + path;
+		$http.get(url).then(function(result) {
+			limit = result.data;
+			console.log(limit);
 			var actual = "";
 			$scope.folders = [];
 			for (var i = 0; i < folders.length; i++) {
 				actual += folders[i] + "/";
 				$scope.folders.push({
 					"name" : folders[i],
-					"path" : actual
+					"path" : actual,
+					"disabled" : folders.length - i - 1 > limit
 				});
 			}
-			$scope.load();
-		}
+			$scope.folders[$scope.folders.length - 1].disabled = true;
+		});
+
+		console.log($scope.folders);
+		$scope.load();
 	}
 
 	$scope.load = function() {
@@ -98,4 +103,5 @@ angular.module('app').controller("fileController", function($http, $location, $s
 			$scope.reload();
 		});
 	};
+
 });
