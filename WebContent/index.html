@@ -2,6 +2,7 @@
 <html ng-app="app" ng-controller="fileController" ng-init="init()">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="css/bootstrap.min.css">
 <script type="text/javascript" src="js/lib/jquery.js"></script>
@@ -47,7 +48,7 @@
 			<li ng-repeat="path in folders track by path.name" ng-class="{disabled: path.disabled }"><a
 				ng-href="{{path.disabled ? '' : '?path='+path.path}}">{{path.name}}/</a></li>
 		</ul>
-		<h2>{{folders[folders.length-1].name}} :</h2>
+		<h2>{{folders[folders.length-1].name}}/ :</h2>
 		<div class="modal-body">
 			<form name="form">
 				<table class="table table-striped">

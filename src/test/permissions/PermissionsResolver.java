@@ -13,10 +13,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.security.sasl.AuthenticationException;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
+import javax.servlet.ServletContext;
 
 import test.utils.Log;
 
@@ -33,16 +33,22 @@ public class PermissionsResolver {
 
 	private static PermissionsResolver instance;
 	private Map<String, User> users = new HashMap<>();
+	private Map<String, String> mimes = new HashMap<>();
 
-	public static synchronized PermissionsResolver getInstance(FilterConfig arg0) throws ServletException {
+	public static synchronized PermissionsResolver getInstance(ServletContext context) {
 		if (instance == null) {
-			instance = new PermissionsResolver(arg0);
+			instance = new PermissionsResolver(context);
 		}
 		return instance;
 	}
 
-	private PermissionsResolver(FilterConfig arg0) throws ServletException {
-		Properties props = loadProps(arg0);
+	private PermissionsResolver(ServletContext context) {
+		loadPermissions(context);
+		loadMimes(context);
+	}
+
+	private void loadPermissions(ServletContext context) {
+		Properties props = loadProps(context);
 		Map<User, String> toApply = new HashMap<>();
 		for (Entry<Object, Object> e : props.entrySet()) {
 			String[] keys = e.getKey().toString().split("\\.");
@@ -98,20 +104,31 @@ public class PermissionsResolver {
 		}
 	}
 
-	private Properties loadProps(FilterConfig arg0) throws ServletException {
+	private void loadMimes(ServletContext context) {
+		Properties p = new Properties();
+		try (InputStream input = new FileInputStream(context.getRealPath(SEP) + "/settings/mime.properties")) {
+			p.load(input);
+		} catch (IOException e) {
+			Log.getLog().log(e);
+			throw new IllegalStateException(e);
+		}
+		Set<Entry<Object, Object>> entrySet = p.entrySet();
+		for (Map.Entry<Object, Object> prop : entrySet) {
+			mimes.put(prop.getKey().toString(), prop.getValue().toString());
+		}
+	}
+
+	private Properties loadProps(ServletContext context) {
 		Properties props = new Properties();
 		try {
-			String path = arg0.getServletContext().getRealPath(SEP) + "permissions.properties";
+			String contextPath = context.getRealPath(SEP);
+			String path = contextPath + "/settings/permissions.properties";
 			try (InputStream input = new FileInputStream(path)) {
 				props.load(input);
 			}
 		} catch (Exception e) {
 			Log.getLog().log(e);
-			try (InputStream input = new FileInputStream("/storage/sdcard0/jetty/webapps/Jetty/permissions.properties")) {
-				props.load(input);
-			} catch (Exception e2) {
-				throw new ServletException(e2);
-			}
+			throw new IllegalArgumentException(e);
 		}
 		return props;
 	}
@@ -180,5 +197,14 @@ public class PermissionsResolver {
 		md.update(textBytes, 0, textBytes.length);
 		byte[] sha1hash = md.digest();
 		return new BigInteger(1, sha1hash).toString(16).toUpperCase();
+	}
+
+	public String getMIME(String name) {
+		String type = name.substring(name.lastIndexOf(".") + 1).toLowerCase();
+		String mime = mimes.get(type);
+		if (mime == null) {
+			mime = "application/octet-stream";
+		}
+		return mime;
 	}
 }

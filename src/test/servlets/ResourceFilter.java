@@ -32,6 +32,7 @@ public class ResourceFilter implements Filter {
 			if (!settings.hasReadAccess(path, user)) {
 				HttpServletResponse httpResponse = (HttpServletResponse) resp;
 				httpResponse.setStatus(403);
+				return;
 			}
 		}
 		chain.doFilter(req, resp);
@@ -39,6 +40,6 @@ public class ResourceFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig arg0) throws ServletException {
-		settings = PermissionsResolver.getInstance(arg0);
+		settings = PermissionsResolver.getInstance(null);
 	}
 }

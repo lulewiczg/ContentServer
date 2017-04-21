@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class Dir {
-
 	private static final String SEP = "/";
 
 	private String name;
@@ -48,42 +47,6 @@ public class Dir {
 
 	public void setPath(String path) {
 		this.path = path;
-	}
-
-	public static String getMIME(String name) {
-		String type = name.substring(name.lastIndexOf(".") + 1).toLowerCase();
-		switch (type) {
-			case "swf":
-				return "application/x-shockwave-flash";
-			case "mp3":
-			case "wav":
-			case "aac":
-			case "wma":
-			case "ape":
-			case "flac":
-				return "audio/" + type;
-			case "jpg":
-			case "jpeg":
-			case "bmp":
-			case "png":
-			case "gif":
-			case "svg":
-			case "tga":
-				return "image/" + type;
-			case "wmv":
-			case "mp4":
-			case "avi":
-			case "webm":
-			case "mpg":
-			case "mpeg":
-			case "rmvb":
-			case "vob":
-			case "mkv":
-				return "video/" + type;
-			default:
-				return "application/octet-stream";
-		}
-
 	}
 
 	public static String toJSON(List<Dir> dirs) {
