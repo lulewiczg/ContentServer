@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import test.permissions.PermissionsResolver;
+import test.permissions.ResourceHelper;
 import test.utils.Dir;
 
 public class ResourceServlet extends HttpServlet {
@@ -22,15 +22,16 @@ public class ResourceServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final int BUFFER_LENGTH = 1024 * 1000;
+	private int buffSize;
 
 	private static final long EXPIRE_TIME = 1000 * 60 * 60 * 24;
 
-	private PermissionsResolver resolver;
+	private ResourceHelper resolver;
 
 	@Override
 	public void init() throws ServletException {
-		resolver = PermissionsResolver.getInstance(null);
+		resolver = ResourceHelper.getInstance(null);
+		buffSize = resolver.getBufferSize();
 	}
 
 	@Override
@@ -90,7 +91,7 @@ public class ResourceServlet extends HttpServlet {
 
 		long contentLength = end - start + 1;
 		response.reset();
-		response.setBufferSize(BUFFER_LENGTH);
+		response.setBufferSize(buffSize);
 		response.setHeader("Content-Disposition", String.format("inline;filename=\"%s\"", f.getName()));
 		response.setHeader("Accept-Ranges", "bytes");
 		response.setDateHeader("Expires", System.currentTimeMillis() + EXPIRE_TIME);

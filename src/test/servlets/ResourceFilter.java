@@ -12,11 +12,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import test.permissions.PermissionsResolver;
+import test.permissions.ResourceHelper;
 
 public class ResourceFilter implements Filter {
 
-	private PermissionsResolver settings;
+	private ResourceHelper settings;
 
 	@Override
 	public void destroy() {
@@ -40,6 +40,6 @@ public class ResourceFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig arg0) throws ServletException {
-		settings = PermissionsResolver.getInstance(null);
+		settings = ResourceHelper.getInstance(null);
 	}
 }

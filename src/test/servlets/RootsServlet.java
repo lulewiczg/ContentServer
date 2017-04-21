@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import test.permissions.PermissionsResolver;
+import test.permissions.ResourceHelper;
 
 public class RootsServlet extends HttpServlet {
 
@@ -21,7 +21,7 @@ public class RootsServlet extends HttpServlet {
 		String path = req.getParameter("path");
 		resp.setCharacterEncoding("UTF-8");
 		if (path == null) {
-			List<String> dmz = PermissionsResolver.getInstance(null).getAvailablePaths(user);
+			List<String> dmz = ResourceHelper.getInstance(null).getAvailablePaths(user);
 			String json = "[";
 			boolean first = true;
 			for (String s : dmz) {
@@ -41,7 +41,7 @@ public class RootsServlet extends HttpServlet {
 			File f = new File(path);
 			int counter = 0;
 			while ((f = f.getParentFile()) != null) {
-				if (PermissionsResolver.getInstance(null).hasReadAccess(f.getCanonicalPath(), user)) {
+				if (ResourceHelper.getInstance(null).hasReadAccess(f.getCanonicalPath(), user)) {
 					counter++;
 				} else {
 					break;

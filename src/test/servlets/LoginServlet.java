@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import test.permissions.PermissionsResolver;
+import test.permissions.ResourceHelper;
 import test.utils.Log;
 
 public class LoginServlet extends HttpServlet {
@@ -19,7 +19,7 @@ public class LoginServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		HttpSession session = req.getSession();
-		String user = (String) session.getAttribute(PermissionsResolver.USER);
+		String user = (String) session.getAttribute(ResourceHelper.USER);
 		if (user != null) {
 			resp.getWriter().write(user);
 		}
@@ -28,7 +28,7 @@ public class LoginServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		HttpSession session = req.getSession();
-		String user = (String) session.getAttribute(PermissionsResolver.USER);
+		String user = (String) session.getAttribute(ResourceHelper.USER);
 		if (user != null) {
 			resp.setStatus(403);
 		} else {
@@ -39,8 +39,8 @@ public class LoginServlet extends HttpServlet {
 				return;
 			}
 			try {
-				PermissionsResolver.getInstance(null).login(login, password);
-				session.setAttribute(PermissionsResolver.USER, login);
+				ResourceHelper.getInstance(null).login(login, password);
+				session.setAttribute(ResourceHelper.USER, login);
 				resp.getWriter().write(login);
 			} catch (AuthenticationException e) {
 				Log.getLog().log(e);

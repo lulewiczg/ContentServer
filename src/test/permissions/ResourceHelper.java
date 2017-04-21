@@ -20,7 +20,7 @@ import javax.servlet.ServletContext;
 
 import test.utils.Log;
 
-public class PermissionsResolver {
+public class ResourceHelper {
 	private static final String SEP = "/";
 	public static final String USER = "user";
 	private static final String DELETE = "delete";
@@ -31,20 +31,21 @@ public class PermissionsResolver {
 	private static final String PERMISSION = "permission";
 	private static final String EXTENDS = "extends";
 
-	private static PermissionsResolver instance;
+	private static ResourceHelper instance;
 	private Map<String, User> users = new HashMap<>();
 	private Map<String, String> mimes = new HashMap<>();
+	private int bufferSize;
 
-	public static synchronized PermissionsResolver getInstance(ServletContext context) {
+	public static synchronized ResourceHelper getInstance(ServletContext context) {
 		if (instance == null) {
-			instance = new PermissionsResolver(context);
+			instance = new ResourceHelper(context);
 		}
 		return instance;
 	}
 
-	private PermissionsResolver(ServletContext context) {
+	private ResourceHelper(ServletContext context) {
 		loadPermissions(context);
-		loadMimes(context);
+		loadSettings(context);
 	}
 
 	private void loadPermissions(ServletContext context) {
@@ -104,9 +105,9 @@ public class PermissionsResolver {
 		}
 	}
 
-	private void loadMimes(ServletContext context) {
+	private void loadSettings(ServletContext context) {
 		Properties p = new Properties();
-		try (InputStream input = new FileInputStream(context.getRealPath(SEP) + "/settings/mime.properties")) {
+		try (InputStream input = new FileInputStream(context.getRealPath(SEP) + "/settings/settings.properties")) {
 			p.load(input);
 		} catch (IOException e) {
 			Log.getLog().log(e);
@@ -114,8 +115,12 @@ public class PermissionsResolver {
 		}
 		Set<Entry<Object, Object>> entrySet = p.entrySet();
 		for (Map.Entry<Object, Object> prop : entrySet) {
-			mimes.put(prop.getKey().toString(), prop.getValue().toString());
+			String key = prop.getKey().toString();
+			if (key.startsWith("mime.")) {
+				mimes.put(key.substring(5), prop.getValue().toString());
+			}
 		}
+		bufferSize = Integer.parseInt(p.getProperty("buffer.size")) * 1024;
 	}
 
 	private Properties loadProps(ServletContext context) {
@@ -206,5 +211,9 @@ public class PermissionsResolver {
 			mime = "application/octet-stream";
 		}
 		return mime;
+	}
+
+	public int getBufferSize() {
+		return bufferSize;
 	}
 }
