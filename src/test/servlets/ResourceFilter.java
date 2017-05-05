@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import test.permissions.ResourceHelper;
+import test.utils.Log;
 
 public class ResourceFilter implements Filter {
 
@@ -30,11 +31,13 @@ public class ResourceFilter implements Filter {
 		String user = (String) session.getAttribute("user");
 		if (path != null) {
 			if (!settings.hasReadAccess(path, user)) {
+				Log.getLog().logAccessDenied(path, session, req);
 				HttpServletResponse httpResponse = (HttpServletResponse) resp;
 				httpResponse.setStatus(403);
 				return;
 			}
 		}
+		Log.getLog().logAccessGranted(path, session, req);
 		chain.doFilter(req, resp);
 	}
 

@@ -9,9 +9,14 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Log {
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpSession;
+
+import test.permissions.ResourceHelper;
+
+public class Log extends AbstractLog {
 	private PrintWriter writer;
-	private static Log instance;
+	private static AbstractLog instance;
 	private static final DateFormat format = new SimpleDateFormat("yyyyy-MM-dd HH:mm:ss");
 
 	private Log() {
@@ -28,27 +33,52 @@ public class Log {
 		}
 	}
 
-	public static synchronized Log getLog() {
+	public static synchronized AbstractLog getLog() {
 		if (instance == null) {
-			instance = new Log();
+			if (ResourceHelper.getInstance(null).isLogEnabled()) {
+				instance = new Log();
+			} else {
+				instance = new AbstractLog();
+			}
 		}
 		return instance;
 	}
 
-	public void log(Exception ex) {
-		ex.printStackTrace(writer);
-		writer.flush();
-	}
-
-	public void log(String str) {
-		str = String.format("[%s] - %s", format.format(new Date()), str);
-		writer.write(str);
+	private void write(String s) {
+		writer.write(s);
 		writer.write("\n");
 		writer.flush();
 	}
 
 	@Override
+	public void log(Exception ex) {
+		ex.printStackTrace(writer);
+		writer.flush();
+	}
+
+	@Override
+	public void log(String str) {
+		str = String.format("[%s] - %s", format.format(new Date()), str);
+		write(str);
+	}
+
+	@Override
 	protected void finalize() throws Throwable {
 		writer.close();
+	}
+
+	@Override
+	public void logAccessGranted(String path, HttpSession session, ServletRequest req) {
+		String str = String.format("[%s] - [USER: %s, %s] accessed [%s]", format.format(new Date()),
+				session.getAttribute(ResourceHelper.USER), req.getRemoteAddr(), path);
+		write(str);
+	}
+
+	@Override
+	public void logAccessDenied(String path, HttpSession session, ServletRequest req) {
+		String str = String.format("[%s] - [USER: %s, %s] denied for [%s]", format.format(new Date()),
+				session.getAttribute(ResourceHelper.USER), req.getRemoteAddr(), path);
+		write(str);
+
 	}
 }

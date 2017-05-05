@@ -38,6 +38,7 @@ public class ResourceHelper {
 	private Map<String, User> users = new HashMap<>();
 	private Map<String, String> mimes = new HashMap<>();
 	private int bufferSize;
+	private boolean logEnabled = true;
 
 	public static synchronized ResourceHelper getInstance(ServletContext context) {
 		if (instance == null) {
@@ -136,6 +137,7 @@ public class ResourceHelper {
 			}
 		}
 		bufferSize = Integer.parseInt(p.getProperty("buffer.size")) * 1024;
+		logEnabled = Boolean.parseBoolean(p.getProperty("logger.enabled"));
 	}
 
 	private Properties loadProps(ServletContext context) {
@@ -230,5 +232,9 @@ public class ResourceHelper {
 
 	public int getBufferSize() {
 		return bufferSize;
+	}
+
+	public boolean isLogEnabled() {
+		return logEnabled;
 	}
 }

@@ -10,9 +10,9 @@ public class ContextListener implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
-		Log.getLog().log("Loading config...");
+		System.setProperty("java.net.preferIPv4Stack", "true");
 		ResourceHelper.getInstance(event.getServletContext());
-		Log.getLog().log("Settings OK");
+		Log.getLog().log("Config loaded!");
 	}
 
 	@Override

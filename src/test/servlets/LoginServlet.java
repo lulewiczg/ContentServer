@@ -2,7 +2,6 @@ package test.servlets;
 
 import java.io.IOException;
 
-import javax.security.sasl.AuthenticationException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -42,7 +41,7 @@ public class LoginServlet extends HttpServlet {
 				ResourceHelper.getInstance(null).login(login, password);
 				session.setAttribute(ResourceHelper.USER, login);
 				resp.getWriter().write(login);
-			} catch (AuthenticationException e) {
+			} catch (Exception e) {
 				Log.getLog().log(e);
 				resp.setStatus(401);
 			}
