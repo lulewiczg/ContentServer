@@ -123,7 +123,7 @@ public class ResourceHelper {
 
 	private void loadSettings(ServletContext context) {
 		Properties p = new Properties();
-		try (InputStream input = new FileInputStream(context.getRealPath(SEP) + "/settings/settings.properties")) {
+		try (InputStream input = new FileInputStream(context.getRealPath(SEP) + "/WEB-INF/settings/settings.properties")) {
 			p.load(input);
 		} catch (IOException e) {
 			Log.getLog().log(e);
@@ -144,7 +144,7 @@ public class ResourceHelper {
 		Properties props = new Properties();
 		try {
 			String contextPath = context.getRealPath(SEP);
-			String path = contextPath + "/settings/permissions.properties";
+			String path = contextPath + "/WEB-INF/settings/permissions.properties";
 			try (InputStream input = new FileInputStream(path)) {
 				props.load(input);
 			}
