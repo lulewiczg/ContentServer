@@ -11,6 +11,8 @@ import java.util.Comparator;
 public class PathComparator implements Comparator<Dir> {
 
 	/**
+	 * Sorts directories in alphabetical order, but folders first.
+	 * 
 	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 	 */
 	@Override

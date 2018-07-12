@@ -14,6 +14,8 @@ import java.util.List;
 public class Dir {
 	private static final String SEP = "/";
 
+	private static final String[] UNITS = { "B", "KB", "MB", "GB", "TB" };
+
 	private String name;
 
 	private long size;
@@ -67,13 +69,26 @@ public class Dir {
 			if (!first) {
 				s += ",";
 			}
-			String obj = String.format("{\"name\": \"%s\",\"path\": \"%s\", \"size\": \"%d\", \"file\": \"%s\"}",
-					dir.name, dir.path, dir.size, dir.file);
+			String obj = String.format("{\"name\": \"%s\",\"path\": \"%s\", \"size\": \"%s\", \"file\": \"%s\"}",
+					dir.name, dir.path, formatSize(dir), dir.file);
 			s += obj;
 			first = false;
 		}
 		s += "]";
 		return s;
+	}
+
+	private static String formatSize(Dir dir) {
+		if (!dir.isFile()) {
+			return "";
+		}
+		int unit = 0;
+		double len = dir.size;
+		while (len > 1024f) {
+			len /= 1024f;
+			unit++;
+		}
+		return String.format("%.2f %s", len, UNITS[unit]);
 	}
 
 	/**
