@@ -1,4 +1,4 @@
-package test.servlets;
+package lulewiczg.web.servlets;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import test.permissions.ResourceHelper;
-import test.utils.Dir;
+import lulewiczg.utils.Dir;
+import lulewiczg.web.permissions.ResourceHelper;
 
 public class ResourceServlet extends HttpServlet {
 

@@ -1,4 +1,4 @@
-package test.utils;
+package lulewiczg.utils;
 
 import java.util.Comparator;
 

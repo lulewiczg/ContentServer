@@ -1,4 +1,4 @@
-package test.servlets;
+package lulewiczg.web.servlets;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import test.permissions.ResourceHelper;
+import lulewiczg.web.permissions.ResourceHelper;
 
 public class RootsServlet extends HttpServlet {
 

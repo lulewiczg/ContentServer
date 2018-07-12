@@ -1,4 +1,4 @@
-package test.servlets;
+package lulewiczg.web.servlets;
 
 import java.io.IOException;
 
@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import test.permissions.ResourceHelper;
-import test.utils.Log;
+import lulewiczg.utils.Log;
+import lulewiczg.web.permissions.ResourceHelper;
 
 public class LoginServlet extends HttpServlet {
 

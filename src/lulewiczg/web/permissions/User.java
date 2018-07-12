@@ -1,4 +1,4 @@
-package test.permissions;
+package lulewiczg.web.permissions;
 
 import java.util.ArrayList;
 import java.util.Arrays;

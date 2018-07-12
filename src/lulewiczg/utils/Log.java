@@ -1,4 +1,4 @@
-package test.utils;
+package lulewiczg.utils;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -12,7 +12,7 @@ import java.util.Date;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpSession;
 
-import test.permissions.ResourceHelper;
+import lulewiczg.web.permissions.ResourceHelper;
 
 public class Log extends AbstractLog {
 	private PrintWriter writer;

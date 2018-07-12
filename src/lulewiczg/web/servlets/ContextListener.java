@@ -1,10 +1,10 @@
-package test.servlets;
+package lulewiczg.web.servlets;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import test.permissions.ResourceHelper;
-import test.utils.Log;
+import lulewiczg.utils.Log;
+import lulewiczg.web.permissions.ResourceHelper;
 
 public class ContextListener implements ServletContextListener {
 

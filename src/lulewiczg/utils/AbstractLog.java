@@ -1,4 +1,4 @@
-package test.utils;
+package lulewiczg.utils;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpSession;

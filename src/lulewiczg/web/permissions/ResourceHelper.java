@@ -1,4 +1,4 @@
-package test.permissions;
+package lulewiczg.web.permissions;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,7 +21,7 @@ import java.util.Set;
 import javax.security.sasl.AuthenticationException;
 import javax.servlet.ServletContext;
 
-import test.utils.Log;
+import lulewiczg.utils.Log;
 
 public class ResourceHelper {
 	private static final String SEP = "/";
