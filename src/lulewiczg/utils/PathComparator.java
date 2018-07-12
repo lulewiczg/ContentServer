@@ -2,8 +2,17 @@ package lulewiczg.utils;
 
 import java.util.Comparator;
 
+/**
+ * Comparator for direcotires.
+ * 
+ * @author lulewiczg
+ *
+ */
 public class PathComparator implements Comparator<Dir> {
 
+	/**
+	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+	 */
 	@Override
 	public int compare(Dir dir1, Dir dir2) {
 		String s1 = dir1.getName().toLowerCase();

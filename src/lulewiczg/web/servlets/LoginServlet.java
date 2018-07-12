@@ -11,10 +11,21 @@ import javax.servlet.http.HttpSession;
 import lulewiczg.utils.Log;
 import lulewiczg.web.permissions.ResourceHelper;
 
+/**
+ * Servlet for handling logging in.
+ * 
+ * @author lulewiczg
+ */
 public class LoginServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Returns currenly logged user.
+	 * 
+	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		HttpSession session = req.getSession();
@@ -24,6 +35,12 @@ public class LoginServlet extends HttpServlet {
 		}
 	}
 
+	/**
+	 * Logs in.
+	 * 
+	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		HttpSession session = req.getSession();

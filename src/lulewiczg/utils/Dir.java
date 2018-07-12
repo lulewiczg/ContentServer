@@ -6,6 +6,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Represents direcory.
+ * 
+ * @author lulewiczg
+ */
 public class Dir {
 	private static final String SEP = "/";
 
@@ -49,6 +54,12 @@ public class Dir {
 		this.path = path;
 	}
 
+	/**
+	 * Transforms directories to JSON
+	 * 
+	 * @param dirs directories
+	 * @return JSON
+	 */
 	public static String toJSON(List<Dir> dirs) {
 		String s = "[";
 		boolean first = true;
@@ -56,8 +67,8 @@ public class Dir {
 			if (!first) {
 				s += ",";
 			}
-			String obj = String.format("{\"name\": \"%s\",\"path\": \"%s\", \"size\": \"%d\", \"file\": \"%s\"}", dir.name,
-					dir.path, dir.size, dir.file);
+			String obj = String.format("{\"name\": \"%s\",\"path\": \"%s\", \"size\": \"%d\", \"file\": \"%s\"}",
+					dir.name, dir.path, dir.size, dir.file);
 			s += obj;
 			first = false;
 		}
@@ -65,6 +76,13 @@ public class Dir {
 		return s;
 	}
 
+	/**
+	 * Reads available directories in directory.
+	 * 
+	 * @param f directory
+	 * @return list of directories
+	 * @throws IOException when could not read directories
+	 */
 	public static List<Dir> getFiles(File f) throws IOException {
 		File[] list = f.listFiles();
 		if (list != null) {

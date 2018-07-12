@@ -14,6 +14,12 @@ import javax.servlet.http.HttpSession;
 
 import lulewiczg.web.permissions.ResourceHelper;
 
+/**
+ * Logs events to file in Jetty directory. If run on desktop, logs to console.
+ * 
+ * @author lulewiczg
+ *
+ */
 public class Log extends AbstractLog {
 	private PrintWriter writer;
 	private static AbstractLog instance;
@@ -33,6 +39,11 @@ public class Log extends AbstractLog {
 		}
 	}
 
+	/**
+	 * Obtains logger.
+	 * 
+	 * @return logger
+	 */
 	public static synchronized AbstractLog getLog() {
 		if (instance == null) {
 			if (ResourceHelper.getInstance(null).isLogEnabled()) {
@@ -44,29 +55,47 @@ public class Log extends AbstractLog {
 		return instance;
 	}
 
+	/**
+	 * Writes log.
+	 * 
+	 * @param s string
+	 */
 	private void write(String s) {
 		writer.write(s);
 		writer.write("\n");
 		writer.flush();
 	}
 
+	/**
+	 * @see lulewiczg.utils.AbstractLog#log(java.lang.Exception)
+	 */
 	@Override
 	public void log(Exception ex) {
 		ex.printStackTrace(writer);
 		writer.flush();
 	}
 
+	/**
+	 * @see lulewiczg.utils.AbstractLog#log(java.lang.String)
+	 */
 	@Override
 	public void log(String str) {
 		str = String.format("[%s] - %s", format.format(new Date()), str);
 		write(str);
 	}
 
+	/**
+	 * @see java.lang.Object#finalize()
+	 */
 	@Override
 	protected void finalize() throws Throwable {
 		writer.close();
 	}
 
+	/**
+	 * @see lulewiczg.utils.AbstractLog#logAccessGranted(java.lang.String,
+	 *      javax.servlet.http.HttpSession, javax.servlet.ServletRequest)
+	 */
 	@Override
 	public void logAccessGranted(String path, HttpSession session, ServletRequest req) {
 		String str = String.format("[%s] - [USER: %s, %s] accessed [%s]", format.format(new Date()),
@@ -74,6 +103,10 @@ public class Log extends AbstractLog {
 		write(str);
 	}
 
+	/**
+	 * @see lulewiczg.utils.AbstractLog#logAccessDenied(java.lang.String,
+	 *      javax.servlet.http.HttpSession, javax.servlet.ServletRequest)
+	 */
 	@Override
 	public void logAccessDenied(String path, HttpSession session, ServletRequest req) {
 		String str = String.format("[%s] - [USER: %s, %s] denied for [%s]", format.format(new Date()),

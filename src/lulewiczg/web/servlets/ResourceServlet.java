@@ -16,6 +16,11 @@ import javax.servlet.http.HttpServletResponse;
 import lulewiczg.utils.Dir;
 import lulewiczg.web.permissions.ResourceHelper;
 
+/**
+ * Servlet for serving resources.
+ * 
+ * @author lulewiczg
+ */
 public class ResourceServlet extends HttpServlet {
 
 	private static final String PATH = "path";
@@ -28,14 +33,24 @@ public class ResourceServlet extends HttpServlet {
 
 	private ResourceHelper resolver;
 
+	/**
+	 * @see javax.servlet.GenericServlet#init()
+	 */
 	@Override
 	public void init() throws ServletException {
 		resolver = ResourceHelper.getInstance(null);
 		buffSize = resolver.getBufferSize();
 	}
 
+	/**
+	 * Returns requested file or folder contents.
+	 * 
+	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		response.setCharacterEncoding("UTF-8");
 		String path = request.getParameter(PATH);
 		if (path == null) {
@@ -54,6 +69,14 @@ public class ResourceServlet extends HttpServlet {
 		}
 	}
 
+	/**
+	 * List available directories in folder
+	 * 
+	 * @param request  request
+	 * @param response response
+	 * @param f        folder
+	 * @throws IOException when could not read directory.
+	 */
 	private void listDirJSON(HttpServletRequest request, HttpServletResponse response, File f) throws IOException {
 		List<Dir> files = Dir.getFiles(f);
 		response.setContentType("application/json");
@@ -61,6 +84,15 @@ public class ResourceServlet extends HttpServlet {
 		response.getWriter().write(json);
 	}
 
+	/**
+	 * Displays requested file
+	 * 
+	 * @param request  request
+	 * @param response response
+	 * @param f        filter
+	 * @throws IOException           when could not read file
+	 * @throws FileNotFoundException when file not found
+	 */
 	private void display(HttpServletRequest request, HttpServletResponse response, File f)
 			throws IOException, FileNotFoundException {
 		long length = f.length();

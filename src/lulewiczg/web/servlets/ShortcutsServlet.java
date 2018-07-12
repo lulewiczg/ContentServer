@@ -11,10 +11,21 @@ import javax.servlet.http.HttpServletResponse;
 
 import lulewiczg.web.permissions.ResourceHelper;
 
-public class RootsServlet extends HttpServlet {
+/**
+ * Servlet for shortcuts.
+ * 
+ * @author lulewiczg
+ */
+public class ShortcutsServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Returns available shortucts for user.
+	 * 
+	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String user = (String) req.getSession().getAttribute("user");
