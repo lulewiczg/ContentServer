@@ -5,6 +5,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/custom.css">
 <script type="text/javascript" src="js/lib/jquery.js"></script>
 <script type="text/javascript" src="js/lib/bootstrap/bootstrap.min.js"></script>
 <script type="text/javascript" src="js/lib/angular.js"></script>
@@ -20,54 +21,64 @@
 <title>Pokazywarka</title>
 </head>
 <body>
-	<div class="navbar navbar-default">
-		<div class="container">
-			<div class="navbar-header">
-				<a href="." class="navbar-brand" target="_self">Pokazywarka</a>
-			</div>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="." class="navbar-brand" target="_self">Pokazywarka</a>
+            </div>
 
-			<div id="navbar-main" class="navbar-collapse collapse">
-				<ul class="nav navbar-nav">
-					<!-- <li><a href="../help/">Help</a></li>-->
-					<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#" id="themes">Na skróty<span class="caret"></span></a>
-						<ul class="dropdown-menu">
-							<li ng-repeat="root in roots"><a href="?path={{root}}">{{root}}</a></li>
-						</ul></li>
-				</ul>
-				<ul class="nav navbar-nav navbar-right">
-					<li ng-show="user===undefined"><a href="" ng-click="login()">Zaloguj</a></li>
-					<li ng-show="user!==undefined"><span class="navbar-text"> Witaj, {{user}} </span></li>
-					<li ng-show="user!==undefined"><a href="" ng-click="logout()">Wyloguj</a></li>
-				</ul>
-			</div>
-		</div>
-	</div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
-	<div class="container">
-		<ul class="nav nav-pills">
-			<li ng-repeat="path in folders track by path.name" ng-class="{disabled: path.disabled }"><a
-				ng-href="{{path.disabled ? '' : '?path='+path.path}}">{{path.name}}/</a></li>
-		</ul>
-		<h2>{{folders[folders.length-1].name}}/ :</h2>
-		<div class="modal-body">
-			<form name="form">
-				<table class="table table-striped">
-					<thead>
-						<tr>
-							<th>Nazwa pliku</th>
-							<th>Rozmiar</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr ng-repeat="file in files track by file.name">
-							<td><a ng-href="{{getFileURL(file)}}" ng-attr-target="{{(file.file=='true') ? '_self' :undefined}}">{{file.name}}</a></td>
-							<td>{{file.size}}</td>
-						</tr>
-					</tbody>
-				</table>
-			</form>
-		</div>
-	</div>
+                <ul class="nav navbar-nav">
+                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">Na
+                            skróty<span class="caret"></span>
+                    </a>
+                        <ul class="dropdown-menu">
+                            <li class="shortcut-dropdown" ng-repeat="root in roots"><a href="?path={{root}}">{{root}}</a></li>
+                        </ul></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li ng-show="!user"><a href="" ng-click="login()">Zaloguj</a></li>
+                    <li ng-show="user"><a>Witaj, {{user}} </a></li>
+                    <li ng-show="user"><a href="" ng-click="logout()">Wyloguj</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <ul class="nav nav-pills">
+            <li class="path-breadcrumb" ng-repeat="path in folders track by path.name"
+                ng-attr-id="{{path.name  === actualFolder? 'actualFolder': ''}}" ng-class="{disabled: path.disabled}"><a
+                ng-href="{{path.disabled ? '' : '?path='+path.path}}">{{path.name}}/</a></li>
+        </ul>
+        <h2>{{actualFolder}}/ :</h2>
+        <div class="modal-body">
+            <form name="form">
+                <table class="table table-striped table-hover content-table">
+                    <thead>
+                        <tr>
+                            <th>Nazwa pliku</th>
+                            <th>Rozmiar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="file in files track by file.name">
+                            <td><a class="nounderline" ng-href="{{getFileURL(file)}}"
+                                ng-attr-target="{{(file.file=='true') ? '_self' :undefined}}">{{file.name}}</a></span></td>
+                            <td>{{file.size}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
 </body>
 
 </html>
