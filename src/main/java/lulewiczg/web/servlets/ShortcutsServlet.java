@@ -14,53 +14,52 @@ import lulewiczg.utils.Constants;
 
 /**
  * Servlet for shortcuts.
- * 
+ *
  * @author lulewiczg
  */
 public class ShortcutsServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Returns available shortucts for user.
-	 * 
-	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest,
-	 *      javax.servlet.http.HttpServletResponse)
-	 */
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String user = (String) req.getSession().getAttribute(Constants.Web.USER);
-		String path = req.getParameter(Constants.Web.PATH);
-		resp.setCharacterEncoding(Constants.Setting.UTF8);
-		if (path == null) {
-			List<String> dmz = ResourceHelper.getInstance(null).getAvailablePaths(user);
-			String json = "[";
-			boolean first = true;
-			for (String s : dmz) {
-				if (!new File(s).exists()) {
-					continue;
-				}
-				if (!first) {
-					json += ",";
-				}
-				json += String.format("\"%s\"", s);
-				first = false;
-			}
-			json += "]";
-			resp.setContentType(Constants.Setting.APPLICATION_JSON);
-			resp.getWriter().write(json);
-		} else {
-			File f = new File(path);
-			int counter = 0;
-			while ((f = f.getParentFile()) != null) {
-				if (ResourceHelper.getInstance(null).hasReadAccess(f.getCanonicalPath(), user)) {
-					counter++;
-				} else {
-					break;
-				}
-			}
-			resp.setStatus(200);
-			resp.getWriter().write(String.valueOf(counter));
-		}
-	}
+    /**
+     * Returns available shortucts for user.
+     *
+     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String user = (String) req.getSession().getAttribute(Constants.Web.USER);
+        String path = req.getParameter(Constants.Web.PATH);
+        resp.setCharacterEncoding(Constants.Setting.UTF8);
+        if (path == null) {
+            List<String> dmz = ResourceHelper.getInstance().getAvailablePaths(user);
+            String json = "[";
+            boolean first = true;
+            for (String s : dmz) {
+                if (!new File(s).exists()) {
+                    continue;
+                }
+                if (!first) {
+                    json += ",";
+                }
+                json += String.format("\"%s\"", s);
+                first = false;
+            }
+            json += "]";
+            resp.setContentType(Constants.Setting.APPLICATION_JSON);
+            resp.getWriter().write(json);
+        } else {
+            File f = new File(path);
+            int counter = 0;
+            while ((f = f.getParentFile()) != null) {
+                if (ResourceHelper.getInstance().hasReadAccess(f.getCanonicalPath(), user)) {
+                    counter++;
+                } else {
+                    break;
+                }
+            }
+            resp.setStatus(200);
+            resp.getWriter().write(String.valueOf(counter));
+        }
+    }
 }
