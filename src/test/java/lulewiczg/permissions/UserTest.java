@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Represents user.
@@ -39,9 +39,8 @@ public class UserTest {
 	/**
 	 * Prepares data.
 	 * 
-	 * @return
 	 */
-	@Before
+	@BeforeEach
 	public void before() {
 		user = new User(TEST);
 		user.setPassword(TEST);

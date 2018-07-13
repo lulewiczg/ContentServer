@@ -5,8 +5,10 @@
     <artifactId>ContentServer</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>ContentServer</name>
+    <packaging>war</packaging>
     <description>Web app to serve content</description>
     <properties>
+        <java-version>1.9</java-version>
         <maven.compiler.source>1.9</maven.compiler.source>
         <maven.compiler.target>1.9</maven.compiler.target>
     </properties>
@@ -27,7 +29,7 @@
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
     <build>
