@@ -12,8 +12,6 @@ import java.util.List;
  * @author lulewiczg
  */
 public class Dir {
-	private static final String SEP = "/";
-
 	private static final String[] UNITS = { "B", "KB", "MB", "GB", "TB" };
 
 	private String name;
@@ -107,12 +105,12 @@ public class Dir {
 				long size = 0;
 				boolean isFile = true;
 				if (file.isDirectory()) {
-					name += SEP;
+					name += Constants.SEP;
 					isFile = false;
 				} else {
 					size = file.length();
 				}
-				files.add(new Dir(name, size, file.getCanonicalPath().replace("\\", "/"), isFile));
+				files.add(new Dir(name, size, file.getCanonicalPath().replace("\\", Constants.SEP), isFile));
 			}
 			Collections.sort(files, new PathComparator());
 			return files;

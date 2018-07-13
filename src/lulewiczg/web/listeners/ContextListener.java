@@ -3,8 +3,8 @@ package lulewiczg.web.listeners;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import lulewiczg.permissions.ResourceHelper;
 import lulewiczg.utils.Log;
-import lulewiczg.web.permissions.ResourceHelper;
 
 /**
  * Servlet context listener for loading settings on startup.

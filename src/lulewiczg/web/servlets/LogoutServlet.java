@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import lulewiczg.web.permissions.ResourceHelper;
+import lulewiczg.utils.Constants;
 
 /**
  * Servlet for logging out.
@@ -26,6 +26,6 @@ public class LogoutServlet extends HttpServlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		req.getSession().removeAttribute(ResourceHelper.USER);
+		req.getSession().removeAttribute(Constants.Web.USER);
 	}
 }

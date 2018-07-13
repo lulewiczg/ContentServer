@@ -12,8 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import lulewiczg.permissions.ResourceHelper;
+import lulewiczg.utils.Constants;
 import lulewiczg.utils.Log;
-import lulewiczg.web.permissions.ResourceHelper;
 
 /**
  * Filter to validate user permissions to requested resources.
@@ -22,8 +23,6 @@ import lulewiczg.web.permissions.ResourceHelper;
  */
 public class ResourceFilter implements Filter {
 
-	private static final String PATH = "path";
-	private static final String USER = "user";
 	private ResourceHelper settings;
 
 	/**
@@ -42,9 +41,9 @@ public class ResourceFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
 			throws IOException, ServletException {
-		String path = req.getParameter(PATH);
+		String path = req.getParameter(Constants.Web.PATH);
 		HttpSession session = ((HttpServletRequest) req).getSession();
-		String user = (String) session.getAttribute(USER);
+		String user = (String) session.getAttribute(Constants.Web.USER);
 		if (path != null) {
 			if (!settings.hasReadAccess(path, user)) {
 				Log.getLog().logAccessDenied(path, session, req);

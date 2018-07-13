@@ -1,9 +1,7 @@
-package lulewiczg.web.permissions;
+package lulewiczg.permissions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -12,8 +10,6 @@ import java.util.List;
  * @author lulewiczg
  */
 public class User {
-
-	private static final String EMPTY = "";
 
 	private String name;
 
@@ -108,38 +104,8 @@ public class User {
 		}
 		read.addAll(write);
 		read.addAll(delete);
-		normalize(read);
-		normalize(write);
-		normalize(delete);
-	}
-
-	/**
-	 * Normalizes paths to avoid duplicates and to set permissions for the shortest
-	 * path as possible.
-	 * 
-	 * @param list paths to normalize
-	 */
-	private void normalize(List<String> list) {
-		for (int i = 0; i < list.size(); i++) {
-			for (int j = i + 1; j < list.size(); j++) {
-				String path = list.get(i);
-				String path2 = list.get(j);
-				if (EMPTY.equals(path) || EMPTY.equals(path2)) {
-					continue;
-				}
-				if (path.startsWith(path2)) {
-					list.set(i, EMPTY);
-				} else if (path2.startsWith(path)) {
-					list.set(j, EMPTY);
-				}
-			}
-		}
-		Iterator<String> i = list.iterator();
-		while (i.hasNext()) {
-			if (i.next().equals(EMPTY)) {
-				i.remove();
-			}
-		}
-		Collections.sort(list);
+		ResourceHelper.normalize(read);
+		ResourceHelper.normalize(write);
+		ResourceHelper.normalize(delete);
 	}
 }

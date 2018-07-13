@@ -1,4 +1,4 @@
-package lulewiczg.web.permissions;
+package lulewiczg.permissions;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -21,6 +22,7 @@ import java.util.Set;
 import javax.security.sasl.AuthenticationException;
 import javax.servlet.ServletContext;
 
+import lulewiczg.utils.Constants;
 import lulewiczg.utils.Log;
 
 /**
@@ -29,18 +31,6 @@ import lulewiczg.utils.Log;
  * @author lulewiczg
  */
 public class ResourceHelper {
-	private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
-	private static final String ADMIN = "admin";
-	private static final String LOGGER_ENABLED = "logger.enabled";
-	private static final String BUFFER_SIZE = "buffer.size";
-	private static final String MIME = "mime.";
-	private static final String SEP = "/";
-	public static final String USER = "user";
-	private static final String PASSWORD = "password";
-	private static final String GUEST = "guest";
-	private static final String PERMISSION = "permission";
-	private static final String EXTENDS = "extends";
-
 	private static ResourceHelper instance;
 	private Map<String, User> users = new HashMap<>();
 	private Map<String, String> mimes = new HashMap<>();
@@ -83,9 +73,9 @@ public class ResourceHelper {
 			}
 			String path = e.getValue().toString();
 			if (keys.length > 2) {
-				if (keys[2].equals(EXTENDS)) {
+				if (keys[2].equals(Constants.Setting.EXTENDS)) {
 					toApply.put(user, path);
-				} else if (keys[2].equals(PASSWORD)) {
+				} else if (keys[2].equals(Constants.Setting.PASSWORD)) {
 					user.setPassword(path);
 				}
 			}
@@ -106,7 +96,7 @@ public class ResourceHelper {
 	 * Adds guest permissions for every user.
 	 */
 	private void addGuestPermissions() {
-		User guest = users.get(GUEST);
+		User guest = users.get(Constants.GUEST);
 		if (guest != null) {
 			for (Map.Entry<String, User> u : users.entrySet()) {
 				User value = u.getValue();
@@ -141,12 +131,12 @@ public class ResourceHelper {
 	/**
 	 * Sets permissions for user.
 	 * 
-	 * @param keys  TODO
+	 * @param keys  splitted property key
 	 * @param user  user
-	 * @param value TODO
+	 * @param value paths
 	 */
 	private void processUserPermissions(String[] keys, User user, String value) {
-		if (keys.length > 3 && keys[2].equals(PERMISSION)) {
+		if (keys.length > 3 && keys[2].equals(Constants.Setting.PERMISSION)) {
 			String[] values = value.split(";");
 			if (values.length > 0) {
 				Persmission type = Persmission.valueOf(keys[3].toUpperCase());
@@ -175,7 +165,7 @@ public class ResourceHelper {
 	private void loadSettings(ServletContext context) {
 		Properties p = new Properties();
 		try (InputStream input = new FileInputStream(
-				context.getRealPath(SEP) + "/WEB-INF/settings/settings.properties")) {
+				context.getRealPath(Constants.SEP) + "/WEB-INF/settings/settings.properties")) {
 			p.load(input);
 		} catch (IOException e) {
 			Log.getLog().log(e);
@@ -184,12 +174,12 @@ public class ResourceHelper {
 		Set<Entry<Object, Object>> entrySet = p.entrySet();
 		for (Map.Entry<Object, Object> prop : entrySet) {
 			String key = prop.getKey().toString();
-			if (key.startsWith(MIME)) {
+			if (key.startsWith(Constants.Setting.MIME)) {
 				mimes.put(key.substring(5), prop.getValue().toString());
 			}
 		}
-		bufferSize = Integer.parseInt(p.getProperty(BUFFER_SIZE)) * 1024;
-		logEnabled = Boolean.parseBoolean(p.getProperty(LOGGER_ENABLED));
+		bufferSize = Integer.parseInt(p.getProperty(Constants.Setting.BUFFER_SIZE)) * 1024;
+		logEnabled = Boolean.parseBoolean(p.getProperty(Constants.Setting.LOGGER_ENABLED));
 	}
 
 	/**
@@ -201,7 +191,7 @@ public class ResourceHelper {
 	private Properties loadProps(ServletContext context) {
 		Properties props = new Properties();
 		try {
-			String contextPath = context.getRealPath(SEP);
+			String contextPath = context.getRealPath(Constants.SEP);
 			String path = contextPath + "/WEB-INF/settings/permissions.properties";
 			try (InputStream input = new FileInputStream(path)) {
 				props.load(input);
@@ -222,7 +212,7 @@ public class ResourceHelper {
 	 */
 	public boolean hasReadAccess(String directory, String name) {
 		User user = getUserByName(name);
-		if (user.getName().equals(ADMIN)) {
+		if (user.getName().equals(Constants.ADMIN)) {
 			return true;
 		}
 		File f = new File(directory);
@@ -235,10 +225,10 @@ public class ResourceHelper {
 			Log.getLog().log(e.toString());
 			return false;
 		}
-		if (dir && !path.endsWith(SEP)) {
-			path += SEP;
+		if (dir && !path.endsWith(Constants.SEP)) {
+			path += Constants.SEP;
 		}
-		path = path.replace("\\", SEP);
+		path = path.replace("\\", Constants.SEP);
 		for (String s : user.getRead()) {
 			if (path.startsWith(s)) {
 				return true;
@@ -255,7 +245,7 @@ public class ResourceHelper {
 	 */
 	private User getUserByName(String name) {
 		if (name == null || name.isEmpty()) {
-			name = GUEST;
+			name = Constants.GUEST;
 		}
 		User user = users.get(name);
 		return user;
@@ -312,6 +302,65 @@ public class ResourceHelper {
 	}
 
 	/**
+	 * Normalizes paths to avoid duplicates and to set permissions for the shortest
+	 * path as possible.
+	 * 
+	 * @param list paths to normalize
+	 */
+	public static void normalize(List<String> list) {
+		for (int i = 0; i < list.size(); i++) {
+			String path = list.get(i).replace('\\', '/');
+			if (path.endsWith("/")) {
+				path = path.substring(0, path.length() - 1);
+			}
+			list.set(i, path);
+		}
+		for (int i = 0; i < list.size(); i++) {
+			for (int j = i + 1; j < list.size(); j++) {
+				String path = list.get(i);
+				String path2 = list.get(j);
+				if (Constants.EMPTY.equals(path) || Constants.EMPTY.equals(path2)) {
+					continue;
+				}
+				if (startsWith(path, path2)) {
+					list.set(i, Constants.EMPTY);
+				} else if (startsWith(path2, path)) {
+					list.set(j, Constants.EMPTY);
+				}
+			}
+		}
+		Iterator<String> i = list.iterator();
+		while (i.hasNext()) {
+			if (i.next().equals(Constants.EMPTY)) {
+				i.remove();
+			}
+		}
+		Collections.sort(list);
+	}
+
+	/**
+	 * Checks if one path is subpath of another.
+	 * 
+	 * @param path  base path
+	 * @param path2 path to check
+	 * @return true if subpath
+	 */
+	private static boolean startsWith(String path, String path2) {
+		if (path2.length() > path.length()) {
+			return false;
+		}
+		String[] split = path.split("/");
+		String[] split2 = path2.split("/");
+		int size = Integer.min(split.length, split2.length);
+		for (int i = 0; i < size; i++) {
+			if (!split[i].equals(split2[i])) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * Obtains MIME type for given file.
 	 * 
 	 * @param name file name
@@ -321,7 +370,7 @@ public class ResourceHelper {
 		String type = name.substring(name.lastIndexOf(".") + 1).toLowerCase();
 		String mime = mimes.get(type);
 		if (mime == null) {
-			mime = APPLICATION_OCTET_STREAM;
+			mime = Constants.Setting.APPLICATION_OCTET_STREAM;
 		}
 		return mime;
 	}

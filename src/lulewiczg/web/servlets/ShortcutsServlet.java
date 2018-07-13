@@ -9,7 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import lulewiczg.web.permissions.ResourceHelper;
+import lulewiczg.permissions.ResourceHelper;
+import lulewiczg.utils.Constants;
 
 /**
  * Servlet for shortcuts.
@@ -28,9 +29,9 @@ public class ShortcutsServlet extends HttpServlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String user = (String) req.getSession().getAttribute("user");
-		String path = req.getParameter("path");
-		resp.setCharacterEncoding("UTF-8");
+		String user = (String) req.getSession().getAttribute(Constants.Web.USER);
+		String path = req.getParameter(Constants.Web.PATH);
+		resp.setCharacterEncoding(Constants.Setting.UTF8);
 		if (path == null) {
 			List<String> dmz = ResourceHelper.getInstance(null).getAvailablePaths(user);
 			String json = "[";
@@ -46,7 +47,7 @@ public class ShortcutsServlet extends HttpServlet {
 				first = false;
 			}
 			json += "]";
-			resp.setContentType("application/json");
+			resp.setContentType(Constants.Setting.APPLICATION_JSON);
 			resp.getWriter().write(json);
 		} else {
 			File f = new File(path);

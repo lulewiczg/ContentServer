@@ -12,7 +12,7 @@ import java.util.Date;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpSession;
 
-import lulewiczg.web.permissions.ResourceHelper;
+import lulewiczg.permissions.ResourceHelper;
 
 /**
  * Logs events to file in Jetty directory. If run on desktop, logs to console.
@@ -20,13 +20,13 @@ import lulewiczg.web.permissions.ResourceHelper;
  * @author lulewiczg
  *
  */
-public class Log extends AbstractLog {
+public class Log {
 	private PrintWriter writer;
-	private static AbstractLog instance;
+	private static Log instance;
 	private static final DateFormat format = new SimpleDateFormat("yyyyy-MM-dd HH:mm:ss");
 
-	private Log() {
-		File file = new File("/storage/emulated/legacy/jetty/tmp/log.txt");
+	private Log(String path) {
+		File file = new File(path);
 		if (!file.getParentFile().exists()) {
 			writer = new PrintWriter(new OutputStreamWriter(System.out));
 		} else {
@@ -39,17 +39,20 @@ public class Log extends AbstractLog {
 		}
 	}
 
+	Log() {
+	}
+
 	/**
 	 * Obtains logger.
 	 * 
 	 * @return logger
 	 */
-	public static synchronized AbstractLog getLog() {
+	public static synchronized Log getLog() {
 		if (instance == null) {
 			if (ResourceHelper.getInstance(null).isLogEnabled()) {
-				instance = new Log();
+				instance = new Log("/storage/emulated/legacy/jetty/tmp/log.txt");
 			} else {
-				instance = new AbstractLog();
+				instance = new DummyLog();
 			}
 		}
 		return instance;
@@ -67,51 +70,55 @@ public class Log extends AbstractLog {
 	}
 
 	/**
-	 * @see lulewiczg.utils.AbstractLog#log(java.lang.Exception)
+	 * Logs exception.
+	 * 
+	 * @param str string
 	 */
-	@Override
 	public void log(Exception ex) {
 		ex.printStackTrace(writer);
 		writer.flush();
 	}
 
 	/**
-	 * @see lulewiczg.utils.AbstractLog#log(java.lang.String)
+	 * Logs string.
+	 * 
+	 * @param str string
 	 */
-	@Override
 	public void log(String str) {
 		str = String.format("[%s] - %s", format.format(new Date()), str);
 		write(str);
 	}
 
 	/**
-	 * @see java.lang.Object#finalize()
+	 * Logs access granted event.
+	 * 
+	 * @param path    content path
+	 * @param session session
+	 * @param req     request
 	 */
+	public void logAccessGranted(String path, HttpSession session, ServletRequest req) {
+		String str = String.format("[%s] - [USER: %s, %s] accessed [%s]", format.format(new Date()),
+				session.getAttribute(Constants.Setting.USER), req.getRemoteAddr(), path);
+		write(str);
+	}
+
+	/**
+	 * Logs access denied event.
+	 * 
+	 * @param path    content path
+	 * @param session session
+	 * @param req     request
+	 */
+	public void logAccessDenied(String path, HttpSession session, ServletRequest req) {
+		String str = String.format("[%s] - [USER: %s, %s] denied for [%s]", format.format(new Date()),
+				session.getAttribute(Constants.Setting.USER), req.getRemoteAddr(), path);
+		write(str);
+
+	}
+
 	@Override
 	protected void finalize() throws Throwable {
 		writer.close();
 	}
 
-	/**
-	 * @see lulewiczg.utils.AbstractLog#logAccessGranted(java.lang.String,
-	 *      javax.servlet.http.HttpSession, javax.servlet.ServletRequest)
-	 */
-	@Override
-	public void logAccessGranted(String path, HttpSession session, ServletRequest req) {
-		String str = String.format("[%s] - [USER: %s, %s] accessed [%s]", format.format(new Date()),
-				session.getAttribute(ResourceHelper.USER), req.getRemoteAddr(), path);
-		write(str);
-	}
-
-	/**
-	 * @see lulewiczg.utils.AbstractLog#logAccessDenied(java.lang.String,
-	 *      javax.servlet.http.HttpSession, javax.servlet.ServletRequest)
-	 */
-	@Override
-	public void logAccessDenied(String path, HttpSession session, ServletRequest req) {
-		String str = String.format("[%s] - [USER: %s, %s] denied for [%s]", format.format(new Date()),
-				session.getAttribute(ResourceHelper.USER), req.getRemoteAddr(), path);
-		write(str);
-
-	}
 }

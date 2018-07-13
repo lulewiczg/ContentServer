@@ -8,8 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import lulewiczg.permissions.ResourceHelper;
+import lulewiczg.utils.Constants;
 import lulewiczg.utils.Log;
-import lulewiczg.web.permissions.ResourceHelper;
 
 /**
  * Servlet for handling logging in.
@@ -29,7 +30,7 @@ public class LoginServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		HttpSession session = req.getSession();
-		String user = (String) session.getAttribute(ResourceHelper.USER);
+		String user = (String) session.getAttribute(Constants.Web.USER);
 		if (user != null) {
 			resp.getWriter().write(user);
 		}
@@ -44,19 +45,19 @@ public class LoginServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		HttpSession session = req.getSession();
-		String user = (String) session.getAttribute(ResourceHelper.USER);
+		String user = (String) session.getAttribute(Constants.Web.USER);
 		if (user != null) {
 			resp.setStatus(403);
 		} else {
-			String login = req.getParameter("login");
-			String password = req.getParameter("password");
+			String login = req.getParameter(Constants.Web.LOGIN);
+			String password = req.getParameter(Constants.Web.PASSWORD);
 			if (login == null || password == null) {
 				resp.setStatus(401);
 				return;
 			}
 			try {
 				ResourceHelper.getInstance(null).login(login, password);
-				session.setAttribute(ResourceHelper.USER, login);
+				session.setAttribute(Constants.Web.USER, login);
 				resp.getWriter().write(login);
 			} catch (Exception e) {
 				Log.getLog().log(e);

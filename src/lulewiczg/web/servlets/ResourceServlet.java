@@ -13,8 +13,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import lulewiczg.permissions.ResourceHelper;
+import lulewiczg.utils.Constants;
 import lulewiczg.utils.Dir;
-import lulewiczg.web.permissions.ResourceHelper;
 
 /**
  * Servlet for serving resources.
@@ -22,8 +23,6 @@ import lulewiczg.web.permissions.ResourceHelper;
  * @author lulewiczg
  */
 public class ResourceServlet extends HttpServlet {
-
-	private static final String PATH = "path";
 
 	private static final long serialVersionUID = 1L;
 
@@ -51,8 +50,8 @@ public class ResourceServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		response.setCharacterEncoding("UTF-8");
-		String path = request.getParameter(PATH);
+		response.setCharacterEncoding(Constants.Setting.UTF8);
+		String path = request.getParameter(Constants.Web.PATH);
 		if (path == null) {
 			response.setStatus(404);
 			return;
@@ -98,7 +97,7 @@ public class ResourceServlet extends HttpServlet {
 		long length = f.length();
 		long start = 0;
 		long end = length - 1;
-		String range = request.getHeader("Range");
+		String range = request.getHeader(Constants.Web.Headers.RANGE);
 		if (range != null) {
 			range = range.substring(6);
 			String[] split = range.split("-");
@@ -124,13 +123,14 @@ public class ResourceServlet extends HttpServlet {
 		long contentLength = end - start + 1;
 		response.reset();
 		response.setBufferSize(buffSize);
-		response.setHeader("Content-Disposition", String.format("inline;filename=\"%s\"", f.getName()));
-		response.setHeader("Accept-Ranges", "bytes");
-		response.setDateHeader("Expires", System.currentTimeMillis() + EXPIRE_TIME);
+		response.setHeader(Constants.Web.Headers.CONTENT_DISPOSITION,
+				String.format("inline;filename=\"%s\"", f.getName()));
+		response.setHeader(Constants.Web.Headers.ACCEPT_RANGES, "bytes");
+		response.setDateHeader(Constants.Web.Headers.EXPIRES, System.currentTimeMillis() + EXPIRE_TIME);
 		String contentType = resolver.getMIME(f.getName());
 		response.setContentType(contentType);
-		response.setHeader("Content-Range", String.format("bytes %s-%s/%s", start, end, length));
-		response.setHeader("Content-Length", String.format("%s", contentLength));
+		response.setHeader(Constants.Web.Headers.CONTENT_RANGE, String.format("bytes %s-%s/%s", start, end, length));
+		response.setHeader(Constants.Web.Headers.CONTENT_LENGTH, String.format("%s", contentLength));
 		response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
 
 		long bytesLeft = contentLength;
