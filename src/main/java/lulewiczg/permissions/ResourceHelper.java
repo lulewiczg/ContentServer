@@ -389,7 +389,7 @@ public class ResourceHelper {
         }
         String[] split = path.split("/");
         String[] split2 = path2.split("/");
-        int size = Integer.min(split.length, split2.length);
+        int size = split.length < split2.length ? split.length : split2.length;
         for (int i = 0; i < size; i++) {
             if (!split[i].equals(split2[i])) {
                 return false;

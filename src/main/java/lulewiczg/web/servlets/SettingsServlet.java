@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import lulewiczg.permissions.ResourceHelper;
 import lulewiczg.utils.Constants;
+import lulewiczg.utils.Log;
 import lulewiczg.utils.models.Setting;
 
 /**
@@ -54,6 +55,7 @@ public class SettingsServlet extends HttpServlet {
         Properties props = ResourceHelper.getInstance().getSettingsProperties();
         for (Entry<String, String[]> e : parameterMap.entrySet()) {
             props.setProperty(e.getKey(), e.getValue()[0]);
+            Log.getLog().log(String.format("Changed %s to %s", e.getKey(), e.getValue()[0]));
         }
         ResourceHelper.getInstance().saveSettings();
     }

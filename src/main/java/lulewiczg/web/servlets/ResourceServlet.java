@@ -118,7 +118,8 @@ public class ResourceServlet extends HttpServlet {
 
         long contentLength = end - start + 1;
         response.reset();
-        response.setBufferSize(ResourceHelper.getInstance().getBufferSize());
+        int bufferSize = ResourceHelper.getInstance().getBufferSize();
+        response.setBufferSize(bufferSize);
         setHeaders(response, f, length, start, end, download, contentLength);
 
         long bytesLeft = contentLength;
@@ -126,7 +127,7 @@ public class ResourceServlet extends HttpServlet {
         try (BufferedInputStream stream = new BufferedInputStream(new FileInputStream(f));
                 OutputStream output = response.getOutputStream()) {
             stream.skip(start);
-            byte[] buff = new byte[20480];
+            byte[] buff = new byte[bufferSize];
             while ((bytesRead = stream.read(buff)) != -1 && bytesLeft > 0) {
                 output.write(buff, 0, (int) (bytesLeft < bytesRead ? bytesLeft : bytesRead));
                 bytesLeft -= bytesRead;
