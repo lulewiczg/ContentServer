@@ -66,13 +66,15 @@
                         <tr>
                             <th>Nazwa pliku</th>
                             <th>Rozmiar</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr ng-repeat="file in files track by file.name">
                             <td><a class="nounderline" ng-href="{{getFileURL(file)}}"
-                                ng-attr-target="{{(file.file=='true') ? '_self' :undefined}}">{{file.name}}</a></span></td>
+                                ng-attr-target="{{(file.file=='true') ? '_self' :undefined}}">{{file.name}}</a></td>
                             <td>{{file.size}}</td>
+                            <td><a class="download-button" target="_blank" ng-href="{{getFileURL(file)+ '&download=true'}}"><img src="icons/download.png"></img></a>
                         </tr>
                     </tbody>
                 </table>

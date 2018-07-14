@@ -17,6 +17,7 @@ public final class Constants {
         public static final String LOGIN = "login";
         public static final String PASSWORD = "password";
         public static final String PATH = "path";
+        public static final String DOWNLOAD = "download";
 
         public static class Headers {
             public static final String CONTENT_LENGTH = "Content-Length";

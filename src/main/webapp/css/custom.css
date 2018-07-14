@@ -1,28 +1,32 @@
 .path-breadcrumb {
-	border-radius: 10px;
-	background-color: #6638e6;
+ border-radius: 10px;
+ background-color: #6638e6;
 }
 
 .path-breadcrumb.disabled {
-	background-color: #351214;
+ background-color: #351214;
 }
 
 #actualFolder {
-	background-color: #3c354f;
+ background-color: #3c354f;
 }
 
 .content-table thead {
-	background-color: #494949;
+ background-color: #494949;
 }
 
 .shortcut-dropdown:nth-child(odd) {
-	background-color: #080808;
+ background-color: #080808;
 }
 
 .modal-body .login-box {
-	width: 40%;
+ width: 40%;
 }
 
 .nounderline {
-	text-decoration: none !important
+ text-decoration: none !important
+}
+
+.download-button img{
+ width: 20px;
 }

@@ -105,6 +105,7 @@ public class ResourceServlet extends HttpServlet {
         long start = 0;
         long end = length - 1;
         String range = request.getHeader(Constants.Web.Headers.RANGE);
+        String download = request.getParameter(Constants.Web.DOWNLOAD);
         if (range != null) {
             range = range.substring(6);
             String[] split = range.split("-");
@@ -130,14 +131,20 @@ public class ResourceServlet extends HttpServlet {
         long contentLength = end - start + 1;
         response.reset();
         response.setBufferSize(buffSize);
+
         response.setHeader(Constants.Web.Headers.CONTENT_DISPOSITION, String.format("inline;filename=\"%s\"", f.getName()));
         response.setHeader(Constants.Web.Headers.ACCEPT_RANGES, "bytes");
         response.setDateHeader(Constants.Web.Headers.EXPIRES, System.currentTimeMillis() + EXPIRE_TIME);
-        String contentType = resolver.getMIME(f.getName());
-        response.setContentType(contentType);
         response.setHeader(Constants.Web.Headers.CONTENT_RANGE, String.format("bytes %s-%s/%s", start, end, length));
         response.setHeader(Constants.Web.Headers.CONTENT_LENGTH, String.format("%s", contentLength));
         response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+
+        if ("true".equals(download)) {
+            response.setContentType("application/force-download");
+        } else {
+            String contentType = resolver.getMIME(f.getName());
+            response.setContentType(contentType);
+        }
 
         long bytesLeft = contentLength;
         long bytesRead;
