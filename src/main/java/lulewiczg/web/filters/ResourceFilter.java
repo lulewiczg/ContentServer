@@ -53,8 +53,6 @@ public class ResourceFilter implements Filter {
     }
 
     /**
-     * Obtains settings.
-     *
      * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
      */
     @Override

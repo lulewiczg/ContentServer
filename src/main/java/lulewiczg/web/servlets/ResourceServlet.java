@@ -15,7 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import lulewiczg.permissions.ResourceHelper;
 import lulewiczg.utils.Constants;
-import lulewiczg.utils.Dir;
+import lulewiczg.utils.Constants.Setting;
+import lulewiczg.utils.models.Dir;
 
 /**
  * Servlet for serving resources.
@@ -26,20 +27,7 @@ public class ResourceServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private int buffSize;
-
     private static final long EXPIRE_TIME = 1000 * 60 * 60 * 24;
-
-    private ResourceHelper resolver;
-
-    /**
-     * @see javax.servlet.GenericServlet#init()
-     */
-    @Override
-    public void init() throws ServletException {
-        resolver = ResourceHelper.getInstance();
-        buffSize = resolver.getBufferSize();
-    }
 
     /**
      * Returns requested file or folder contents.
@@ -80,7 +68,7 @@ public class ResourceServlet extends HttpServlet {
      */
     private void listDirJSON(HttpServletRequest request, HttpServletResponse response, File f) throws IOException {
         List<Dir> files = Dir.getFiles(f);
-        response.setContentType("application/json");
+        response.setContentType(Setting.APPLICATION_JSON);
         String json = Dir.toJSON(files);
         response.getWriter().write(json);
     }
@@ -130,21 +118,8 @@ public class ResourceServlet extends HttpServlet {
 
         long contentLength = end - start + 1;
         response.reset();
-        response.setBufferSize(buffSize);
-
-        response.setHeader(Constants.Web.Headers.CONTENT_DISPOSITION, String.format("inline;filename=\"%s\"", f.getName()));
-        response.setHeader(Constants.Web.Headers.ACCEPT_RANGES, "bytes");
-        response.setDateHeader(Constants.Web.Headers.EXPIRES, System.currentTimeMillis() + EXPIRE_TIME);
-        response.setHeader(Constants.Web.Headers.CONTENT_RANGE, String.format("bytes %s-%s/%s", start, end, length));
-        response.setHeader(Constants.Web.Headers.CONTENT_LENGTH, String.format("%s", contentLength));
-        response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
-
-        if ("true".equals(download)) {
-            response.setContentType("application/force-download");
-        } else {
-            String contentType = resolver.getMIME(f.getName());
-            response.setContentType(contentType);
-        }
+        response.setBufferSize(ResourceHelper.getInstance().getBufferSize());
+        setHeaders(response, f, length, start, end, download, contentLength);
 
         long bytesLeft = contentLength;
         long bytesRead;
@@ -156,6 +131,41 @@ public class ResourceServlet extends HttpServlet {
                 output.write(buff, 0, (int) (bytesLeft < bytesRead ? bytesLeft : bytesRead));
                 bytesLeft -= bytesRead;
             }
+        }
+    }
+
+    /**
+     * Sets headers for response.
+     *
+     * @param response
+     *            response
+     * @param f
+     *            requested file
+     * @param length
+     *            content range length
+     * @param start
+     *            content start
+     * @param end
+     *            content end
+     * @param download
+     *            download param
+     * @param contentLength
+     *            content length
+     */
+    private void setHeaders(HttpServletResponse response, File f, long length, long start, long end, String download,
+            long contentLength) {
+        response.setHeader(Constants.Web.Headers.CONTENT_DISPOSITION, String.format("inline;filename=\"%s\"", f.getName()));
+        response.setHeader(Constants.Web.Headers.ACCEPT_RANGES, "bytes");
+        response.setDateHeader(Constants.Web.Headers.EXPIRES, System.currentTimeMillis() + EXPIRE_TIME);
+        response.setHeader(Constants.Web.Headers.CONTENT_RANGE, String.format("bytes %s-%s/%s", start, end, length));
+        response.setHeader(Constants.Web.Headers.CONTENT_LENGTH, String.format("%s", contentLength));
+        response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+
+        if ("true".equals(download)) {
+            response.setContentType(Constants.Web.Headers.APPLICATION_FORCE_DOWNLOAD);
+        } else {
+            String contentType = ResourceHelper.getInstance().getMIME(f.getName());
+            response.setContentType(contentType);
         }
     }
 }

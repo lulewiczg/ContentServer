@@ -22,7 +22,7 @@ public class ShortcutsServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Returns available shortucts for user.
+     * Returns available shortcuts for user.
      *
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */

@@ -2,6 +2,8 @@ package lulewiczg.utils;
 
 import java.util.Comparator;
 
+import lulewiczg.utils.models.Dir;
+
 /**
  * Comparator for direcotires.
  *

@@ -2,6 +2,8 @@ package lulewiczg.permissions;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -31,12 +33,17 @@ import lulewiczg.utils.Log;
  * @author lulewiczg
  */
 public class ResourceHelper {
+    private static final String PERMISSIONS_PATH = "/WEB-INF/settings/permissions.properties";
+    private static final String SETTINGS_PATH = "/WEB-INF/settings/settings.properties";
     private static final String DIR = "{DIR}";
     private static ResourceHelper instance;
     private Map<String, User> users = new HashMap<>();
     private Map<String, String> mimes = new HashMap<>();
     private int bufferSize;
     private boolean logEnabled = true;
+    private Properties settingsProperties;
+    private Properties permissionsProperties;
+    private String path;
 
     public static ResourceHelper getInstance() {
         return instance;
@@ -48,10 +55,11 @@ public class ResourceHelper {
 
     public static synchronized void init(ServletContext context) {
         String path = context.getRealPath(Constants.SEP);
-        instance = new ResourceHelper(path);
+        init(path);
     }
 
     private ResourceHelper(String path) {
+        this.path = path;
         try {
             loadPermissions(path);
             loadSettings(path);
@@ -184,19 +192,19 @@ public class ResourceHelper {
      *             when could not read settings
      */
     private void loadSettings(String path) throws IOException {
-        Properties p = new Properties();
-        try (InputStream input = new FileInputStream(path + "/WEB-INF/settings/settings.properties")) {
-            p.load(input);
+        settingsProperties = new Properties();
+        try (InputStream input = new FileInputStream(path + SETTINGS_PATH)) {
+            settingsProperties.load(input);
         }
-        Set<Entry<Object, Object>> entrySet = p.entrySet();
+        Set<Entry<Object, Object>> entrySet = settingsProperties.entrySet();
         for (Map.Entry<Object, Object> prop : entrySet) {
             String key = prop.getKey().toString();
             if (key.startsWith(Constants.Setting.MIME)) {
                 mimes.put(key.substring(5), prop.getValue().toString());
             }
         }
-        bufferSize = Integer.parseInt(p.getProperty(Constants.Setting.BUFFER_SIZE)) * 1024;
-        logEnabled = Boolean.parseBoolean(p.getProperty(Constants.Setting.LOGGER_ENABLED));
+        bufferSize = Integer.parseInt(settingsProperties.getProperty(Constants.Setting.BUFFER_SIZE)) * 1024;
+        logEnabled = Boolean.parseBoolean(settingsProperties.getProperty(Constants.Setting.LOGGER_ENABLED));
     }
 
     /**
@@ -207,17 +215,17 @@ public class ResourceHelper {
      * @return properties
      */
     private Properties loadProps(String contextPath) {
-        Properties props = new Properties();
+        permissionsProperties = new Properties();
         try {
-            String path = contextPath + "/WEB-INF/settings/permissions.properties";
+            String path = contextPath + PERMISSIONS_PATH;
             try (InputStream input = new FileInputStream(path)) {
-                props.load(input);
+                permissionsProperties.load(input);
             }
         } catch (Exception e) {
             Log.getLog().log(e);
             throw new IllegalArgumentException(e);
         }
-        return props;
+        return permissionsProperties;
     }
 
     /**
@@ -412,5 +420,28 @@ public class ResourceHelper {
 
     public boolean isLogEnabled() {
         return logEnabled;
+    }
+
+    public Properties getSettingsProperties() {
+        return settingsProperties;
+    }
+
+    public Properties getPermissionsProperties() {
+        return permissionsProperties;
+    }
+
+    /**
+     * Saves settings.
+     *
+     * @throws FileNotFoundException
+     *             the FileNotFoundException
+     * @throws IOException
+     *             the IOException
+     */
+    public synchronized void saveSettings() throws FileNotFoundException, IOException {
+        try (FileOutputStream os = new FileOutputStream(new File(path + SETTINGS_PATH))) {
+            settingsProperties.store(os, null);
+        }
+        init(path);
     }
 }

@@ -26,6 +26,7 @@ public final class Constants {
             public static final String CONTENT_DISPOSITION = "Content-Disposition";
             public static final String RANGE = "Range";
             public static final String EXPIRES = "Expires";
+            public static final String APPLICATION_FORCE_DOWNLOAD = "application/force-download";
         }
     }
 

@@ -41,6 +41,15 @@
         <url-pattern>/rest/logout</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>SettingsServlet</servlet-name>
+        <servlet-class>lulewiczg.web.servlets.SettingsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SettingsServlet</servlet-name>
+        <url-pattern>/rest/settings</url-pattern>
+    </servlet-mapping>
+
     <filter>
         <filter-name>ResourceFilter</filter-name>
         <filter-class>lulewiczg.web.filters.ResourceFilter</filter-class>
@@ -49,6 +58,16 @@
         <filter-name>ResourceFilter</filter-name>
         <url-pattern>/rest/files/*</url-pattern>
     </filter-mapping>
+
+    <filter>
+        <filter-name>AdminFilter</filter-name>
+        <filter-class>lulewiczg.web.filters.AdminFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AdminFilter</filter-name>
+        <url-pattern>/rest/settings</url-pattern>
+    </filter-mapping>
+
     <session-config>
         <session-timeout>0</session-timeout>
     </session-config>
