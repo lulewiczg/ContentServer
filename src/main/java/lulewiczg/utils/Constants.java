@@ -36,7 +36,7 @@ public final class Constants {
     public static class Setting {
         public static final String USER = "user";
         public static final String PASSWORD = "password";
-        public static final String LOGGER_ENABLED = "logger.enabled";
+        public static final String LOGGER_LEVEL = "logger.level";
         public static final String BUFFER_SIZE = "buffer.size";
         public static final String MIME = "mime.";
         public static final String PERMISSION = "permission";

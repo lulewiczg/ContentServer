@@ -19,8 +19,9 @@ public class ContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent event) {
         System.setProperty("java.net.preferIPv4Stack", "true");
+        Log.init(event.getServletContext().getRealPath("/"));
         ResourceHelper.init(event.getServletContext());
-        Log.getLog().log("Config loaded!");
+        Log.getLog().logInfo("Config loaded!");
     }
 
     /**
@@ -28,7 +29,7 @@ public class ContextListener implements ServletContextListener {
      */
     @Override
     public void contextDestroyed(ServletContextEvent event) {
-        Log.getLog().log("Context destroyed!");
+        Log.getLog().logInfo("Context destroyed!");
     }
 
 }

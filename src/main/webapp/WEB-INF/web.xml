@@ -50,6 +50,15 @@
         <url-pattern>/rest/settings</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>ContextServlet</servlet-name>
+        <servlet-class>lulewiczg.web.servlets.ContextServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ContextServlet</servlet-name>
+        <url-pattern>/rest/context</url-pattern>
+    </servlet-mapping>
+
     <filter>
         <filter-name>ResourceFilter</filter-name>
         <filter-class>lulewiczg.web.filters.ResourceFilter</filter-class>
@@ -66,11 +75,17 @@
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>
         <url-pattern>/rest/settings</url-pattern>
+        <url-pattern>/rest/context</url-pattern>
     </filter-mapping>
 
     <session-config>
         <session-timeout>0</session-timeout>
     </session-config>
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error.html</location>
+    </error-page>
 
     <listener>
         <listener-class>lulewiczg.web.listeners.ContextListener</listener-class>

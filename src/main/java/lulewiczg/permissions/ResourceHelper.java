@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Level;
 
 import javax.security.sasl.AuthenticationException;
 import javax.servlet.ServletContext;
@@ -40,7 +41,7 @@ public class ResourceHelper {
     private Map<String, User> users = new HashMap<>();
     private Map<String, String> mimes = new HashMap<>();
     private int bufferSize;
-    private boolean logEnabled = true;
+    private Level logLevel = Level.OFF;
     private Properties settingsProperties;
     private Properties permissionsProperties;
     private String path;
@@ -51,6 +52,7 @@ public class ResourceHelper {
 
     public static synchronized void init(String path) {
         instance = new ResourceHelper(path);
+        Log.getLog().setLevel(instance.logLevel);
     }
 
     public static synchronized void init(ServletContext context) {
@@ -204,7 +206,7 @@ public class ResourceHelper {
             }
         }
         bufferSize = Integer.parseInt(settingsProperties.getProperty(Constants.Setting.BUFFER_SIZE)) * 1024;
-        logEnabled = Boolean.parseBoolean(settingsProperties.getProperty(Constants.Setting.LOGGER_ENABLED));
+        logLevel = Level.parse(settingsProperties.getProperty(Constants.Setting.LOGGER_LEVEL));
     }
 
     /**
@@ -252,13 +254,13 @@ public class ResourceHelper {
         try {
             path = f.getCanonicalPath();
         } catch (IOException e) {
-            Log.getLog().log(e.toString());
+            Log.getLog().log(e);
             return false;
         }
         if (dir && !path.endsWith(Constants.SEP)) {
             path += Constants.SEP;
         }
-        path = path.replace("\\", Constants.SEP);
+        path = normalizePath(path);
         for (String s : user.getRead()) {
             if (startsWith(path, s)) {
                 return true;
@@ -308,10 +310,10 @@ public class ResourceHelper {
         User user = users.get(login);
         String sha = SHA1(password);
         if (user != null && user.getPassword().toUpperCase().equals(sha)) {
-            Log.getLog().log("Logged: " + login);
+            Log.getLog().logInfo("Logged: " + login);
             return;
         }
-        Log.getLog().log("Invalid password: " + login);
+        Log.getLog().logError("Invalid password: " + login);
         throw new AuthenticationException("Invalid login or password");
     }
 
@@ -418,10 +420,6 @@ public class ResourceHelper {
         return bufferSize;
     }
 
-    public boolean isLogEnabled() {
-        return logEnabled;
-    }
-
     public Properties getSettingsProperties() {
         return settingsProperties;
     }
@@ -443,5 +441,16 @@ public class ResourceHelper {
             settingsProperties.store(os, null);
         }
         init(path);
+    }
+
+    /**
+     * Normalizes path.
+     *
+     * @param path
+     *            path
+     * @return normalized path
+     */
+    public static String normalizePath(String path) {
+        return path.replace("\\", Constants.SEP);
     }
 }

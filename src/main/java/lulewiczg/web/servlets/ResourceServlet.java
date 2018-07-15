@@ -39,6 +39,7 @@ public class ResourceServlet extends HttpServlet {
         response.setCharacterEncoding(Constants.Setting.UTF8);
         String path = request.getParameter(Constants.Web.PATH);
         if (path == null) {
+            path = ResourceHelper.normalizePath(path);
             response.setStatus(404);
             return;
         }

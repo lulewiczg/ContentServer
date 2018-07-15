@@ -5,6 +5,7 @@ angular.module('app').controller("fileController", function($http, $location, $s
 	$scope.actualFolder;
 	$scope.folders;
 	$scope.admin;
+	$scope.context;
 	$scope.roots = [];
 	$scope.init = function() {
 		$http.get('rest/login').then(function(result) {
@@ -12,14 +13,20 @@ angular.module('app').controller("fileController", function($http, $location, $s
 			if ($scope.user == "") {
 				$scope.user = undefined;
 			}
-			if ($scope.user === "admin") {
-				$scope.admin = true;
-			} else {
-				$Scope.admin = false;
-			}
+			$scope.resolveAdmin();
 		});
 	};
 
+	$scope.resolveAdmin = function() {
+		if ($scope.user === "admin") {
+			$scope.admin = true;
+			$http.get('rest/context').then(function(result) {
+				$scope.context = result.data;
+			});
+		} else {
+			$scope.admin = false;
+		}
+	}
 	$scope.reload = function() {
 		if (!$scope.initPerformed) {
 			$scope.initPerformed = true;
@@ -45,7 +52,7 @@ angular.module('app').controller("fileController", function($http, $location, $s
 		if (path.endsWith("/")) {
 			path = path.slice(0, -1);
 		}
-		var folders = path.split("/");
+		var folders = path.replace(/\\/g, '/').split('/');
 		$scope.actualFolder = folders[folders.length - 1];
 		var limit;
 		var url = "rest/roots?path=" + path;
@@ -89,6 +96,7 @@ angular.module('app').controller("fileController", function($http, $location, $s
 
 	$scope.logout = function() {
 		$scope.user = undefined;
+		$scope.admin = undefined;
 		$http.get('rest/logout');
 		$window.location.href = $window.location.href.split("?")[0];
 	}
@@ -108,6 +116,7 @@ angular.module('app').controller("fileController", function($http, $location, $s
 			$scope.user = result;
 			$scope.initPerformed = false;
 			$scope.reload();
+			$scope.resolveAdmin();
 		});
 	};
 
@@ -124,4 +133,7 @@ angular.module('app').controller("fileController", function($http, $location, $s
 		});
 	};
 
+	$scope.getLogsUrl = function() {
+		return "rest/files?path=" + $scope.context + "WEB-INF/logs/log.txt";
+	}
 });

@@ -55,7 +55,7 @@ public class SettingsServlet extends HttpServlet {
         Properties props = ResourceHelper.getInstance().getSettingsProperties();
         for (Entry<String, String[]> e : parameterMap.entrySet()) {
             props.setProperty(e.getKey(), e.getValue()[0]);
-            Log.getLog().log(String.format("Changed %s to %s", e.getKey(), e.getValue()[0]));
+            Log.getLog().logInfo(String.format("Changed %s to %s", e.getKey(), e.getValue()[0]));
         }
         ResourceHelper.getInstance().saveSettings();
     }

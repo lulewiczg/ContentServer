@@ -49,6 +49,7 @@ public class ShortcutsServlet extends HttpServlet {
             resp.setContentType(Constants.Setting.APPLICATION_JSON);
             resp.getWriter().write(json);
         } else {
+            path = ResourceHelper.normalizePath(path);
             File f = new File(path);
             int counter = 0;
             while ((f = f.getParentFile()) != null) {
