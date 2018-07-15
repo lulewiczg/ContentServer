@@ -1,9 +1,10 @@
 angular.module('app').controller('settingsController', function($http, $scope, items, $modal, $modalInstance) {
 	$scope.user = items;
-	$scope.settings;
+	$scope.settings = [];
 	$scope.init = function() {
 		$.get('rest/settings', function(result) {
 			$scope.settings = result;
+			$('.modal-body').click();
 		}).error(function() {
 			alert("Błont")
 		});
