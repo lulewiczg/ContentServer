@@ -18,7 +18,7 @@ import javax.servlet.http.HttpSession;
  *
  */
 public class Log {
-    private static final String LOG_LOCATION = "WEB-INF/logs/log.txt";
+    public static final String LOG_LOCATION = "/WEB-INF/logs/log.txt";
     private static Log instance;
     private static final Logger log = Logger.getLogger("Log");
     static {
