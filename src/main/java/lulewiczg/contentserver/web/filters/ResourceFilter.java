@@ -1,4 +1,4 @@
-package lulewiczg.web.filters;
+package lulewiczg.contentserver.web.filters;
 
 import java.io.IOException;
 
@@ -12,16 +12,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import lulewiczg.permissions.ResourceHelper;
-import lulewiczg.utils.Constants;
-import lulewiczg.utils.Log;
+import lulewiczg.contentserver.permissions.ResourceHelper;
+import lulewiczg.contentserver.utils.Constants;
+import lulewiczg.contentserver.utils.Log;
 
 /**
- * Filter to validate if user has admin rights.
+ * Filter to validate user permissions to requested resources.
  *
  * @author lulewiczg
  */
-public class AdminFilter implements Filter {
+public class ResourceFilter implements Filter {
 
     /**
      * @see javax.servlet.Filter#destroy()
@@ -37,18 +37,18 @@ public class AdminFilter implements Filter {
      */
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
+        String path = req.getParameter(Constants.Web.PATH);
         HttpSession session = ((HttpServletRequest) req).getSession();
         String user = (String) session.getAttribute(Constants.Web.USER);
-        String requestURI = ((HttpServletRequest) req).getRequestURI();
-        if (user == null || !user.equals(Constants.ADMIN)) {
-            if (!ResourceHelper.getInstance().hasReadAccess(requestURI, user)) {
-                Log.getLog().logAccessDenied(requestURI, session, req);
+        if (path != null) {
+            if (!ResourceHelper.getInstance().hasReadAccess(path, user)) {
+                Log.getLog().logAccessDenied(path, session, req);
                 HttpServletResponse httpResponse = (HttpServletResponse) resp;
                 httpResponse.setStatus(403);
                 return;
             }
         }
-        Log.getLog().logAccessGranted(requestURI, session, req);
+        Log.getLog().logAccessGranted(path, session, req);
         chain.doFilter(req, resp);
     }
 

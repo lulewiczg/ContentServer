@@ -1,4 +1,4 @@
-package lulewiczg.utils.models;
+package lulewiczg.contentserver.utils.models;
 
 import java.util.List;
 

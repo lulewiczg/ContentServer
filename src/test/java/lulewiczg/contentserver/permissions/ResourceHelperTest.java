@@ -1,10 +1,12 @@
-package lulewiczg.permissions;
+package lulewiczg.contentserver.permissions;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
+
+import lulewiczg.contentserver.permissions.ResourceHelper;
 
 public class ResourceHelperTest {
 

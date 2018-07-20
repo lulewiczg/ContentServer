@@ -1,4 +1,4 @@
-package lulewiczg.web.servlets;
+package lulewiczg.contentserver.web.servlets;
 
 import java.io.IOException;
 
@@ -7,23 +7,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import lulewiczg.contentserver.permissions.ResourceHelper;
+
 /**
- * Servlet obtainig app location.
+ * Servlet context resolution.
  *
  * @author lulewiczg
  */
-public class RootServlet extends HttpServlet {
+public class ContextServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Returns currenly logged user.
+     * Returns web app location.
      *
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().write(getServletContext().getRealPath("/"));
+        resp.getWriter().write(ResourceHelper.normalizePath(getServletContext().getRealPath("/")));
     }
-
 }

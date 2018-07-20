@@ -1,4 +1,4 @@
-package lulewiczg.utils.models;
+package lulewiczg.contentserver.utils.models;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import lulewiczg.utils.Constants;
-import lulewiczg.utils.PathComparator;
+import lulewiczg.contentserver.utils.Constants;
+import lulewiczg.contentserver.utils.PathComparator;
 
 /**
  * Represents direcory.

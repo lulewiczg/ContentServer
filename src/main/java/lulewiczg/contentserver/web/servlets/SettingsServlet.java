@@ -1,4 +1,4 @@
-package lulewiczg.web.servlets;
+package lulewiczg.contentserver.web.servlets;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,10 +13,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import lulewiczg.permissions.ResourceHelper;
-import lulewiczg.utils.Constants;
-import lulewiczg.utils.Log;
-import lulewiczg.utils.models.Setting;
+import lulewiczg.contentserver.permissions.ResourceHelper;
+import lulewiczg.contentserver.utils.Constants;
+import lulewiczg.contentserver.utils.Log;
+import lulewiczg.contentserver.utils.models.Setting;
 
 /**
  * Servlet for settings.
