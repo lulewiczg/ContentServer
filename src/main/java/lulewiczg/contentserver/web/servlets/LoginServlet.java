@@ -29,6 +29,7 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
+        resp.setContentType(Constants.Setting.PLAIN_TEXT);
         String user = (String) session.getAttribute(Constants.Web.USER);
         if (user != null) {
             resp.getWriter().write(user);
@@ -43,6 +44,7 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
+        resp.setContentType(Constants.Setting.PLAIN_TEXT);
         String user = (String) session.getAttribute(Constants.Web.USER);
         if (user != null) {
             resp.setStatus(403);

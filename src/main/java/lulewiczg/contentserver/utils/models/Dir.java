@@ -8,21 +8,29 @@ import java.util.List;
 
 import lulewiczg.contentserver.utils.Constants;
 import lulewiczg.contentserver.utils.PathComparator;
+import lulewiczg.contentserver.utils.json.JSONModel;
+import lulewiczg.contentserver.utils.json.JSONProperty;
 
 /**
  * Represents direcory.
  *
  * @author lulewiczg
  */
-public class Dir {
+public class Dir extends JSONModel<Dir> {
     private static final String[] UNITS = { "B", "KB", "MB", "GB", "TB" };
 
+    @JSONProperty(propertyName = "name")
     private String name;
 
-    private long size;
+    private long sizeLong;
 
+    @JSONProperty(propertyName = "size")
+    private String size;
+
+    @JSONProperty(propertyName = "path")
     private String path;
 
+    @JSONProperty(propertyName = "file", quoted = false)
     private boolean file;
 
     public String getName() {
@@ -32,21 +40,18 @@ public class Dir {
     public Dir(String name, long size, String path, boolean file) {
         super();
         this.name = name;
-        this.size = size;
+        this.sizeLong = size;
         this.path = path;
         this.file = file;
+        this.size = formatSize();
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public long getSize() {
+    public String getSize() {
         return size;
-    }
-
-    public void setSize(long size) {
-        this.size = size;
     }
 
     public String getPath() {
@@ -58,41 +63,18 @@ public class Dir {
     }
 
     /**
-     * Transforms directories to JSON
-     *
-     * @param dirs
-     *            directories
-     * @return JSON
-     */
-    public static String toJSON(List<Dir> dirs) {
-        String s = "[";
-        boolean first = true;
-        for (Dir dir : dirs) {
-            if (!first) {
-                s += ",";
-            }
-            String obj = String.format("{\"name\": \"%s\",\"path\": \"%s\", \"size\": \"%s\", \"file\": \"%s\"}", dir.name,
-                    dir.path, formatSize(dir), dir.file);
-            s += obj;
-            first = false;
-        }
-        s += "]";
-        return s;
-    }
-
-    /**
      * Formats file size.
      *
      * @param dir
      *            directory
      * @return formatted size
      */
-    private static String formatSize(Dir dir) {
-        if (!dir.isFile()) {
+    private String formatSize() {
+        if (!file) {
             return "";
         }
         int unit = 0;
-        double len = dir.size;
+        double len = sizeLong;
         while (len > 1024f) {
             len /= 1024f;
             unit++;
@@ -143,4 +125,9 @@ public class Dir {
     public void setFile(boolean file) {
         this.file = file;
     }
+
+    public long getSizeLong() {
+        return sizeLong;
+    }
+
 }

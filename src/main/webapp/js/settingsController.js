@@ -1,8 +1,8 @@
 angular.module('app').controller('settingsController', function($http, $scope, items, $modal, $modalInstance) {
-    $scope.user = items;
+    $scope.appName = items;
     $scope.settings = [];
     $scope.init = function() {
-        $.get('rest/settings', function(result) {
+        $.get($scope.appName + 'rest/settings', function(result) {
             $scope.settings = result;
             $('.modal-body').click();
         }).error(function() {
@@ -26,7 +26,7 @@ angular.module('app').controller('settingsController', function($http, $scope, i
                 'value' : $scope.settingsForm[i].$modelValue
             })
         });
-        $.post('rest/settings', result, function(result) {
+        $.post($scope.appName + 'rest/settings', result, function(result) {
             alert("OK");
         }).error(function() {
             alert("Błont")

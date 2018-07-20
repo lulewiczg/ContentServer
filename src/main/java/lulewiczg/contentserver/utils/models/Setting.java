@@ -1,14 +1,17 @@
 package lulewiczg.contentserver.utils.models;
 
-import java.util.List;
+import lulewiczg.contentserver.utils.json.JSONModel;
+import lulewiczg.contentserver.utils.json.JSONProperty;
 
 /**
  * Model for settings..
  */
-public class Setting implements Comparable<Setting> {
+public class Setting extends JSONModel<Setting> implements Comparable<Setting> {
 
+    @JSONProperty(propertyName = "name")
     private String name;
 
+    @JSONProperty(propertyName = "value")
     private Object value;
 
     public Setting(String name, Object value) {
@@ -19,28 +22,6 @@ public class Setting implements Comparable<Setting> {
     @Override
     public String toString() {
         return String.format("%s = %s", name, value);
-    }
-
-    /**
-     * Generates JSON
-     *
-     * @param list
-     *            permissions
-     * @return JSON
-     */
-    public static String toJSON(List<Setting> list) {
-        String s = "[";
-        boolean first = true;
-        for (Setting p : list) {
-            if (!first) {
-                s += ",";
-            }
-            String obj = String.format("{\"name\": \"%s\",\"value\": \"%s\"}", p.name, p.value);
-            s += obj;
-            first = false;
-        }
-        s += "]";
-        return s;
     }
 
     public String getName() {

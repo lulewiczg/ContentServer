@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import lulewiczg.contentserver.permissions.ResourceHelper;
+import lulewiczg.contentserver.utils.Constants;
 
 /**
  * Servlet context resolution.
@@ -25,6 +26,7 @@ public class ContextServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType(Constants.Setting.PLAIN_TEXT);
         resp.getWriter().write(ResourceHelper.normalizePath(getServletContext().getRealPath("/")));
     }
 }

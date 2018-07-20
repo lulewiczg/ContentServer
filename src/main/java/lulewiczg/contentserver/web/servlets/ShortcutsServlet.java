@@ -2,6 +2,7 @@ package lulewiczg.contentserver.web.servlets;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import lulewiczg.contentserver.permissions.ResourceHelper;
 import lulewiczg.contentserver.utils.Constants;
+import lulewiczg.contentserver.utils.json.JSONModel;
 
 /**
  * Servlet for shortcuts.
@@ -33,21 +35,14 @@ public class ShortcutsServlet extends HttpServlet {
         resp.setCharacterEncoding(Constants.Setting.UTF8);
         if (path == null) {
             List<String> dmz = ResourceHelper.getInstance().getAvailablePaths(user);
-            String json = "[";
-            boolean first = true;
+            List<String> dirs = new ArrayList<>();
             for (String s : dmz) {
-                if (!new File(s).exists()) {
-                    continue;
+                if (new File(s).exists()) {
+                    dirs.add(s);
                 }
-                if (!first) {
-                    json += ",";
-                }
-                json += String.format("\"%s\"", s);
-                first = false;
             }
-            json += "]";
             resp.setContentType(Constants.Setting.APPLICATION_JSON);
-            resp.getWriter().write(json);
+            resp.getWriter().write(JSONModel.toJSONArray(dirs, true));
         } else {
             path = ResourceHelper.normalizePath(path);
             File f = new File(path);
@@ -60,6 +55,7 @@ public class ShortcutsServlet extends HttpServlet {
                 }
             }
             resp.setStatus(200);
+            resp.setContentType(Constants.Setting.PLAIN_TEXT);
             resp.getWriter().write(String.valueOf(counter));
         }
     }

@@ -35,6 +35,7 @@ public class SettingsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setCharacterEncoding(Constants.Setting.UTF8);
+        resp.setContentType(Constants.Setting.PLAIN_TEXT);
         Properties props = ResourceHelper.getInstance().getSettingsProperties();
         List<Setting> settings = new ArrayList<>();
         for (Entry<Object, Object> e : props.entrySet()) {
@@ -42,7 +43,7 @@ public class SettingsServlet extends HttpServlet {
         }
         resp.setContentType(Constants.Setting.APPLICATION_JSON);
         Collections.sort(settings);
-        resp.getWriter().write(Setting.toJSON(settings));
+        resp.getWriter().write(Setting.toJSONList(settings));
     }
 
     /**

@@ -43,6 +43,7 @@ public final class Constants {
         public static final String EXTENDS = "extends";
         public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
         public static final String APPLICATION_JSON = "application/json";
+        public static final String PLAIN_TEXT = "text/plain";
         public static final String UTF8 = "UTF-8";
 
     }

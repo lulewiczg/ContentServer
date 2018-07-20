@@ -39,10 +39,10 @@ public class ResourceServlet extends HttpServlet {
         response.setCharacterEncoding(Constants.Setting.UTF8);
         String path = request.getParameter(Constants.Web.PATH);
         if (path == null) {
-            path = ResourceHelper.normalizePath(path);
             response.setStatus(404);
             return;
         }
+        path = ResourceHelper.normalizePath(path);
         File f = new File(path);
         if (!f.exists()) {
             response.setStatus(404);
@@ -70,7 +70,7 @@ public class ResourceServlet extends HttpServlet {
     private void listDirJSON(HttpServletRequest request, HttpServletResponse response, File f) throws IOException {
         List<Dir> files = Dir.getFiles(f);
         response.setContentType(Setting.APPLICATION_JSON);
-        String json = Dir.toJSON(files);
+        String json = Dir.toJSONList(files);
         response.getWriter().write(json);
     }
 

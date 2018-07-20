@@ -1,7 +1,7 @@
 angular.module('app').controller('loginController', function($http, $scope, items, $modal, $modalInstance) {
-    $scope.user = items;
+    $scope.appName = items;
     $scope.login = function() {
-        $.post('rest/login', $scope.data, function(result) {
+        $.post($scope.appName + 'rest/login', $scope.data, function(result) {
             $scope.user = result;
             $scope.close();
         }).error(function() {
