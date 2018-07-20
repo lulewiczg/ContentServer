@@ -27,6 +27,9 @@ angular.module('app').controller("fileController", function($http, $location, $s
             $scope.admin = true;
             $http.get($scope.appName + 'rest/context').then(function(result) {
                 $scope.context = result.data;
+                if (!$scope.context.endsWith('/')) {
+                    $scope.context += '/';
+                }
             }, function(result) {
                 alert("Nie można pobrać kontekstu!");
                 console.log(result);

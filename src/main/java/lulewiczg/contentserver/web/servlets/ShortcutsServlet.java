@@ -32,6 +32,7 @@ public class ShortcutsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String user = (String) req.getSession().getAttribute(Constants.Web.USER);
         String path = req.getParameter(Constants.Web.PATH);
+        path = ResourceHelper.decodeParam(path);
         resp.setCharacterEncoding(Constants.Setting.UTF8);
         if (path == null) {
             List<String> dmz = ResourceHelper.getInstance().getAvailablePaths(user);

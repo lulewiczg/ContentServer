@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ public class ResourceHelper {
     private Properties settingsProperties;
     private Properties permissionsProperties;
     private String path;
+    private static boolean encode;
 
     public static ResourceHelper getInstance() {
         return instance;
@@ -58,6 +60,7 @@ public class ResourceHelper {
 
     public static synchronized void init(ServletContext context) {
         String path = context.getRealPath(Constants.SEP);
+        encode = context.getServerInfo().toLowerCase().contains("tomcat");
         init(path);
     }
 
@@ -453,5 +456,20 @@ public class ResourceHelper {
      */
     public static String normalizePath(String path) {
         return path.replace("\\", Constants.SEP);
+    }
+
+    /**
+     * Converts parameter to UTF8 if run on Tomcat.
+     *
+     * @param param
+     *            param
+     * @return UTF8 param
+     */
+    public static String decodeParam(String param) {
+        if (!encode || param == null) {
+            return param;
+        }
+        byte[] bytes = param.getBytes(StandardCharsets.ISO_8859_1);
+        return new String(bytes, StandardCharsets.UTF_8);
     }
 }

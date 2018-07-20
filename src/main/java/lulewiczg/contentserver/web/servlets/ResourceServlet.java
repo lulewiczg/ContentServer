@@ -36,8 +36,8 @@ public class ResourceServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setCharacterEncoding(Constants.Setting.UTF8);
         String path = request.getParameter(Constants.Web.PATH);
+        path = ResourceHelper.decodeParam(path);
         if (path == null) {
             response.setStatus(404);
             return;
