@@ -28,6 +28,14 @@ public final class Constants {
             public static final String EXPIRES = "Expires";
             public static final String APPLICATION_FORCE_DOWNLOAD = "application/force-download";
         }
+
+        public static class Errors {
+            public static final String ACCESS_DENIED_TO = "Access denied to \"%s\"";
+            public static final String NOT_FOUND = "Resource \"%s\" not found";
+            public static final String USER_ALREADY_LOGGED = "User already logged in";
+            public static final String INVALID_CREDENTIALS = "Invalid user or password";
+
+        }
     }
 
     /**

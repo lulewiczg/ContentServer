@@ -44,7 +44,7 @@ public class AdminFilter implements Filter {
             if (!ResourceHelper.getInstance().hasReadAccess(requestURI, user)) {
                 Log.getLog().logAccessDenied(requestURI, session, req);
                 HttpServletResponse httpResponse = (HttpServletResponse) resp;
-                httpResponse.setStatus(403);
+                httpResponse.sendError(403, String.format(Constants.Web.Errors.ACCESS_DENIED_TO, requestURI));
                 return;
             }
         }

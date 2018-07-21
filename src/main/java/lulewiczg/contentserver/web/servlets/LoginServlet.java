@@ -47,12 +47,12 @@ public class LoginServlet extends HttpServlet {
         resp.setContentType(Constants.Setting.PLAIN_TEXT);
         String user = (String) session.getAttribute(Constants.Web.USER);
         if (user != null) {
-            resp.setStatus(403);
+            resp.sendError(403, Constants.Web.Errors.USER_ALREADY_LOGGED);
         } else {
             String login = req.getParameter(Constants.Web.LOGIN);
             String password = req.getParameter(Constants.Web.PASSWORD);
             if (login == null || password == null) {
-                resp.setStatus(401);
+                resp.sendError(401, Constants.Web.Errors.INVALID_CREDENTIALS);
                 return;
             }
             try {
@@ -61,7 +61,7 @@ public class LoginServlet extends HttpServlet {
                 resp.getWriter().write(login);
             } catch (Exception e) {
                 Log.getLog().log(e);
-                resp.setStatus(401);
+                resp.sendError(401, Constants.Web.Errors.INVALID_CREDENTIALS);
             }
         }
     }

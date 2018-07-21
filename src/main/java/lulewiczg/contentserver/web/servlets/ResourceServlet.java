@@ -39,13 +39,13 @@ public class ResourceServlet extends HttpServlet {
         String path = request.getParameter(Constants.Web.PATH);
         path = ResourceHelper.decodeParam(path);
         if (path == null) {
-            response.setStatus(404);
+            response.sendError(404, String.format(Constants.Web.Errors.NOT_FOUND, path));
             return;
         }
         path = ResourceHelper.normalizePath(path);
         File f = new File(path);
         if (!f.exists()) {
-            response.setStatus(404);
+            response.sendError(404, String.format(Constants.Web.Errors.NOT_FOUND, path));
             return;
         }
         if (f.isDirectory()) {

@@ -44,7 +44,7 @@ public class ResourceFilter implements Filter {
             if (!ResourceHelper.getInstance().hasReadAccess(path, user)) {
                 Log.getLog().logAccessDenied(path, session, req);
                 HttpServletResponse httpResponse = (HttpServletResponse) resp;
-                httpResponse.setStatus(403);
+                httpResponse.sendError(403, String.format(Constants.Web.Errors.ACCESS_DENIED_TO, path));
                 return;
             }
         }

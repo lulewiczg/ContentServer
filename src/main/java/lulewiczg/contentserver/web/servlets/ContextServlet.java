@@ -11,7 +11,7 @@ import lulewiczg.contentserver.permissions.ResourceHelper;
 import lulewiczg.contentserver.utils.Constants;
 
 /**
- * Servlet context resolution.
+ * Servlet for context resolution.
  *
  * @author lulewiczg
  */
