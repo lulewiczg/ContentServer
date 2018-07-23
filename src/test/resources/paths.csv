@@ -1,0 +1,8 @@
+"C:/test/test/test",							"C:/test/test/test"
+"C:\test/test\test\",							"C:/test/test/test/"
+"C:\\test//test\\test\\",						"C:/test/test/test/"
+"C:\\test//test\\test",							"C:/test/test/test"
+"/a/b/c/d/e/f//////////g",						"/a/b/c/d/e/f/g"
+"\a\b\c\d\e\f\\\\\\\\\\g",						"/a/b/c/d/e/f/g"
+"a/b/c/1/2/334/",								"a/b/c/1/2/334/"
+"a\b/c/1/2\334/",								"a/b/c/1/2/334/"

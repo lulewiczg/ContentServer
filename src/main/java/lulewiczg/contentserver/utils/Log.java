@@ -54,9 +54,9 @@ public class Log {
      */
     public static synchronized Log getLog() {
         if (instance == null || log.getLevel() == Level.OFF) {
-            return instance;
+            return DUMMY_LOG;
         }
-        return DUMMY_LOG;
+        return instance;
     }
 
     /**

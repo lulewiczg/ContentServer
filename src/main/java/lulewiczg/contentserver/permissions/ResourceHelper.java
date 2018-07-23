@@ -328,7 +328,7 @@ public class ResourceHelper {
      *            text to hash
      * @return hashed string
      */
-    public String SHA1(String text) {
+    public static String SHA1(String text) {
         byte[] textBytes;
         MessageDigest md;
         try {
@@ -456,7 +456,7 @@ public class ResourceHelper {
      * @return normalized path
      */
     public static String normalizePath(String path) {
-        return path.replace("\\", Constants.SEP);
+        return path.replaceAll("\\\\+", Constants.SEP).replaceAll(String.format("\\%s+", Constants.SEP), Constants.SEP);
     }
 
     /**
