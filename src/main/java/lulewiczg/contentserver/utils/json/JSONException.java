@@ -13,6 +13,10 @@ public class JSONException extends IOException {
         super(e);
     }
 
+    public JSONException(String string) {
+        super(string);
+    }
+
     private static final long serialVersionUID = 1L;
 
 }

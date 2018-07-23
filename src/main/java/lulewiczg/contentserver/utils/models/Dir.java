@@ -30,7 +30,7 @@ public class Dir extends JSONModel<Dir> {
     @JSONProperty(propertyName = "path")
     private String path;
 
-    @JSONProperty(propertyName = "file", quoted = false)
+    @JSONProperty(propertyName = "file")
     private boolean file;
 
     public String getName() {

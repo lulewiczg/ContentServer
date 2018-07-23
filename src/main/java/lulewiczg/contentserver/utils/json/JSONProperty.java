@@ -6,7 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to indicate if field should be serialized to JSON. Should be used with {@link JSONModel}.
+ * Annotation to indicate if field should be serialized to JSON. Should be used
+ * with {@link JSONModel}.
  *
  * @author Grzegorz
  */
@@ -16,5 +17,5 @@ public @interface JSONProperty {
 
     String propertyName();
 
-    boolean quoted() default true;
+    boolean quoted() default false;
 }

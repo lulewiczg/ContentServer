@@ -1,0 +1,7 @@
+{
+	"intsArr": [1, 2, 3],
+	"strArr": ["a", "b", "c"],
+	"intList": [4, 5, 6],
+	"strList": ["d", "e", "f"],
+	"map": {}
+}

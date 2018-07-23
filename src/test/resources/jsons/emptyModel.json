@@ -1,0 +1,11 @@
+{
+	"int1": 0,
+	"int2": null,
+	"string": null,
+	"bool": false,
+	"byte": 0,
+	"inner": {
+		"innerStr": null,
+		"innerInt": 0
+	}
+}

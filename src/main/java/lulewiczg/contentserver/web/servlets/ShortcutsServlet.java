@@ -26,7 +26,8 @@ public class ShortcutsServlet extends HttpServlet {
     /**
      * Returns available shortcuts for user.
      *
-     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest,
+     *      javax.servlet.http.HttpServletResponse)
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -43,7 +44,7 @@ public class ShortcutsServlet extends HttpServlet {
                 }
             }
             resp.setContentType(Constants.Setting.APPLICATION_JSON);
-            resp.getWriter().write(JSONModel.toJSONArray(dirs, true));
+            resp.getWriter().write(JSONModel.toJSONArray(dirs));
         } else {
             path = ResourceHelper.normalizePath(path);
             File f = new File(path);

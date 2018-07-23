@@ -4,10 +4,12 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
- * Abstract model represent JSON object. To add field to JSON result, use {@link JSONProperty}.
+ * Abstract model represent JSON object. To add field to JSON result, use
+ * {@link JSONProperty}.
  *
  * @author Grzegorz
  */
@@ -38,12 +40,20 @@ public abstract class JSONModel<T> {
         return builder.toString();
     }
 
-    public static String toJSONArray(List<?> objs, boolean qoute) throws JSONException {
+    /**
+     * Creates JSON array out of objects
+     * 
+     * @param objs
+     *            objects
+     * @return string JSON array
+     * @throws JSONException
+     *             the JSONException
+     */
+    public static String toJSONArray(List<?> objs) throws JSONException {
         StringBuilder builder = new StringBuilder();
         builder.append(ARR_OPEN_CHAR);
         for (Object obj : objs) {
-            String string = qoute ? String.format("\"%s\"", obj.toString()) : obj.toString();
-            builder.append(string).append(DELIM);
+            builder.append(JSONUtil.toString(obj)).append(DELIM);
         }
         deleteLastDelim(builder);
         builder.append(ARR_CLOSE_CHAR);
@@ -66,13 +76,16 @@ public abstract class JSONModel<T> {
     public String toJSON() throws JSONException {
         Field[] declaredFields = getClass().getDeclaredFields();
         List<JSONPropertyModel> fieldsToSerialize = getFieldsToSerialize(declaredFields);
+        if (new HashSet<>(fieldsToSerialize).size() != fieldsToSerialize.size()) {
+            throw new JSONException("Duplicated fields found!");
+        }
         StringBuilder builder = new StringBuilder();
         builder.append(OPEN_CHAR);
         for (JSONPropertyModel prop : fieldsToSerialize) {
             builder.append(prop.toString()).append(DELIM);
         }
         deleteLastDelim(builder);
-        builder.append(CLOSE_CHAR);
+        builder.append("\n").append(CLOSE_CHAR);
         return builder.toString();
     }
 
@@ -84,7 +97,8 @@ public abstract class JSONModel<T> {
                 try {
                     Method declaredMethod = getClass().getDeclaredMethod(buildGetterName(f));
                     Object value = declaredMethod.invoke(this);
-                    serializableProps.add(new JSONPropertyModel(f.getName(), value, prop.quoted()));
+                    serializableProps.add(new JSONPropertyModel(prop.propertyName(), value,
+                            value instanceof String || prop.quoted()));
                 } catch (ReflectiveOperationException e) {
                     throw new JSONException(e);
                 }

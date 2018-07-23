@@ -1,0 +1,11 @@
+{
+	"int1": 123,
+	"int2": 321,
+	"string": "asdasd'    asd 'asdadsad\"\t\nsdfsdf\"123123",
+	"bool": true,
+	"byte": 127,
+	"inner": {
+		"innerStr": "inner",
+		"innerInt": 999
+	}
+}
