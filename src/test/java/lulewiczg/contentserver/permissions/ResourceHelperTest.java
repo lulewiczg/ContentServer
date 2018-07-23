@@ -6,8 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
-import lulewiczg.contentserver.permissions.ResourceHelper;
-
 public class ResourceHelperTest {
 
     private static final String DESC = "''{0}'' should {1} have access to ''{2}''";

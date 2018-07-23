@@ -55,7 +55,7 @@ public class ResourceHelper {
 
     public static synchronized void init(String path) {
         instance = new ResourceHelper(path);
-        Log.getLog().setLevel(instance.logLevel);
+        Log.setLevel(instance.logLevel);
     }
 
     public static synchronized void init(ServletContext context) {
@@ -344,7 +344,8 @@ public class ResourceHelper {
     }
 
     /**
-     * Normalizes paths to avoid duplicates and to set permissions for the shortest path as possible.
+     * Normalizes paths to avoid duplicates and to set permissions for the shortest
+     * path as possible.
      *
      * @param list
      *            paths to normalize

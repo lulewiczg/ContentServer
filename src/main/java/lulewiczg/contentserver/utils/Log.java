@@ -19,6 +19,7 @@ import javax.servlet.http.HttpSession;
  */
 public class Log {
     public static final String LOG_LOCATION = "/WEB-INF/logs/log.txt";
+    private static final Log DUMMY_LOG = new DummyLog();
     private static Log instance;
     private static final Logger log = Logger.getLogger("Log");
     static {
@@ -43,13 +44,19 @@ public class Log {
         }
     }
 
+    Log() {
+    }
+
     /**
      * Obtains logger.
      *
      * @return logger
      */
     public static synchronized Log getLog() {
-        return instance;
+        if (instance == null || log.getLevel() == Level.OFF) {
+            return instance;
+        }
+        return DUMMY_LOG;
     }
 
     /**
@@ -148,7 +155,7 @@ public class Log {
         }
     }
 
-    public void setLevel(Level level) {
+    public static void setLevel(Level level) {
         log.setLevel(level);
     }
 }
