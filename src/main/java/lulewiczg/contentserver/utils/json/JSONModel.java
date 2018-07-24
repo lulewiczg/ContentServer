@@ -22,25 +22,6 @@ public abstract class JSONModel<T> {
     private static final String OPEN_CHAR = "{";
 
     /**
-     * Generates JSON from entities list
-     *
-     * @param list
-     *            entities
-     * @return JSON
-     * @throws JSONException
-     */
-    public static String toJSONList(List<? extends JSONModel<?>> entities) throws JSONException {
-        StringBuilder builder = new StringBuilder();
-        builder.append(ARR_OPEN_CHAR);
-        for (JSONModel<?> model : entities) {
-            builder.append(model.toJSON()).append(DELIM);
-        }
-        deleteLastDelim(builder);
-        builder.append(ARR_CLOSE_CHAR);
-        return builder.toString();
-    }
-
-    /**
      * Creates JSON array out of objects
      * 
      * @param objs

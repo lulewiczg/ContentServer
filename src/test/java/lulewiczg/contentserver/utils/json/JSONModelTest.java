@@ -81,6 +81,15 @@ public class JSONModelTest {
         Assert.assertEquals(new JSONArray(data).toString(), new JSONArray(jsonArray).toString());
     }
 
+    @Test
+    @DisplayName("Array with JSON objects")
+    public void testJSONObjectArrays() throws IOException {
+        String json = new TestModel().toJSON();
+        String data = String.format("[%s, %s, %s]", json, json, json);
+        String jsonArray = JSONModel.toJSONArray(Arrays.asList(new TestModel(), new TestModel(), new TestModel()));
+        Assert.assertEquals(new JSONArray(data).toString(), new JSONArray(jsonArray).toString());
+    }
+
     /**
      * Loads JSON from file
      * 

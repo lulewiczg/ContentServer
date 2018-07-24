@@ -30,7 +30,8 @@ public class SettingsServlet extends HttpServlet {
     /**
      * Returns current application settings
      *
-     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest,
+     *      javax.servlet.http.HttpServletResponse)
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -43,11 +44,12 @@ public class SettingsServlet extends HttpServlet {
         }
         resp.setContentType(Constants.Setting.APPLICATION_JSON);
         Collections.sort(settings);
-        resp.getWriter().write(Setting.toJSONList(settings));
+        resp.getWriter().write(Setting.toJSONArray(settings));
     }
 
     /**
-     * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest,
+     *      javax.servlet.http.HttpServletResponse)
      */
     @Override
     @SuppressWarnings("unchecked")

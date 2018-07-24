@@ -70,7 +70,7 @@ public class ResourceServlet extends HttpServlet {
     private void listDirJSON(HttpServletRequest request, HttpServletResponse response, File f) throws IOException {
         List<Dir> files = Dir.getFiles(f);
         response.setContentType(Setting.APPLICATION_JSON);
-        String json = Dir.toJSONList(files);
+        String json = Dir.toJSONArray(files);
         response.getWriter().write(json);
     }
 
