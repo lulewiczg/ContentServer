@@ -75,11 +75,15 @@ public class Dir extends JSONModel<Dir> implements Comparable<Dir> {
         }
         int unit = 0;
         double len = sizeLong;
-        while (len > 1024f) {
+        while (len >= 1024f) {
             len /= 1024f;
             unit++;
         }
-        return String.format("%.2f %s", len, UNITS[unit]);
+        if ((int) len == len || String.format("%.2f", len).endsWith(",00")) {
+            return String.format("%d %s", (int) len, UNITS[unit]);
+        } else {
+            return String.format("%.2f %s", len, UNITS[unit]);
+        }
     }
 
     /**
