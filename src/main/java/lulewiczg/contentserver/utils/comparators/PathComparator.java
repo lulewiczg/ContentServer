@@ -1,11 +1,8 @@
 package lulewiczg.contentserver.utils.comparators;
 
-import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 import lulewiczg.contentserver.utils.Constants;
 import lulewiczg.contentserver.utils.models.Dir;
@@ -20,7 +17,6 @@ public class PathComparator implements Comparator<Dir> {
 
     private static final String NUMS_REGEX = "[\\D\\/]+";
     private static final String STRS_REGEX = "[\\d\\/]+";
-    private static final Collator collator = Collator.getInstance(new Locale("pl", "PL"));
 
     /**
      * Sorts directories in alphabetical order, but folders first.
@@ -32,8 +28,8 @@ public class PathComparator implements Comparator<Dir> {
         String s1 = dir1.getName().toLowerCase();
         String s2 = dir2.getName().toLowerCase();
 
-        List<?> split = split(s1);
-        List<?> split2 = split(s2);
+        List<ArgWrapper<? extends Comparable<?>>> split = split(s1);
+        List<ArgWrapper<? extends Comparable<?>>> split2 = split(s2);
 
         if (s1.endsWith(Constants.SEP) && !s2.endsWith(Constants.SEP)) {
             return -1;
@@ -43,13 +39,9 @@ public class PathComparator implements Comparator<Dir> {
         int result = 0;
         int min = Math.min(split.size(), split2.size());
         for (int i = 0; i < min; i++) {
-            Object o1 = split.get(i);
-            Object o2 = split2.get(i);
-            if (o1 instanceof Integer || o2 instanceof Integer) {
-                result = new NumberToStringComparator().compare(o1.toString(), o2.toString());
-            } else {
-                result = collator.compare(s1, s2);
-            }
+            ArgWrapper<? extends Comparable<?>> o1 = split.get(i);
+            ArgWrapper<? extends Comparable<?>> o2 = split2.get(i);
+            result = o1.compareTo(o2);
             if (result != 0) {
                 break;
             }
@@ -64,43 +56,41 @@ public class PathComparator implements Comparator<Dir> {
      *            string
      * @return splitted string
      */
-    private List<?> split(String s1) {
-        String[] split1 = s1.split("[\\d\\/]+");
-        String[] split2 = s1.split("[\\D\\/]+");
-        System.out.println(s1 + "    " + Arrays.asList(split1) + "     " + Arrays.asList(split2));
-        boolean emptyNums = false;
-        if (split1.length > 0 && split1[0].isEmpty()) {
-            split1 = Arrays.copyOfRange(split1, 1, split1.length);
-            emptyNums = false;
+    private List<ArgWrapper<? extends Comparable<?>>> split(String s1) {
+        String[] split1 = s1.split(STRS_REGEX);
+        String[] split2 = s1.split(NUMS_REGEX);
+        boolean numsFirst = numsFirst(split1, split2);
+        List<ArgWrapper<? extends Comparable<?>>> stringList = buildStringList(split1);
+        List<ArgWrapper<? extends Comparable<?>>> intList = buildIntList(split2);
+
+        List<ArgWrapper<? extends Comparable<?>>> merged = new ArrayList<>();
+        int min = Math.min(stringList.size(), intList.size());
+        int max = Math.max(stringList.size(), intList.size());
+
+        List<ArgWrapper<? extends Comparable<?>>> list1;
+        List<ArgWrapper<? extends Comparable<?>>> list2;
+        if (numsFirst) {
+            list1 = stringList;
+            list2 = intList;
+        } else {
+            list1 = intList;
+            list2 = stringList;
         }
-        if (split2.length > 0 && split2[0].isEmpty()) {
-            split2 = Arrays.copyOfRange(split2, 1, split2.length);
-            emptyNums = true;
-        }
-        List<Object> list = new ArrayList<>();
-        int min = Math.min(split1.length, split2.length);
-        int max = Math.max(split1.length, split2.length);
         for (int i = 0; i < min; i++) {
-            if (emptyNums) {
-                list.add(split1[i]);
-                list.add(Integer.parseInt(split2[i]));
-            } else {
-                list.add(Integer.parseInt(split2[i]));
-                list.add(split1[i]);
+            merged.add(list1.get(i));
+            merged.add(list2.get(i));
+        }
+        if (list1.size() > list2.size()) {
+            for (int i = min; i < max; i++) {
+                merged.add(list1.get(i));
+            }
+        } else {
+            for (int i = min; i < max; i++) {
+                merged.add(list2.get(i));
             }
         }
-        if (min != max) {
-            if (split1.length > split2.length) {
-                for (int i = min; i < max; i++) {
-                    list.add(split1[i]);
-                }
-            } else {
-                for (int i = min; i < max; i++) {
-                    list.add(Integer.parseInt(split2[i]));
-                }
-            }
-        }
-        return list;
+        return merged;
+
     }
 
     /**
@@ -128,13 +118,13 @@ public class PathComparator implements Comparator<Dir> {
      *            splitted String
      * @return wrappers
      */
-    private List<ArgWrapper<?>> buildStringList(String[] split) {
-        List<ArgWrapper<?>> wrappers = new ArrayList<>();
+    private List<ArgWrapper<? extends Comparable<?>>> buildStringList(String[] split) {
+        List<ArgWrapper<? extends Comparable<?>>> wrappers = new ArrayList<>();
         for (String s : split) {
             if (s.isEmpty()) {
                 continue;
             }
-            wrappers.add(ArgWrapper.newStringWrapper(s));
+            wrappers.add(ArgWrapper.newStringWrapper(s.trim()));
         }
         return wrappers;
     }
@@ -146,13 +136,13 @@ public class PathComparator implements Comparator<Dir> {
      *            splitted String
      * @return wrappers
      */
-    private List<ArgWrapper<?>> buildIntList(String[] split) {
-        List<ArgWrapper<?>> wrappers = new ArrayList<>();
+    private List<ArgWrapper<? extends Comparable<?>>> buildIntList(String[] split) {
+        List<ArgWrapper<? extends Comparable<?>>> wrappers = new ArrayList<>();
         for (String s : split) {
             if (s.isEmpty()) {
                 continue;
             }
-            wrappers.add(ArgWrapper.newIntWrapper(s));
+            wrappers.add(ArgWrapper.newIntWrapper(s.trim()));
         }
         return wrappers;
     }
