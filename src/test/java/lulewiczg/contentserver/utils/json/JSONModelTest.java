@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +20,7 @@ import lulewiczg.contentserver.models.TestModelEmpty;
 
 /**
  * Tests JSON serialization
- * 
+ *
  * @author lulewiczg
  */
 public class JSONModelTest {
@@ -31,7 +30,7 @@ public class JSONModelTest {
     public void testEmptyModel() throws IOException {
         String json = new TestModelEmpty().toJSON();
         String expected = loadJSON("emptyModel.json");
-        Assert.assertEquals(new JSONObject(expected).toString(), new JSONObject(json).toString());
+        Assertions.assertEquals(new JSONObject(expected).toString(), new JSONObject(json).toString());
     }
 
     @Test
@@ -39,14 +38,13 @@ public class JSONModelTest {
     public void testModel() throws IOException {
         String json = new TestModel().toJSON();
         String expected = loadJSON("model.json");
-        Assert.assertEquals(new JSONObject(expected).toString(), new JSONObject(json).toString());
+        Assertions.assertEquals(new JSONObject(expected).toString(), new JSONObject(json).toString());
     }
 
     @Test
     @DisplayName("Model with collisions serialization")
     public void testModelwithcollisions() throws JSONException {
-        Assertions.assertThrows(JSONException.class, () -> new TestModelCollision().toJSON(),
-                "Duplicated fields found!");
+        Assertions.assertThrows(JSONException.class, () -> new TestModelCollision().toJSON(), "Duplicated fields found!");
     }
 
     @Test
@@ -54,7 +52,7 @@ public class JSONModelTest {
     public void testCollectionsModels() throws IOException {
         String json = new TestModelCollections().toJSON();
         String expected = loadJSON("collectionsModel.json");
-        Assert.assertEquals(new JSONObject(expected).toString(), new JSONObject(json).toString());
+        Assertions.assertEquals(new JSONObject(expected).toString(), new JSONObject(json).toString());
     }
 
     @Test
@@ -62,7 +60,7 @@ public class JSONModelTest {
     public void testEmptyCollectionsModels() throws IOException {
         String json = new TestModelCollectionsEmpty().toJSON();
         String expected = loadJSON("emptyCollectionsModel.json");
-        Assert.assertEquals(new JSONObject(expected).toString(), new JSONObject(json).toString());
+        Assertions.assertEquals(new JSONObject(expected).toString(), new JSONObject(json).toString());
     }
 
     @Test
@@ -70,7 +68,7 @@ public class JSONModelTest {
     public void testPrimitiveArrays() throws IOException {
         int[] data = new int[] { 1, 2, 3, 5, 7 };
         String jsonArray = JSONModel.toJSONArray(Arrays.stream(data).boxed().collect(Collectors.toList()));
-        Assert.assertEquals(new JSONArray(data).toString(), new JSONArray(jsonArray).toString());
+        Assertions.assertEquals(new JSONArray(data).toString(), new JSONArray(jsonArray).toString());
     }
 
     @Test
@@ -78,7 +76,7 @@ public class JSONModelTest {
     public void testStringArrays() throws IOException {
         String[] data = new String[] { "a", "\n\t as,dasda \" asd'' a'das", "ggg" };
         String jsonArray = JSONModel.toJSONArray(Arrays.asList(data));
-        Assert.assertEquals(new JSONArray(data).toString(), new JSONArray(jsonArray).toString());
+        Assertions.assertEquals(new JSONArray(data).toString(), new JSONArray(jsonArray).toString());
     }
 
     @Test
@@ -87,12 +85,12 @@ public class JSONModelTest {
         String json = new TestModel().toJSON();
         String data = String.format("[%s, %s, %s]", json, json, json);
         String jsonArray = JSONModel.toJSONArray(Arrays.asList(new TestModel(), new TestModel(), new TestModel()));
-        Assert.assertEquals(new JSONArray(data).toString(), new JSONArray(jsonArray).toString());
+        Assertions.assertEquals(new JSONArray(data).toString(), new JSONArray(jsonArray).toString());
     }
 
     /**
      * Loads JSON from file
-     * 
+     *
      * @param path
      *            path
      * @return json string
