@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 import lulewiczg.contentserver.utils.Constants;
-import lulewiczg.contentserver.utils.PathComparator;
+import lulewiczg.contentserver.utils.comparators.PathComparator;
 import lulewiczg.contentserver.utils.json.JSONModel;
 import lulewiczg.contentserver.utils.json.JSONProperty;
 
@@ -16,7 +16,7 @@ import lulewiczg.contentserver.utils.json.JSONProperty;
  *
  * @author lulewiczg
  */
-public class Dir extends JSONModel<Dir> {
+public class Dir extends JSONModel<Dir> implements Comparable<Dir> {
     private static final String[] UNITS = { "B", "KB", "MB", "GB", "TB" };
 
     @JSONProperty(propertyName = "name")
@@ -107,7 +107,7 @@ public class Dir extends JSONModel<Dir> {
                 }
                 files.add(new Dir(name, size, file.getCanonicalPath().replace("\\", Constants.SEP), isFile));
             }
-            Collections.sort(files, new PathComparator());
+            Collections.sort(files);
             return files;
         }
         return new ArrayList<>();
@@ -130,4 +130,27 @@ public class Dir extends JSONModel<Dir> {
         return sizeLong;
     }
 
+    /**
+     * Sorts directories in alphabetical order, but folders first.
+     *
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    @Override
+    public int compareTo(Dir dir2) {
+        return new PathComparator().compare(this, dir2);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode() + path.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Dir)) {
+            return false;
+        }
+        Dir dir2 = (Dir) obj;
+        return name.equals(dir2.name) && path.equals(dir2.path);
+    }
 }

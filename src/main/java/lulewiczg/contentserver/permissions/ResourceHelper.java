@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -48,7 +49,6 @@ public class ResourceHelper {
     private Properties permissionsProperties;
     private String path;
     private static boolean encode;
-
     public static ResourceHelper getInstance() {
         return instance;
     }
@@ -473,4 +473,5 @@ public class ResourceHelper {
         byte[] bytes = param.getBytes(StandardCharsets.ISO_8859_1);
         return new String(bytes, StandardCharsets.UTF_8);
     }
+
 }
