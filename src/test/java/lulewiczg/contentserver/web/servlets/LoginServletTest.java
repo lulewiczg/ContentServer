@@ -15,6 +15,11 @@ import org.junit.jupiter.api.Test;
 import lulewiczg.contentserver.test.utils.ServletTestTemplate;
 import lulewiczg.contentserver.utils.Constants;
 
+/**
+ * Tests LoginServlet.
+ * 
+ * @author lulewiczg
+ */
 public class LoginServletTest extends ServletTestTemplate {
 
     private LoginServlet servlet = new LoginServlet();

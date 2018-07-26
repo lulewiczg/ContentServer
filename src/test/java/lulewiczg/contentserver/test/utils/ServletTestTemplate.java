@@ -50,6 +50,18 @@ public abstract class ServletTestTemplate {
 
         when(request.getSession()).thenReturn(session);
         when(response.getWriter()).thenReturn(writer);
+        additionalBefore();
+    }
+
+    /**
+     * Additional logic to perform in @BeforeEach.
+     * 
+     * @throws IOException
+     *             the IOException
+     * @throws ReflectiveOperationException
+     *             the ReflectiveOperationException
+     */
+    protected void additionalBefore() throws IOException, ReflectiveOperationException {
     }
 
     /**
@@ -72,7 +84,8 @@ public abstract class ServletTestTemplate {
     }
 
     /**
-     * Tests if response is 200 and empty and set content type to plain text and with given response.
+     * Tests if response is 200 and empty and set content type to plain text and
+     * with given response.
      *
      * @param responsetxt
      *            response text
@@ -80,6 +93,19 @@ public abstract class ServletTestTemplate {
     protected void verifyOk(String responsetxt) {
         verify(writer, times(1)).write(responsetxt);
         verify(response, times(1)).setContentType(Constants.Setting.PLAIN_TEXT);
+        verify(response, never()).setStatus(anyInt());
+    }
+
+    /**
+     * Tests if response is 200 and empty and set content type to JSON and with
+     * given response.
+     *
+     * @param responsetxt
+     *            response text
+     */
+    protected void verifyOkJSON(String responsetxt) {
+        verify(writer, times(1)).write(responsetxt);
+        verify(response, times(1)).setContentType(Constants.Setting.APPLICATION_JSON);
         verify(response, never()).setStatus(anyInt());
     }
 

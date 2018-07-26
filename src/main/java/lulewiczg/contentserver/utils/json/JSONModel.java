@@ -20,6 +20,8 @@ public abstract class JSONModel<T> {
     private static final String DELIM = ",";
     private static final String CLOSE_CHAR = "}";
     private static final String OPEN_CHAR = "{";
+    public static final String EMPTY_ARR = "[]";
+    public static final String EMPTY_OBJ = "{}";
 
     /**
      * Creates JSON array out of objects

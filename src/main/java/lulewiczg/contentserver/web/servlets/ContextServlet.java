@@ -22,11 +22,16 @@ public class ContextServlet extends HttpServlet {
     /**
      * Returns web app location.
      *
-     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest,
+     *      javax.servlet.http.HttpServletResponse)
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType(Constants.Setting.PLAIN_TEXT);
-        resp.getWriter().write(ResourceHelper.normalizePath(getServletContext().getRealPath("/")));
+        String path = ResourceHelper.normalizePath(getServletContext().getRealPath(Constants.SEP));
+        if (!path.endsWith(Constants.SEP)) {
+            path += Constants.SEP;
+        }
+        resp.getWriter().write(path);
     }
 }

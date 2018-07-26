@@ -12,6 +12,11 @@ import org.junit.jupiter.api.Test;
 import lulewiczg.contentserver.test.utils.ServletTestTemplate;
 import lulewiczg.contentserver.utils.Constants;
 
+/**
+ * Tests LogoutServlet.
+ * 
+ * @author lulewiczg
+ */
 public class LogoutServletTest extends ServletTestTemplate {
 
     private LogoutServlet servlet = new LogoutServlet();
