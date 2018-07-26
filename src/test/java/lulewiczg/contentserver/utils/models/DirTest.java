@@ -40,7 +40,6 @@ public class DirTest {
             exp.add(absolutePath);
         }
         File f = new File(TestUtil.LOC + path);
-        Assertions.assertTrue(f.exists(), "Invalid path");
         List<String> files = Dir.getFiles(f).stream().map(i -> i.getPath()).collect(Collectors.toList());
         Assertions.assertEquals(exp, files);
     }

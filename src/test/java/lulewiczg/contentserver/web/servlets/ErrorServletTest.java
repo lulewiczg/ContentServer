@@ -41,7 +41,7 @@ public class ErrorServletTest extends ServletTestTemplate {
 
         servlet.doGet(request, response);
 
-        verifyOk(buildMsg(404, TEST, TEST2));
+        verifyOk(buildMsg(404, TEST, TEST2 + "\n" + new Exception(TEST2).toString()));
     }
 
     @Test

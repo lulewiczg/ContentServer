@@ -42,8 +42,8 @@ public final class TestUtil {
      * @return absolute expected paths
      */
     public static List<String> parsePaths(String basePath, String expected) {
-        return Arrays.stream(expected.split(COLON)).map(String::trim).map(i -> LOC + basePath + Constants.SEP + i)
-                .collect(Collectors.toList());
+        return Arrays.stream(expected.split(COLON)).map(String::trim).filter(i -> !i.isEmpty())
+                .map(i -> LOC + basePath + Constants.SEP + i).collect(Collectors.toList());
     }
 
     /**
@@ -54,7 +54,7 @@ public final class TestUtil {
      * @return parsed paths
      */
     public static List<Dir> parsePathsPlain(String paths) {
-        return Arrays.stream(paths.split(COLON)).map(String::trim).map(i -> new Dir(i, 0, i, !i.endsWith(Constants.SEP)))
-                .collect(Collectors.toList());
+        return Arrays.stream(paths.split(COLON)).map(String::trim).filter(i -> !i.isEmpty())
+                .map(i -> new Dir(i, 0, i, !i.endsWith(Constants.SEP))).collect(Collectors.toList());
     }
 }

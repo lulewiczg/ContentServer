@@ -14,3 +14,4 @@
 "testContexts/1/",					"WEB-INF/"
 "testContexts/1/WEB-INF/",			"settings/"
 "testContexts/1/WEB-INF/settings/",	"permissions.properties, settings.properties"
+"structure/folder3/folder100",		""

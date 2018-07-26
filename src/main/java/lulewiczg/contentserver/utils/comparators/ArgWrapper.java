@@ -1,11 +1,12 @@
 package lulewiczg.contentserver.utils.comparators;
 
+import java.math.BigDecimal;
 import java.text.Collator;
 import java.util.Locale;
 
 /**
  * Wraps path element for comparator.
- * 
+ *
  * @author lulewiczg
  *
  * @param <T>
@@ -25,7 +26,7 @@ class ArgWrapper<T extends Comparable<T>> implements Comparable<ArgWrapper<? ext
 
     /**
      * Creates wrapper for String value.
-     * 
+     *
      * @param arg
      *            arg
      * @return wrapper
@@ -36,13 +37,13 @@ class ArgWrapper<T extends Comparable<T>> implements Comparable<ArgWrapper<? ext
 
     /**
      * Creates wrapper for int value.
-     * 
+     *
      * @param arg
      *            arg
      * @return wrapper
      */
     public static IntWrapper newIntWrapper(String arg) {
-        Integer val = Integer.parseInt(arg);
+        BigDecimal val = new BigDecimal(arg);
         return new IntWrapper(val);
     }
 
@@ -59,7 +60,7 @@ class ArgWrapper<T extends Comparable<T>> implements Comparable<ArgWrapper<? ext
 
     /**
      * Default argument comparison.
-     * 
+     *
      * @param o
      *            argument to compare
      * @return compare result
@@ -76,12 +77,12 @@ class ArgWrapper<T extends Comparable<T>> implements Comparable<ArgWrapper<? ext
 
     /**
      * Wrapper for ints.
-     * 
+     *
      * @author lulewiczg
      *
      */
-    static class IntWrapper extends ArgWrapper<Integer> {
-        public IntWrapper(int arg) {
+    static class IntWrapper extends ArgWrapper<BigDecimal> {
+        public IntWrapper(BigDecimal arg) {
             super(arg);
         }
 
@@ -89,7 +90,7 @@ class ArgWrapper<T extends Comparable<T>> implements Comparable<ArgWrapper<? ext
 
     /**
      * Wrappers for Strings
-     * 
+     *
      * @author lulewiczg
      *
      */
@@ -102,7 +103,7 @@ class ArgWrapper<T extends Comparable<T>> implements Comparable<ArgWrapper<? ext
 
         /**
          * Compares strings using collator.
-         * 
+         *
          * @see lulewiczg.contentserver.utils.comparators.ArgWrapper#compareArg(lulewiczg.contentserver.utils.comparators.ArgWrapper)
          */
         @Override
