@@ -5,7 +5,7 @@ import java.util.Locale;
 
 /**
  * Wraps path element for comparator.
- * 
+ *
  * @author lulewiczg
  *
  * @param <T>
@@ -25,7 +25,7 @@ class ArgWrapper<T extends Comparable<T>> implements Comparable<ArgWrapper<? ext
 
     /**
      * Creates wrapper for String value.
-     * 
+     *
      * @param arg
      *            arg
      * @return wrapper
@@ -36,13 +36,13 @@ class ArgWrapper<T extends Comparable<T>> implements Comparable<ArgWrapper<? ext
 
     /**
      * Creates wrapper for int value.
-     * 
+     *
      * @param arg
      *            arg
      * @return wrapper
      */
     public static IntWrapper newIntWrapper(String arg) {
-        Integer val = Integer.parseInt(arg);
+        Long val = Long.parseLong(arg);
         return new IntWrapper(val);
     }
 
@@ -59,7 +59,7 @@ class ArgWrapper<T extends Comparable<T>> implements Comparable<ArgWrapper<? ext
 
     /**
      * Default argument comparison.
-     * 
+     *
      * @param o
      *            argument to compare
      * @return compare result
@@ -76,12 +76,12 @@ class ArgWrapper<T extends Comparable<T>> implements Comparable<ArgWrapper<? ext
 
     /**
      * Wrapper for ints.
-     * 
+     *
      * @author lulewiczg
      *
      */
-    static class IntWrapper extends ArgWrapper<Integer> {
-        public IntWrapper(int arg) {
+    static class IntWrapper extends ArgWrapper<Long> {
+        public IntWrapper(long arg) {
             super(arg);
         }
 
@@ -89,7 +89,7 @@ class ArgWrapper<T extends Comparable<T>> implements Comparable<ArgWrapper<? ext
 
     /**
      * Wrappers for Strings
-     * 
+     *
      * @author lulewiczg
      *
      */
@@ -102,7 +102,7 @@ class ArgWrapper<T extends Comparable<T>> implements Comparable<ArgWrapper<? ext
 
         /**
          * Compares strings using collator.
-         * 
+         *
          * @see lulewiczg.contentserver.utils.comparators.ArgWrapper#compareArg(lulewiczg.contentserver.utils.comparators.ArgWrapper)
          */
         @Override
