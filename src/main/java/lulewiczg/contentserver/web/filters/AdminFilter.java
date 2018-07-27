@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import lulewiczg.contentserver.permissions.ResourceHelper;
 import lulewiczg.contentserver.utils.Constants;
 import lulewiczg.contentserver.utils.Log;
 
@@ -33,20 +32,20 @@ public class AdminFilter implements Filter {
     /**
      * Validates permissions.
      *
-     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
+     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest,
+     *      javax.servlet.ServletResponse, javax.servlet.FilterChain)
      */
     @Override
-    public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
+            throws IOException, ServletException {
         HttpSession session = ((HttpServletRequest) req).getSession();
         String user = (String) session.getAttribute(Constants.Web.USER);
         String requestURI = ((HttpServletRequest) req).getRequestURI();
         if (user == null || !user.equals(Constants.ADMIN)) {
-            if (!ResourceHelper.getInstance().hasReadAccess(requestURI, user)) {
-                Log.getLog().logAccessDenied(requestURI, session, req);
-                HttpServletResponse httpResponse = (HttpServletResponse) resp;
-                httpResponse.sendError(403, String.format(Constants.Web.Errors.ACCESS_DENIED_TO, requestURI));
-                return;
-            }
+            Log.getLog().logAccessDenied(requestURI, session, req);
+            HttpServletResponse httpResponse = (HttpServletResponse) resp;
+            httpResponse.sendError(403, String.format(Constants.Web.Errors.ACCESS_DENIED_TO, requestURI));
+            return;
         }
         Log.getLog().logAccessGranted(requestURI, session, req);
         chain.doFilter(req, resp);

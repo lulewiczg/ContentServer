@@ -1,16 +1,17 @@
 package lulewiczg.contentserver.test.utils;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -79,7 +80,7 @@ public abstract class ServletTestTemplate {
      */
     protected void verifyOkPlainTextEmpty() {
         verifyZeroInteractions(writer);
-        verify(response, times(1)).setContentType(Constants.Setting.PLAIN_TEXT);
+        verify(response).setContentType(Constants.Setting.PLAIN_TEXT);
         verify(response, never()).setStatus(anyInt());
     }
 
@@ -91,8 +92,8 @@ public abstract class ServletTestTemplate {
      *            response text
      */
     protected void verifyOk(String responsetxt) {
-        verify(writer, times(1)).write(responsetxt);
-        verify(response, times(1)).setContentType(Constants.Setting.PLAIN_TEXT);
+        verify(writer).write(responsetxt);
+        verify(response).setContentType(Constants.Setting.PLAIN_TEXT);
         verify(response, never()).setStatus(anyInt());
     }
 
@@ -104,8 +105,8 @@ public abstract class ServletTestTemplate {
      *            response text
      */
     protected void verifyOkJSON(String responsetxt) {
-        verify(writer, times(1)).write(responsetxt);
-        verify(response, times(1)).setContentType(Constants.Setting.APPLICATION_JSON);
+        verify(writer).write(responsetxt);
+        verify(response).setContentType(Constants.Setting.APPLICATION_JSON);
         verify(response, never()).setStatus(anyInt());
     }
 
@@ -117,8 +118,33 @@ public abstract class ServletTestTemplate {
      */
     protected void verifyError(int code) {
         verifyZeroInteractions(writer);
-        verify(response, times(1)).setContentType(Constants.Setting.PLAIN_TEXT);
+        verify(response).setContentType(Constants.Setting.PLAIN_TEXT);
         verify(response, never()).setStatus(Matchers.eq(code));
+    }
+
+    /**
+     * Verifies if given error code is returned in filter.
+     *
+     * @param code
+     *            error code
+     */
+    protected void verifyFilterError(int code) {
+        verifyZeroInteractions(writer);
+        verify(response, never()).setContentType(anyString());
+        verify(response, never()).setStatus(Matchers.eq(code));
+    }
+
+    /**
+     * Verifies if filter did not change anything.
+     *
+     * @param code
+     *            error code
+     * @throws UnsupportedEncodingException
+     */
+    protected void verifyFilterOK() throws UnsupportedEncodingException {
+        verifyZeroInteractions(response);
+        verify(request, never()).setAttribute(anyString(), any());
+        verify(request, never()).setCharacterEncoding(anyString());
     }
 
 }
