@@ -1,6 +1,7 @@
 package lulewiczg.contentserver.permissions;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -108,7 +109,7 @@ public class ResourceHelperTest {
     @DisplayName("Helper initialization using servlet context")
     public void testInitWithServletContext() throws IOException {
         ServletContext mock = Mockito.mock(ServletContext.class);
-        when(mock.getRealPath(Mockito.anyString())).thenReturn(CONTEXT + 1);
+        when(mock.getRealPath(anyString())).thenReturn(CONTEXT + 1);
         when(mock.getServerInfo()).thenReturn("tomcat");
         ResourceHelper.init(mock);
         String contextPath = new File(".").getCanonicalPath();
@@ -124,7 +125,7 @@ public class ResourceHelperTest {
     @DisplayName("Parameter decoding is perfomed on Tomcat")
     public void testDecodeParam() throws IOException {
         ServletContext mock = Mockito.mock(ServletContext.class);
-        when(mock.getRealPath(Mockito.anyString())).thenReturn(CONTEXT + 1);
+        when(mock.getRealPath(anyString())).thenReturn(CONTEXT + 1);
         when(mock.getServerInfo()).thenReturn("tomcat");
         ResourceHelper.init(mock);
         String expected = "Grzegorz Brzęczyczykiewicz i Że li Popą";
@@ -136,7 +137,7 @@ public class ResourceHelperTest {
     @DisplayName("Parameter decoding is not performed on other servlet container")
     public void testDontDecodeParam() throws IOException {
         ServletContext mock = Mockito.mock(ServletContext.class);
-        when(mock.getRealPath(Mockito.anyString())).thenReturn(CONTEXT + 1);
+        when(mock.getRealPath(anyString())).thenReturn(CONTEXT + 1);
         when(mock.getServerInfo()).thenReturn("jetty");
         ResourceHelper.init(mock);
         String expected = "Grzegorz Brzęczyczykiewicz i Żyli Popą";

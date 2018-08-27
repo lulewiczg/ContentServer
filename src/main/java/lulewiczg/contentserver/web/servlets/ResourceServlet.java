@@ -32,10 +32,12 @@ public class ResourceServlet extends HttpServlet {
     /**
      * Returns requested file or folder contents.
      *
-     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest,
+     *      javax.servlet.http.HttpServletResponse)
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         String path = request.getParameter(Constants.Web.PATH);
         path = ResourceHelper.decodeParam(path);
         if (path == null) {
@@ -103,19 +105,18 @@ public class ResourceServlet extends HttpServlet {
 
             String startStr = null;
             String endStr = null;
-            if (split.length == 2) {
+            // thx oracle for string.split
+            if (split.length != 0) {
                 startStr = split[0];
-                endStr = split[1];
-            } else if (split.length == 1) {
-                if (range.startsWith("-")) {
-                    endStr = split[0];
-                } else {
-                    startStr = split[0];
-                }
             }
-            start = startStr == null ? start : Long.valueOf(startStr);
+            if (split.length == 2) {
+                endStr = split[1];
+            } else {
+                endStr = null;
+            }
+            start = startStr == null || startStr.isEmpty() ? start : Long.valueOf(startStr);
             start = start < 0 ? 0 : start;
-            end = endStr == null ? end : Long.valueOf(endStr);
+            end = endStr == null || endStr.isEmpty() ? end : Long.valueOf(endStr);
             end = end > length - 1 ? length - 1 : end;
         }
 
@@ -158,7 +159,8 @@ public class ResourceServlet extends HttpServlet {
      */
     private void setHeaders(HttpServletResponse response, File f, long length, long start, long end, String download,
             long contentLength) {
-        response.setHeader(Constants.Web.Headers.CONTENT_DISPOSITION, String.format("inline;filename=\"%s\"", f.getName()));
+        response.setHeader(Constants.Web.Headers.CONTENT_DISPOSITION,
+                String.format("inline;filename=\"%s\"", f.getName()));
         response.setHeader(Constants.Web.Headers.ACCEPT_RANGES, "bytes");
         response.setDateHeader(Constants.Web.Headers.EXPIRES, System.currentTimeMillis() + EXPIRE_TIME);
         response.setHeader(Constants.Web.Headers.CONTENT_RANGE, String.format("bytes %s-%s/%s", start, end, length));

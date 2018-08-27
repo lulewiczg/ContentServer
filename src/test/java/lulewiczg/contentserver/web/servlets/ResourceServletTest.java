@@ -1,5 +1,9 @@
 package lulewiczg.contentserver.web.servlets;
 
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -18,7 +22,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import lulewiczg.contentserver.permissions.ResourceHelper;
 import lulewiczg.contentserver.test.utils.ServletTestTemplate;
@@ -33,7 +36,9 @@ import lulewiczg.contentserver.utils.models.Dir;
  */
 public class ResourceServletTest extends ServletTestTemplate {
 
-    private static final String FILE1 = "folder11.txt";
+    private static final String FOLDER1_11 = "folder1/folder11.txt";
+    private static final String FOLDER3_11 = "folder3/folder11.txt";
+    private static final String FILE11 = "folder11.txt";
     private ResourceServlet servlet = new ResourceServlet();
     private static String base;
 
@@ -45,7 +50,8 @@ public class ResourceServletTest extends ServletTestTemplate {
      */
     @BeforeAll
     public static void setup() throws IOException {
-        base = ResourceHelper.normalizePath(new File("src/test/resources/structure").getCanonicalPath() + Constants.SEP);
+        base = ResourceHelper
+                .normalizePath(new File("src/test/resources/structure").getCanonicalPath() + Constants.SEP);
     }
 
     @Test
@@ -55,7 +61,7 @@ public class ResourceServletTest extends ServletTestTemplate {
 
         servlet.doGet(request, response);
 
-        Mockito.verifyZeroInteractions(helper);
+        verifyZeroInteractions(helper);
         verifyError(404);
     }
 
@@ -66,7 +72,7 @@ public class ResourceServletTest extends ServletTestTemplate {
 
         servlet.doGet(request, response);
 
-        Mockito.verifyZeroInteractions(helper);
+        verifyZeroInteractions(helper);
         verifyError(404);
     }
 
@@ -77,10 +83,10 @@ public class ResourceServletTest extends ServletTestTemplate {
         List<Dir> dirs = Arrays.asList(new Dir("folder1/", 0, base + "folder1/" + "folder1", false),
                 new Dir("folder2/", 0, base + "folder1/" + "folder2", false),
                 new Dir("folder1.txt", 0, base + "folder1/" + "folder1.txt", true),
-                new Dir(FILE1, 4, base + "folder1/" + FILE1, true));
+                new Dir(FILE11, 4, base + "folder1/" + FILE11, true));
         servlet.doGet(request, response);
 
-        Mockito.verifyZeroInteractions(helper);
+        verifyZeroInteractions(helper);
         String json = JSONModel.toJSONArray(dirs);
         verifyOkJSON(json);
     }
@@ -88,19 +94,13 @@ public class ResourceServletTest extends ServletTestTemplate {
     @Test
     @DisplayName("Display small file using small buffer")
     public void testShowSmallFileSmallBuffer() throws IOException, ServletException {
-        int buffsize = 1;
+        int buff = 1;
         int len = 4;
-        when(request.getParameter(Constants.Web.PATH)).thenReturn(base + "folder1/folder11.txt");
-        when(request.getParameter(Constants.Web.DOWNLOAD)).thenReturn(null);
-        when(request.getHeader(Constants.Web.Headers.RANGE)).thenReturn(null);
-        when(helper.getBufferSize()).thenReturn(buffsize);
-        when(helper.getMIME(FILE1)).thenReturn(Constants.Setting.PLAIN_TEXT);
-        MockOutputStream stream = new MockOutputStream(len);
-        when(response.getOutputStream()).thenReturn(stream);
+        MockOutputStream stream = setupRequest(buff, len, FOLDER1_11);
 
         servlet.doGet(request, response);
 
-        verifyHeaders(FILE1, Constants.Setting.PLAIN_TEXT, buffsize, len, 0, len - 1);
+        verifyHeaders(FILE11, Constants.Setting.PLAIN_TEXT, buff, len, 0, len - 1);
         Assertions.assertEquals(TEST, new String(stream.get()));
     }
 
@@ -109,17 +109,11 @@ public class ResourceServletTest extends ServletTestTemplate {
     public void testShowSmallFileBigBuffer() throws IOException, ServletException {
         int len = 4;
         int buff = 1024 * 1024 * 1024;
-        when(request.getParameter(Constants.Web.PATH)).thenReturn(base + "folder1/folder11.txt");
-        when(request.getParameter(Constants.Web.DOWNLOAD)).thenReturn(null);
-        when(request.getHeader(Constants.Web.Headers.RANGE)).thenReturn(null);
-        when(helper.getBufferSize()).thenReturn(buff);
-        MockOutputStream stream = new MockOutputStream(len);
-        when(response.getOutputStream()).thenReturn(stream);
-        when(helper.getMIME(FILE1)).thenReturn(Constants.Setting.PLAIN_TEXT);
+        MockOutputStream stream = setupRequest(buff, len, FOLDER1_11);
 
         servlet.doGet(request, response);
 
-        verifyHeaders(FILE1, Constants.Setting.PLAIN_TEXT, buff, len, 0, len - 1);
+        verifyHeaders(FILE11, Constants.Setting.PLAIN_TEXT, buff, len, 0, len - 1);
         Assertions.assertEquals(TEST, stream.get());
     }
 
@@ -128,17 +122,12 @@ public class ResourceServletTest extends ServletTestTemplate {
     public void testShowBigFileSmallBuffer() throws IOException, ServletException {
         int len = 77280;
         int buff = 1;
-        when(request.getParameter(Constants.Web.PATH)).thenReturn(base + "folder3/folder11.txt");
-        when(request.getParameter(Constants.Web.DOWNLOAD)).thenReturn(null);
-        when(request.getHeader(Constants.Web.Headers.RANGE)).thenReturn(null);
-        when(helper.getBufferSize()).thenReturn(buff);
-        MockOutputStream stream = new MockOutputStream(len);
-        when(response.getOutputStream()).thenReturn(stream);
-        when(helper.getMIME(FILE1)).thenReturn(Constants.Setting.PLAIN_TEXT);
+        MockOutputStream stream = setupRequest(buff, len, FOLDER3_11);
 
         servlet.doGet(request, response);
-        verifyHeaders(FILE1, Constants.Setting.PLAIN_TEXT, buff, len, 0, len - 1);
-        String expected = Files.readAllLines(Paths.get(base + "folder3/folder11.txt")).get(0);
+
+        verifyHeaders(FILE11, Constants.Setting.PLAIN_TEXT, buff, len, 0, len - 1);
+        String expected = Files.readAllLines(Paths.get(base + FOLDER3_11)).get(0);
         Assertions.assertEquals(expected, stream.get());
     }
 
@@ -147,17 +136,12 @@ public class ResourceServletTest extends ServletTestTemplate {
     public void testShowBigFileBigBuffer() throws IOException, ServletException {
         int len = 77280;
         int buff = 10240;
-        when(request.getParameter(Constants.Web.PATH)).thenReturn(base + "folder3/folder11.txt");
-        when(request.getParameter(Constants.Web.DOWNLOAD)).thenReturn(null);
-        when(request.getHeader(Constants.Web.Headers.RANGE)).thenReturn(null);
-        when(helper.getBufferSize()).thenReturn(buff);
-        MockOutputStream stream = new MockOutputStream(len);
-        when(response.getOutputStream()).thenReturn(stream);
-        when(helper.getMIME(FILE1)).thenReturn(Constants.Setting.PLAIN_TEXT);
+        MockOutputStream stream = setupRequest(buff, len, FOLDER3_11);
 
         servlet.doGet(request, response);
-        verifyHeaders(FILE1, Constants.Setting.PLAIN_TEXT, buff, len, 0, len - 1);
-        String expected = Files.readAllLines(Paths.get(base + "folder3/folder11.txt")).get(0);
+
+        verifyHeaders(FILE11, Constants.Setting.PLAIN_TEXT, buff, len, 0, len - 1);
+        String expected = Files.readAllLines(Paths.get(base + FOLDER3_11)).get(0);
         Assertions.assertEquals(expected, stream.get());
     }
 
@@ -166,23 +150,158 @@ public class ResourceServletTest extends ServletTestTemplate {
     public void testForceDownload() throws IOException, ServletException {
         int len = 4;
         int buff = 4;
-        when(request.getParameter(Constants.Web.PATH)).thenReturn(base + "folder1/folder11.txt");
-        when(request.getParameter(Constants.Web.DOWNLOAD)).thenReturn("true");
-        when(request.getHeader(Constants.Web.Headers.RANGE)).thenReturn(null);
-        when(helper.getBufferSize()).thenReturn(buff);
-        MockOutputStream stream = new MockOutputStream(len);
-        when(response.getOutputStream()).thenReturn(stream);
+        MockOutputStream stream = setupRequest(buff, len, FOLDER1_11, true);
 
         servlet.doGet(request, response);
-        Mockito.verify(helper, Mockito.never()).getMIME(Mockito.anyString());
-        verifyHeaders(FILE1, Constants.Web.Headers.APPLICATION_FORCE_DOWNLOAD, buff, len, 0, len - 1);
+
+        verify(helper, never()).getMIME(anyString());
+        verifyHeaders(FILE11, Constants.Web.Headers.APPLICATION_FORCE_DOWNLOAD, buff, len, 0, len - 1);
         Assertions.assertEquals(TEST, stream.get());
     }
 
     @Test
-    @DisplayName("Tests content range")
+    @DisplayName("Content range")
     public void testContentRange() throws IOException, ServletException {
-        Assertions.fail();
+        int len = 77280;
+        int buff = 1024;
+        int start = 0;
+        int end = 19;
+        MockOutputStream stream = setupRangeRequest(len, buff, start, end);
+
+        servlet.doGet(request, response);
+
+        verifyHeaders(FILE11, Constants.Setting.PLAIN_TEXT, buff, len, start, end);
+        Assertions.assertEquals("testtesttesttesttest", stream.get());
+    }
+
+    @Test
+    @DisplayName("Content range in the middle")
+    public void testContentRangeMiddle() throws IOException, ServletException {
+        int len = 77280;
+        int buff = 1024;
+        int start = 1000;
+        int end = 1010;
+        MockOutputStream stream = setupRangeRequest(len, buff, start, end);
+
+        servlet.doGet(request, response);
+
+        verifyHeaders(FILE11, Constants.Setting.PLAIN_TEXT, buff, len, start, end);
+        Assertions.assertEquals("testtesttes", stream.get());
+    }
+
+    @Test
+    @DisplayName("Content range single byte")
+    public void testContentRangeSingleByte() throws IOException, ServletException {
+        int len = 77280;
+        int buff = 1024;
+        int start = 1000;
+        int end = 1000;
+        MockOutputStream stream = setupRangeRequest(len, buff, start, end);
+
+        servlet.doGet(request, response);
+
+        verifyHeaders(FILE11, Constants.Setting.PLAIN_TEXT, buff, len, start, end);
+        Assertions.assertEquals("t", stream.get());
+    }
+
+    @Test
+    @DisplayName("Content range in the end")
+    public void testContentRangeEnd() throws IOException, ServletException {
+        int len = 77280;
+        int buff = 1024;
+        int start = 77260;
+        int end = 77279;
+        MockOutputStream stream = setupRangeRequest(len, buff, start, end);
+
+        servlet.doGet(request, response);
+
+        verifyHeaders(FILE11, Constants.Setting.PLAIN_TEXT, buff, len, start, end);
+        Assertions.assertEquals("testtesttesttesttest", stream.get());
+    }
+
+    @Test
+    @DisplayName("Opened content range")
+    public void testContentRangeOpen() throws IOException, ServletException {
+        int len = 77280;
+        int buff = 1024;
+        int end = 15;
+        MockOutputStream stream = setupRangeRequest(len, buff, null, end);
+
+        servlet.doGet(request, response);
+
+        verifyHeaders(FILE11, Constants.Setting.PLAIN_TEXT, buff, len, 0, end);
+        Assertions.assertEquals("testtesttesttest", stream.get());
+    }
+
+    @Test
+    @DisplayName("Opened end content range")
+    public void testContentRangeOpenEnd() throws IOException, ServletException {
+        int len = 77280;
+        int buff = 1024;
+        int start = 77275;
+        MockOutputStream stream = setupRangeRequest(len, buff, start, null);
+
+        servlet.doGet(request, response);
+
+        verifyHeaders(FILE11, Constants.Setting.PLAIN_TEXT, buff, len, start, len - 1);
+        Assertions.assertEquals("ttest", stream.get());
+    }
+
+    @Test
+    @DisplayName("Opened content range single byte")
+    public void testContentRangeOpenSingleByte() throws IOException, ServletException {
+        int len = 77280;
+        int buff = 1024;
+        int end = 0;
+        MockOutputStream stream = setupRangeRequest(len, buff, null, end);
+
+        servlet.doGet(request, response);
+
+        verifyHeaders(FILE11, Constants.Setting.PLAIN_TEXT, buff, len, 0, end);
+        Assertions.assertEquals("t", stream.get());
+    }
+
+    @Test
+    @DisplayName("Opened end content range single byte")
+    public void testContentRangeOpenEndSingleByte() throws IOException, ServletException {
+        int len = 77280;
+        int buff = 1024;
+        int start = 77279;
+        MockOutputStream stream = setupRangeRequest(len, buff, start, null);
+
+        servlet.doGet(request, response);
+
+        verifyHeaders(FILE11, Constants.Setting.PLAIN_TEXT, buff, len, start, len - 1);
+        Assertions.assertEquals("t", stream.get());
+    }
+
+    @Test
+    @DisplayName("Opened end content range single byte")
+    public void testContentRangeFullOpen() throws IOException, ServletException {
+        int len = 77280;
+        int buff = 1024;
+        MockOutputStream stream = setupRangeRequest(len, buff, null, null);
+
+        servlet.doGet(request, response);
+
+        verifyHeaders(FILE11, Constants.Setting.PLAIN_TEXT, buff, len, 0, len - 1);
+        String expected = Files.readAllLines(Paths.get(base + FOLDER3_11)).get(0);
+        Assertions.assertEquals(expected, stream.get());
+    }
+
+    @Test
+    @DisplayName("Opened end content range single byte")
+    public void testOversizedRange() throws IOException, ServletException {
+        int len = 77280;
+        int buff = 1024;
+        int start = 77270;
+        int end = 77281;
+        MockOutputStream stream = setupRangeRequest(len, buff, start, end);
+
+        servlet.doGet(request, response);
+
+        verifyHeaders(FILE11, Constants.Setting.PLAIN_TEXT, buff, len, start, len - 1);
+        Assertions.assertEquals("sttesttest", stream.get());
     }
 
     /**
@@ -198,17 +317,105 @@ public class ResourceServletTest extends ServletTestTemplate {
      *            end
      */
     private void verifyHeaders(String filename, String contenttype, int buffsize, int len, int start, int end) {
-        Mockito.verify(response).setBufferSize(buffsize);
-        Mockito.verifyZeroInteractions(writer);
-        Mockito.verify(response).setHeader(Constants.Web.Headers.CONTENT_DISPOSITION,
+        verify(response).setBufferSize(buffsize);
+        verifyZeroInteractions(writer);
+        verify(response).setHeader(Constants.Web.Headers.CONTENT_DISPOSITION,
                 String.format("inline;filename=\"%s\"", filename));
-        Mockito.verify(response).setHeader(Constants.Web.Headers.ACCEPT_RANGES, "bytes");
-        Mockito.verify(response).setHeader(Constants.Web.Headers.CONTENT_RANGE, String.format("bytes %s-%s/%s", 0, len - 1, len));
-        Mockito.verify(response).setHeader(Constants.Web.Headers.CONTENT_LENGTH, String.format("%s", len));
-        Mockito.verify(response).setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
-        Mockito.verify(response).setContentType(contenttype);
+        verify(response).setHeader(Constants.Web.Headers.ACCEPT_RANGES, "bytes");
+        verify(response).setHeader(Constants.Web.Headers.CONTENT_RANGE,
+                String.format("bytes %s-%s/%s", start, end, len));
+        verify(response).setHeader(Constants.Web.Headers.CONTENT_LENGTH, String.format("%s", end - start + 1));
+        verify(response).setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+        verify(response).setContentType(contenttype);
     }
 
+    /**
+     * Builds range header.
+     * 
+     * @param start
+     *            range start
+     * @param end
+     *            range end
+     * @return range header
+     */
+    private String buildRange(Integer start, Integer end) {
+        String str1 = start != null ? start.toString() : "";
+        String str2 = end != null ? end.toString() : "";
+        return String.format("bytes=%s-%s", str1, str2);
+    }
+
+    /**
+     * Builds range request and returns mocked output stream.
+     * 
+     * @param len
+     *            file length
+     * @param buff
+     *            buffer size
+     * @param start
+     *            range start
+     * @param end
+     *            range end
+     * @return mocked output stream
+     * @throws IOException
+     *             the IOException
+     */
+    private MockOutputStream setupRangeRequest(int len, int buff, Integer start, Integer end) throws IOException {
+        when(request.getParameter(Constants.Web.PATH)).thenReturn(base + FOLDER3_11);
+        when(request.getParameter(Constants.Web.DOWNLOAD)).thenReturn(null);
+        when(request.getHeader(Constants.Web.Headers.RANGE)).thenReturn(buildRange(start, end));
+        when(helper.getMIME(FILE11)).thenReturn(Constants.Setting.PLAIN_TEXT);
+        when(helper.getBufferSize()).thenReturn(buff);
+        MockOutputStream stream = new MockOutputStream(len);
+        when(response.getOutputStream()).thenReturn(stream);
+        return stream;
+    }
+
+    /**
+     * Builds standard request and returns mocked output stream.
+     * 
+     * @param buffsize
+     *            buffer size
+     * @param len
+     *            file length
+     * @param path
+     *            file path
+     * @param download
+     *            download
+     * @return mocked output stream
+     * @throws IOException
+     *             the IOException
+     */
+    private MockOutputStream setupRequest(int buffsize, int len, String path, Boolean download) throws IOException {
+        when(request.getParameter(Constants.Web.PATH)).thenReturn(base + path);
+        when(request.getParameter(Constants.Web.DOWNLOAD)).thenReturn(download != null ? download + "" : null);
+        when(request.getHeader(Constants.Web.Headers.RANGE)).thenReturn(null);
+        when(helper.getBufferSize()).thenReturn(buffsize);
+        when(helper.getMIME(FILE11)).thenReturn(Constants.Setting.PLAIN_TEXT);
+        MockOutputStream stream = new MockOutputStream(len);
+        when(response.getOutputStream()).thenReturn(stream);
+        return stream;
+    }
+
+    /**
+     * Builds standard request and returns mocked output stream.
+     * 
+     * @param buffsize
+     *            buffer size
+     * @param len
+     *            file length
+     * @param path
+     *            file path
+     * @return mocked output stream
+     * @throws IOException
+     *             the IOException
+     */
+    private MockOutputStream setupRequest(int buffsize, int len, String path) throws IOException {
+        return setupRequest(buffsize, len, path, null);
+    }
+
+    /**
+     * Mock output stream to get response.
+     */
     private class MockOutputStream extends ServletOutputStream {
         private ByteBuffer buffer;
 
