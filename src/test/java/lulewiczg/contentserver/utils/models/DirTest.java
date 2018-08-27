@@ -23,7 +23,7 @@ public class DirTest {
 
     @DisplayName("Size formatting")
     @ParameterizedTest(name = "''{0}'' should be formatted to ''{1}''")
-    @CsvFileSource(resources = "/file-sizes.csv")
+    @CsvFileSource(resources = "/data/csv/file-sizes.csv")
     public void testRead(Long size, String expected) {
         String formatted = new Dir("", size, "", true).getSize();
         Assertions.assertEquals(expected, formatted);
@@ -31,7 +31,7 @@ public class DirTest {
 
     @DisplayName("Listing files")
     @ParameterizedTest(name = "''{1}'' should be listed in ''{0}''")
-    @CsvFileSource(resources = "/directory-listing.csv")
+    @CsvFileSource(resources = "/data/csv/directory-listing.csv")
     public void testRead(String path, String expected) throws IOException {
         List<String> tmp = TestUtil.parsePaths(path, expected);
         List<String> exp = new ArrayList<>();

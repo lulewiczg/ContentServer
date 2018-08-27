@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 
 import lulewiczg.contentserver.permissions.ResourceHelper;
 import lulewiczg.contentserver.test.utils.ServletTestTemplate;
+import lulewiczg.contentserver.test.utils.TestUtil;
 import lulewiczg.contentserver.utils.Constants;
 import lulewiczg.contentserver.utils.json.JSONModel;
 import lulewiczg.contentserver.utils.models.Dir;
@@ -50,8 +51,7 @@ public class ResourceServletTest extends ServletTestTemplate {
      */
     @BeforeAll
     public static void setup() throws IOException {
-        base = ResourceHelper
-                .normalizePath(new File("src/test/resources/structure").getCanonicalPath() + Constants.SEP);
+        base = ResourceHelper.normalizePath(new File(TestUtil.LOC + "structure").getCanonicalPath() + Constants.SEP);
     }
 
     @Test

@@ -46,28 +46,38 @@ public class ResourceHelper {
     private Level logLevel = Level.OFF;
     private Properties settingsProperties;
     private Properties permissionsProperties;
-    private String path;
+    private String contextPath;
+    private String testPath;
     private static boolean encode;
+
     public static ResourceHelper getInstance() {
         return instance;
     }
 
-    public static synchronized void init(String path) {
-        instance = new ResourceHelper(path);
+    static synchronized void init(String context, String testPath) {
+        instance = new ResourceHelper(context, testPath);
         Log.setLevel(instance.logLevel);
     }
 
-    public static synchronized void init(ServletContext context) {
+    public static synchronized void init(ServletContext context, String testPath) {
         String path = context.getRealPath(Constants.SEP);
         encode = context.getServerInfo().toLowerCase().contains("tomcat");
-        init(path);
+        instance = new ResourceHelper(path, testPath);
+        Log.setLevel(instance.logLevel);
     }
 
-    private ResourceHelper(String path) {
-        this.path = path;
+    private ResourceHelper(String context, String path) {
         try {
-            loadPermissions(path);
-            loadSettings(path);
+            path = new File(path).getCanonicalPath();
+        } catch (IOException e) {
+            Log.getLog().log(e);
+        }
+        path += "/";
+        this.contextPath = normalizePath(context);
+        this.testPath = normalizePath(path);
+        try {
+            loadPermissions(context);
+            loadSettings(context);
         } catch (IOException e) {
             Log.getLog().log(e);
             throw new IllegalStateException(e);
@@ -77,7 +87,7 @@ public class ResourceHelper {
     /**
      * Loads users and their permissions to directories.
      *
-     * @param path
+     * @param contextPath
      *            servlet context
      * @throws IOException
      *             when could not read permissions
@@ -166,7 +176,7 @@ public class ResourceHelper {
     private void processUserPermissions(String[] keys, User user, String value) throws IOException {
         if (keys.length > 3 && keys[2].equals(Constants.Setting.PERMISSION)) {
             if (value.contains(DIR)) {
-                value = value.replace(DIR, new File(".").getCanonicalPath());
+                value = value.replace(DIR, testPath);
             }
             String[] values = value.split(";");
             if (values.length > 0) {
@@ -351,7 +361,7 @@ public class ResourceHelper {
      */
     public static void normalize(List<String> list) {
         for (int i = 0; i < list.size(); i++) {
-            String path = list.get(i).replace('\\', '/');
+            String path = list.get(i).replaceAll("\\\\+", Constants.SEP).replaceAll("\\/+", Constants.SEP);
             if (path.endsWith("/")) {
                 path = path.substring(0, path.length() - 1);
             }
@@ -441,10 +451,10 @@ public class ResourceHelper {
      *             the IOException
      */
     public synchronized void saveSettings() throws FileNotFoundException, IOException {
-        try (FileOutputStream os = new FileOutputStream(new File(path + SETTINGS_PATH))) {
+        try (FileOutputStream os = new FileOutputStream(new File(contextPath + SETTINGS_PATH))) {
             settingsProperties.store(os, null);
         }
-        init(path);
+        init(contextPath, testPath);
     }
 
     /**

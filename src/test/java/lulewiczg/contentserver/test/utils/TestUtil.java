@@ -12,7 +12,7 @@ import lulewiczg.contentserver.utils.Constants;
 import lulewiczg.contentserver.utils.models.Dir;
 
 public final class TestUtil {
-    public static final String LOC = "src/test/resources/";
+    public static final String LOC = "src/test/resources/data/";
     private static final String COLON = "\\,";
 
     /**

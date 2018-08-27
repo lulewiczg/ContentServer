@@ -20,7 +20,7 @@ public class PathComparatorTest {
 
     @DisplayName("Paths sorting")
     @ParameterizedTest(name = "''{0}'' should be resolved to ''{1}''")
-    @CsvFileSource(resources = "/paths-sort.csv")
+    @CsvFileSource(resources = "/data/csv/paths-sort.csv")
     public void testRead(String actual, String expected) {
         List<Dir> act = TestUtil.parsePathsPlain(actual);
         List<Dir> exp = TestUtil.parsePathsPlain(expected);

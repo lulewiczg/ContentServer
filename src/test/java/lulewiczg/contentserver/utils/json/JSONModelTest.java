@@ -17,6 +17,7 @@ import lulewiczg.contentserver.models.TestModelCollections;
 import lulewiczg.contentserver.models.TestModelCollectionsEmpty;
 import lulewiczg.contentserver.models.TestModelCollision;
 import lulewiczg.contentserver.models.TestModelEmpty;
+import lulewiczg.contentserver.test.utils.TestUtil;
 
 /**
  * Tests JSON serialization
@@ -44,7 +45,8 @@ public class JSONModelTest {
     @Test
     @DisplayName("Model with collisions serialization")
     public void testModelwithcollisions() throws JSONException {
-        Assertions.assertThrows(JSONException.class, () -> new TestModelCollision().toJSON(), "Duplicated fields found!");
+        Assertions.assertThrows(JSONException.class, () -> new TestModelCollision().toJSON(),
+                "Duplicated fields found!");
     }
 
     @Test
@@ -98,7 +100,7 @@ public class JSONModelTest {
      *             the IOException
      */
     private String loadJSON(String path) throws IOException {
-        byte[] bytes = Files.readAllBytes(Paths.get("src/test/resources/jsons/" + path));
+        byte[] bytes = Files.readAllBytes(Paths.get(TestUtil.LOC + "jsons/" + path));
         return new String(bytes);
     }
 }

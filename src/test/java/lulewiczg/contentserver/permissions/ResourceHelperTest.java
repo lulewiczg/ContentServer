@@ -20,86 +20,88 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.mockito.Mockito;
 
+import lulewiczg.contentserver.test.utils.TestUtil;
 import lulewiczg.contentserver.utils.Constants;
 
 public class ResourceHelperTest {
 
     private static final String DESC = "''{0}'' should {1} have access to ''{2}''";
-    private static final String CONTEXT = "src/test/resources/testContexts/";
-    private static final String LOC = "src/test/resources/structure/";
+    private static final String CONTEXT = TestUtil.LOC + "testContexts/";
+    private static final String LOC = "src/test/resources/data/";
+    private static final String STRUCTURE = LOC + "structure/";
 
     @DisplayName("Read permissions with no admin")
     @ParameterizedTest(name = DESC)
-    @CsvFileSource(resources = "/context1.csv")
+    @CsvFileSource(resources = "/data/csv/context1.csv")
     public void testReadNoAdmin(String name, boolean access, String path) {
-        ResourceHelper.init(CONTEXT + 1);
+        ResourceHelper.init(CONTEXT + 1, LOC);
         ResourceHelper instance = ResourceHelper.getInstance();
-        assertEquals(access, instance.hasReadAccess(LOC + path, name));
+        assertEquals(access, instance.hasReadAccess(STRUCTURE + path, name));
     }
 
     @DisplayName("Read permissions")
     @ParameterizedTest(name = DESC)
-    @CsvFileSource(resources = "/context2.csv")
+    @CsvFileSource(resources = "/data/csv/context2.csv")
     public void testRead(String name, boolean access, String path) {
-        ResourceHelper.init(CONTEXT + 2);
+        ResourceHelper.init(CONTEXT + 2, LOC);
         ResourceHelper instance = ResourceHelper.getInstance();
-        assertEquals(access, instance.hasReadAccess(LOC + path, name));
+        assertEquals(access, instance.hasReadAccess(STRUCTURE + path, name));
     }
 
     @DisplayName("Read permissions with extended user")
     @ParameterizedTest(name = DESC)
-    @CsvFileSource(resources = "/context3.csv")
+    @CsvFileSource(resources = "/data/csv/context3.csv")
     public void testReadExtended(String name, boolean access, String path) {
-        ResourceHelper.init(CONTEXT + 3);
+        ResourceHelper.init(CONTEXT + 3, LOC);
         ResourceHelper instance = ResourceHelper.getInstance();
-        assertEquals(access, instance.hasReadAccess(LOC + path, name));
+        assertEquals(access, instance.hasReadAccess(STRUCTURE + path, name));
     }
 
     @DisplayName("Read permissions with extended user and different permissions")
     @ParameterizedTest(name = DESC)
-    @CsvFileSource(resources = "/context4.csv")
+    @CsvFileSource(resources = "/data/csv/context4.csv")
     public void testReadExtendedWriteDelete(String name, boolean access, String path) {
-        ResourceHelper.init(CONTEXT + 4);
+        ResourceHelper.init(CONTEXT + 4, LOC);
         ResourceHelper instance = ResourceHelper.getInstance();
-        assertEquals(access, instance.hasReadAccess(LOC + path, name));
+        assertEquals(access, instance.hasReadAccess(STRUCTURE + path, name));
     }
 
     @DisplayName("Path normalization")
     @ParameterizedTest(name = "''{0}'' should be normalized to ''{1}''")
-    @CsvFileSource(resources = "/paths.csv")
+    @CsvFileSource(resources = "/data/csv/paths.csv")
     public void testReadExtendedWriteDelete(String path, String expectedPath) {
         assertEquals(expectedPath, ResourceHelper.normalizePath(path));
     }
 
     @DisplayName("MIME type resolution")
     @ParameterizedTest(name = "''{0}'' should be resolved to ''{1}''")
-    @CsvFileSource(resources = "/mimes.csv")
+    @CsvFileSource(resources = "/data/csv/mimes.csv")
     public void testResolveMIMEs(String fileName, String mime) {
-        ResourceHelper.init(CONTEXT + 1);
+        ResourceHelper.init(CONTEXT + 1, STRUCTURE);
         assertEquals(mime, ResourceHelper.getInstance().getMIME(fileName));
     }
 
     @DisplayName("Hash is porperly calculated")
     @ParameterizedTest(name = "''{1}'' should be hash of ''{0}''")
-    @CsvFileSource(resources = "/sha.csv")
+    @CsvFileSource(resources = "/data/csv/sha.csv")
     public void testHash(String text, String sha) {
         assertEquals(sha, ResourceHelper.SHA1(text));
     }
 
     @DisplayName("User can login")
     @ParameterizedTest(name = "User ''{0}'' should log in with password ''{1}''")
-    @CsvFileSource(resources = "/logins.csv")
+    @CsvFileSource(resources = "/data/csv/logins.csv")
     public void testLogin(String user, String password) throws AuthenticationException {
-        ResourceHelper.init(CONTEXT + 4);
+        ResourceHelper.init(CONTEXT + 4, STRUCTURE);
         ResourceHelper instance = ResourceHelper.getInstance();
         instance.login(user, password);
     }
 
     @DisplayName("User can not login with invalid password or login")
     @ParameterizedTest(name = "User ''{0}'' should not log in with password ''{1}''")
-    @CsvFileSource(resources = "/logins-invalid.csv")
+    @CsvFileSource(resources = "/data/csv/logins-invalid.csv")
     public void testLoginFailed(String user, String password) throws AuthenticationException {
-        ResourceHelper.init(CONTEXT + 4);
+        ResourceHelper.init(CONTEXT + 4, STRUCTURE);
         ResourceHelper instance = ResourceHelper.getInstance();
         Assertions.assertThrows(AuthenticationException.class, () -> instance.login(user, password),
                 "Invalid login or password");
@@ -111,12 +113,13 @@ public class ResourceHelperTest {
         ServletContext mock = Mockito.mock(ServletContext.class);
         when(mock.getRealPath(anyString())).thenReturn(CONTEXT + 1);
         when(mock.getServerInfo()).thenReturn("tomcat");
-        ResourceHelper.init(mock);
+        ResourceHelper.init(mock, LOC);
         String contextPath = new File(".").getCanonicalPath();
         contextPath = ResourceHelper.normalizePath(contextPath);
-        List<String> expected = Arrays
-                .asList(String.format("%s/src/test/resources/structure/folder1;%s/src/test/resources/structure/folder2",
-                        contextPath, contextPath).split("\\;"));
+        List<String> expected = Arrays.asList(String
+                .format("%s/src/test/resources/data/structure/folder1;%s/src/test/resources/data/structure/folder2",
+                        contextPath, contextPath)
+                .split("\\;"));
         List<String> availablePaths = ResourceHelper.getInstance().getAvailablePaths(Constants.GUEST);
         assertEquals(expected, availablePaths);
     }
@@ -127,7 +130,7 @@ public class ResourceHelperTest {
         ServletContext mock = Mockito.mock(ServletContext.class);
         when(mock.getRealPath(anyString())).thenReturn(CONTEXT + 1);
         when(mock.getServerInfo()).thenReturn("tomcat");
-        ResourceHelper.init(mock);
+        ResourceHelper.init(mock, LOC);
         String expected = "Grzegorz Brzęczyczykiewicz i Że li Popą";
         String test = new String(expected.getBytes(), StandardCharsets.ISO_8859_1);
         assertEquals(expected, ResourceHelper.decodeParam(test));
@@ -139,7 +142,7 @@ public class ResourceHelperTest {
         ServletContext mock = Mockito.mock(ServletContext.class);
         when(mock.getRealPath(anyString())).thenReturn(CONTEXT + 1);
         when(mock.getServerInfo()).thenReturn("jetty");
-        ResourceHelper.init(mock);
+        ResourceHelper.init(mock, STRUCTURE);
         String expected = "Grzegorz Brzęczyczykiewicz i Żyli Popą";
         assertEquals(expected, ResourceHelper.decodeParam(expected));
     }

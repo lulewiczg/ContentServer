@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import lulewiczg.contentserver.permissions.ResourceHelper;
 import lulewiczg.contentserver.test.utils.ServletTestTemplate;
+import lulewiczg.contentserver.test.utils.TestUtil;
 import lulewiczg.contentserver.utils.Constants;
 import lulewiczg.contentserver.utils.json.JSONModel;
 
@@ -42,12 +43,12 @@ public class ShortcutsServletTest extends ServletTestTemplate {
      */
     @BeforeAll
     public static void setup() throws IOException {
-        base = ResourceHelper.normalizePath(new File("src/test/resources/").getCanonicalPath() + Constants.SEP);
+        base = ResourceHelper.normalizePath(new File(TestUtil.LOC).getCanonicalPath() + Constants.SEP);
         guestPaths = Arrays.asList(base + "structure/folder1/folder1", base + "structure/folder2/folder1",
                 base + "structure/folder1/folder1.txt", base + "structure/folder1");
         testPaths = Arrays.asList(base + "structure/folder1/folder1", base + "structure/folder2",
                 base + "testContexts");
-        adminPaths = Arrays.asList(base + "structure", base + "context1.csv");
+        adminPaths = Arrays.asList(base + "structure", base + "csv/context1.csv");
     }
 
     @Override
