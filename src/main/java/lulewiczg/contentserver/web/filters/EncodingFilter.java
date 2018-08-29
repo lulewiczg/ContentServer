@@ -23,15 +23,18 @@ public class EncodingFilter implements Filter {
      */
     @Override
     public void destroy() {
+        // Do nothing
     }
 
     /**
      * Validates permissions.
      *
-     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
+     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest,
+     *      javax.servlet.ServletResponse, javax.servlet.FilterChain)
      */
     @Override
-    public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
+            throws IOException, ServletException {
         req.setCharacterEncoding(Constants.Setting.UTF8);
         resp.setCharacterEncoding(Constants.Setting.UTF8);
         chain.doFilter(req, resp);
@@ -42,5 +45,6 @@ public class EncodingFilter implements Filter {
      */
     @Override
     public void init(FilterConfig arg0) throws ServletException {
+        // Do nothing
     }
 }

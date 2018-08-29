@@ -122,7 +122,7 @@ angular.module('app').controller("fileController", function($http, $location, $s
     }
 
     $scope.login = function() {
-        var modalInstance = $modal.open({
+        $modal.open({
             templateUrl : 'login.html',
             controller : 'loginController',
             size : 'm',
@@ -141,7 +141,7 @@ angular.module('app').controller("fileController", function($http, $location, $s
     };
 
     $scope.settings = function() {
-        var modalInstance = $modal.open({
+        $modal.open({
             templateUrl : 'settings.html',
             controller : 'settingsController',
             size : 'lg',

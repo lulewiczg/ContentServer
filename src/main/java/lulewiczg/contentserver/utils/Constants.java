@@ -27,6 +27,9 @@ public final class Constants {
             public static final String RANGE = "Range";
             public static final String EXPIRES = "Expires";
             public static final String APPLICATION_FORCE_DOWNLOAD = "application/force-download";
+
+            private Headers() {
+            }
         }
 
         public static class Errors {
@@ -35,11 +38,16 @@ public final class Constants {
             public static final String USER_ALREADY_LOGGED = "User already logged in";
             public static final String INVALID_CREDENTIALS = "Invalid user or password";
 
+            private Errors() {
+            }
+        }
+
+        private Web() {
         }
     }
 
     /**
-     * Settings constatns.
+     * Settings constants.
      */
     public static class Setting {
         public static final String USER = "user";
@@ -54,5 +62,10 @@ public final class Constants {
         public static final String PLAIN_TEXT = "text/plain";
         public static final String UTF8 = "UTF-8";
 
+        private Setting() {
+        }
+    }
+
+    private Constants() {
     }
 }

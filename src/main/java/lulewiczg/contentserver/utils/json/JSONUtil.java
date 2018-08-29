@@ -81,4 +81,7 @@ public final class JSONUtil {
     public static String toString(Object value) throws JSONException {
         return toString(value, false);
     }
+
+    private JSONUtil() {
+    }
 }

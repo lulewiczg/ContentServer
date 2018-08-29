@@ -27,6 +27,7 @@ public class AdminFilter implements Filter {
      */
     @Override
     public void destroy() {
+        // Do nothing
     }
 
     /**
@@ -56,5 +57,6 @@ public class AdminFilter implements Filter {
      */
     @Override
     public void init(FilterConfig arg0) throws ServletException {
+        // Do nothing
     }
 }

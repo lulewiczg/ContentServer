@@ -28,25 +28,26 @@ public class ResourceFilter implements Filter {
      */
     @Override
     public void destroy() {
+        // Do nothing
     }
 
     /**
      * Validates permissions.
      *
-     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
+     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest,
+     *      javax.servlet.ServletResponse, javax.servlet.FilterChain)
      */
     @Override
-    public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
+            throws IOException, ServletException {
         String path = req.getParameter(Constants.Web.PATH);
         HttpSession session = ((HttpServletRequest) req).getSession();
         String user = (String) session.getAttribute(Constants.Web.USER);
-        if (path != null) {
-            if (!ResourceHelper.getInstance().hasReadAccess(path, user)) {
-                Log.getLog().logAccessDenied(path, session, req);
-                HttpServletResponse httpResponse = (HttpServletResponse) resp;
-                httpResponse.sendError(403, String.format(Constants.Web.Errors.ACCESS_DENIED_TO, path));
-                return;
-            }
+        if (path != null && !ResourceHelper.getInstance().hasReadAccess(path, user)) {
+            Log.getLog().logAccessDenied(path, session, req);
+            HttpServletResponse httpResponse = (HttpServletResponse) resp;
+            httpResponse.sendError(403, String.format(Constants.Web.Errors.ACCESS_DENIED_TO, path));
+            return;
         }
         Log.getLog().logAccessGranted(path, session, req);
         chain.doFilter(req, resp);
@@ -57,5 +58,6 @@ public class ResourceFilter implements Filter {
      */
     @Override
     public void init(FilterConfig arg0) throws ServletException {
+        // Do nothing
     }
 }

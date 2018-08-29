@@ -3,7 +3,6 @@ package lulewiczg.contentserver.web.servlets;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
@@ -27,7 +26,7 @@ public class ResourceServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private static final long EXPIRE_TIME = 1000 * 60 * 60 * 24;
+    private static final long EXPIRE_TIME = 1000L * 60L * 60L * 24L;
 
     /**
      * Returns requested file or folder contents.
@@ -53,7 +52,7 @@ public class ResourceServlet extends HttpServlet {
             return;
         }
         if (f.isDirectory()) {
-            listDirJSON(request, response, f);
+            listDirJSON(response, f);
         } else {
             display(request, response, f);
         }
@@ -62,8 +61,6 @@ public class ResourceServlet extends HttpServlet {
     /**
      * List available directories in folder
      *
-     * @param request
-     *            request
      * @param response
      *            response
      * @param f
@@ -71,7 +68,7 @@ public class ResourceServlet extends HttpServlet {
      * @throws IOException
      *             when could not read directory.
      */
-    private void listDirJSON(HttpServletRequest request, HttpServletResponse response, File f) throws IOException {
+    private void listDirJSON(HttpServletResponse response, File f) throws IOException {
         List<Dir> files = Dir.getFiles(f);
         response.setContentType(Setting.APPLICATION_JSON);
         String json = Dir.toJSONArray(files);
@@ -89,11 +86,9 @@ public class ResourceServlet extends HttpServlet {
      *            filter
      * @throws IOException
      *             when could not read file
-     * @throws FileNotFoundException
-     *             when file not found
      */
     private void display(HttpServletRequest request, HttpServletResponse response, File f)
-            throws IOException, FileNotFoundException {
+            throws IOException {
         long length = f.length();
         long start = 0;
         long end = length - 1;

@@ -80,8 +80,7 @@ public abstract class JSONModel<T> {
                 try {
                     Method declaredMethod = getClass().getDeclaredMethod(buildGetterName(f));
                     Object value = declaredMethod.invoke(this);
-                    serializableProps.add(new JSONPropertyModel(prop.propertyName(), value,
-                            value instanceof String || prop.quoted()));
+                    serializableProps.add(new JSONPropertyModel(prop.propertyName(), value));
                 } catch (ReflectiveOperationException e) {
                     throw new JSONException(e);
                 }

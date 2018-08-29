@@ -20,7 +20,7 @@ public class JSONPropertyModel {
         return value;
     }
 
-    public JSONPropertyModel(String name, Object value, boolean quoted) throws JSONException {
+    public JSONPropertyModel(String name, Object value) throws JSONException {
         this.name = name;
         if (value != null) {
             if (value instanceof Collection<?> || value.getClass().isArray()) {

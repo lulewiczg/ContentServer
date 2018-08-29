@@ -78,7 +78,7 @@
                                 ng-attr-target="{{file.file ? '_self' :undefined}}">{{file.name}}</a></td>
                             <td class="fileSize">{{file.size}}</td>
                             <td class="downloadBtn"><a ng-show="file.file" class="download-button" target="_blank"
-                                ng-href="{{getFileURL(file)+ '&download=true'}}"><img src="icons/download.png"></img></a>
+                                ng-href="{{getFileURL(file)+ '&download=true'}}"><img src="icons/download.png" alt="Download icon"></img></a>
                         </tr>
                     </tbody>
                 </table>

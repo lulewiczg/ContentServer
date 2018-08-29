@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import lulewiczg.contentserver.permissions.ResourceHelper;
 import lulewiczg.contentserver.utils.Constants;
-import lulewiczg.contentserver.utils.json.JSONException;
 import lulewiczg.contentserver.utils.json.JSONModel;
 
 /**
@@ -81,10 +80,8 @@ public class ShortcutsServlet extends HttpServlet {
      *            user
      * @throws IOException
      *             the IOException
-     * @throws JSONException
-     *             the JSONException
      */
-    private void processShortcutList(HttpServletResponse resp, String user) throws IOException, JSONException {
+    private void processShortcutList(HttpServletResponse resp, String user) throws IOException {
         List<String> dmz = ResourceHelper.getInstance().getAvailablePaths(user);
         List<String> dirs = new ArrayList<>();
         for (String s : dmz) {

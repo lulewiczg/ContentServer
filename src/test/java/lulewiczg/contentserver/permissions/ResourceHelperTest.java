@@ -25,6 +25,7 @@ import lulewiczg.contentserver.utils.Constants;
 
 public class ResourceHelperTest {
 
+    private static final String TEST_STRING = "Grzegorz Brzęczyczykiewicz i Że li Popą";
     private static final String DESC = "''{0}'' should {1} have access to ''{2}''";
     private static final String CONTEXT = TestUtil.LOC + "testContexts/";
     private static final String LOC = "src/test/resources/data/";
@@ -85,7 +86,7 @@ public class ResourceHelperTest {
     @ParameterizedTest(name = "''{1}'' should be hash of ''{0}''")
     @CsvFileSource(resources = "/data/csv/sha.csv")
     public void testHash(String text, String sha) {
-        assertEquals(sha, ResourceHelper.SHA1(text));
+        assertEquals(sha, ResourceHelper.sha1(text));
     }
 
     @DisplayName("User can login")
@@ -131,9 +132,8 @@ public class ResourceHelperTest {
         when(mock.getRealPath(anyString())).thenReturn(CONTEXT + 1);
         when(mock.getServerInfo()).thenReturn("tomcat");
         ResourceHelper.init(mock, LOC);
-        String expected = "Grzegorz Brzęczyczykiewicz i Że li Popą";
-        String test = new String(expected.getBytes(), StandardCharsets.ISO_8859_1);
-        assertEquals(expected, ResourceHelper.decodeParam(test));
+        String test = new String(TEST_STRING.getBytes(), StandardCharsets.ISO_8859_1);
+        assertEquals(TEST_STRING, ResourceHelper.decodeParam(test));
     }
 
     @Test
@@ -143,7 +143,6 @@ public class ResourceHelperTest {
         when(mock.getRealPath(anyString())).thenReturn(CONTEXT + 1);
         when(mock.getServerInfo()).thenReturn("jetty");
         ResourceHelper.init(mock, STRUCTURE);
-        String expected = "Grzegorz Brzęczyczykiewicz i Żyli Popą";
-        assertEquals(expected, ResourceHelper.decodeParam(expected));
+        assertEquals(TEST_STRING, ResourceHelper.decodeParam(TEST_STRING));
     }
 }

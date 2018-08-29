@@ -2,7 +2,6 @@ package lulewiczg.contentserver.permissions;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -89,10 +88,8 @@ public class ResourceHelper {
      *
      * @param contextPath
      *            servlet context
-     * @throws IOException
-     *             when could not read permissions
      */
-    private void loadPermissions(String contextPath) throws IOException {
+    private void loadPermissions(String contextPath) {
         Properties props = loadProps(contextPath);
         Map<User, String> toApply = new HashMap<>();
         for (Entry<Object, Object> e : props.entrySet()) {
@@ -170,10 +167,8 @@ public class ResourceHelper {
      *            user
      * @param value
      *            paths
-     * @throws IOException
-     *             when could not determine current path
      */
-    private void processUserPermissions(String[] keys, User user, String value) throws IOException {
+    private void processUserPermissions(String[] keys, User user, String value) {
         if (keys.length > 3 && keys[2].equals(Constants.Setting.PERMISSION)) {
             if (value.contains(DIR)) {
                 value = value.replace(DIR, testPath);
@@ -293,8 +288,7 @@ public class ResourceHelper {
         if (name == null || name.isEmpty()) {
             name = Constants.GUEST;
         }
-        User user = users.get(name);
-        return user;
+        return users.get(name);
     }
 
     /**
@@ -321,8 +315,8 @@ public class ResourceHelper {
      */
     public void login(String login, String password) throws AuthenticationException {
         User user = users.get(login);
-        String sha = SHA1(password);
-        if (user != null && user.getPassword().toUpperCase().equals(sha)) {
+        String sha = sha1(password);
+        if (user != null && user.getPassword().equalsIgnoreCase(sha)) {
             Log.getLog().logInfo("Logged: " + login);
             return;
         }
@@ -337,7 +331,7 @@ public class ResourceHelper {
      *            text to hash
      * @return hashed string
      */
-    public static String SHA1(String text) {
+    public static String sha1(String text) {
         byte[] textBytes;
         MessageDigest md;
         try {
@@ -422,7 +416,7 @@ public class ResourceHelper {
      * @return MIME
      */
     public String getMIME(String name) {
-        String type = name.substring(name.lastIndexOf(".") + 1).toLowerCase();
+        String type = name.substring(name.lastIndexOf('.') + 1).toLowerCase();
         String mime = mimes.get(type);
         if (mime == null) {
             mime = Constants.Setting.APPLICATION_OCTET_STREAM;
@@ -445,12 +439,10 @@ public class ResourceHelper {
     /**
      * Saves settings.
      *
-     * @throws FileNotFoundException
-     *             the FileNotFoundException
      * @throws IOException
      *             the IOException
      */
-    public synchronized void saveSettings() throws FileNotFoundException, IOException {
+    public synchronized void saveSettings() throws IOException {
         try (FileOutputStream os = new FileOutputStream(new File(contextPath + SETTINGS_PATH))) {
             settingsProperties.store(os, null);
         }
