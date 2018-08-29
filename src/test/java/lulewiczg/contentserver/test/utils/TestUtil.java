@@ -11,9 +11,15 @@ import lulewiczg.contentserver.permissions.ResourceHelper;
 import lulewiczg.contentserver.utils.Constants;
 import lulewiczg.contentserver.utils.models.Dir;
 
+/**
+ * Test utility.
+ * 
+ * @author lulewiczg
+ */
 public final class TestUtil {
     public static final String LOC = "src/test/resources/data/";
     private static final String COLON = "\\,";
+    public static final String URL = "http://localhost:8080/ContentServer";
 
     /**
      * Swaps helper for tests

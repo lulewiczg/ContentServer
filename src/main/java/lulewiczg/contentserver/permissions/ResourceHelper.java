@@ -54,7 +54,7 @@ public class ResourceHelper {
         return instance;
     }
 
-    static synchronized void init(String context, String testPath) {
+    public static synchronized void init(String context, String testPath) {
         instance = new ResourceHelper(context, testPath);
         Log.setLevel(instance.logLevel);
     }

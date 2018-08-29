@@ -23,6 +23,11 @@ import org.mockito.Matchers;
 import lulewiczg.contentserver.permissions.ResourceHelper;
 import lulewiczg.contentserver.utils.Constants;
 
+/**
+ * Test template for servlet tests.
+ * 
+ * @author lulewiczg
+ */
 public abstract class ServletTestTemplate {
 
     protected static final String TEST = "test";
