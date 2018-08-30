@@ -46,6 +46,6 @@ public class JSONPropertyModel {
 
     @Override
     public String toString() {
-        return String.format("\n\"%s\": %s", name, value);
+        return String.format("%n\"%s\": %s", name, value);
     }
 }

@@ -170,11 +170,23 @@ public class SeleniumTestTemplate {
      */
     protected void assertToolbarNotLogged() {
         assertToolbarsItems();
-        Assertions.assertTrue(driver.findElement(By.id(LOGIN_ID)).isDisplayed());
+        Assertions.assertTrue(driver.findElement(By.id(LOGIN_BUTTON_ID)).isDisplayed());
         Assertions.assertFalse(driver.findElement(By.id(WELCOME_LABEL_ID)).isDisplayed());
         Assertions.assertFalse(driver.findElement(By.id(SETTINGS_BUTTON_ID)).isDisplayed());
         Assertions.assertFalse(driver.findElement(By.id(LOGS_BUTTON_ID)).isDisplayed());
         Assertions.assertFalse(driver.findElement(By.id(LOGOUT_BUTTON_ID)).isDisplayed());
+    }
+
+    /**
+     * Tests if proper data is displayed on toolbar when logged.
+     */
+    protected void assertToolbarLogged() {
+        assertToolbarsItems();
+        Assertions.assertFalse(driver.findElement(By.id(LOGIN_BUTTON_ID)).isDisplayed());
+        Assertions.assertTrue(driver.findElement(By.id(WELCOME_LABEL_ID)).isDisplayed());
+        Assertions.assertFalse(driver.findElement(By.id(SETTINGS_BUTTON_ID)).isDisplayed());
+        Assertions.assertFalse(driver.findElement(By.id(LOGS_BUTTON_ID)).isDisplayed());
+        Assertions.assertTrue(driver.findElement(By.id(LOGOUT_BUTTON_ID)).isDisplayed());
     }
 
     /**

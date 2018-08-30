@@ -25,7 +25,10 @@ import lulewiczg.contentserver.utils.Constants;
 
 public class ResourceHelperTest {
 
-    private static final String TEST_STRING = "Grzegorz Brzęczyczykiewicz i Że li Popą";
+    // Grzegorz Brzęczyczykiewicz i Że li Popą
+    private static final byte[] TEST_STRING = new byte[] { 71, 114, 122, 101, 103, 111, 114, 122, 32, 66, 114, 122, -60,
+            -103, 99, 122, 121, 99, 122, 121, 107, 105, 101, 119, 105, 99, 122, 32, 105, 32, -59, -69, 101, 32, 108,
+            105, 32, 80, 111, 112, -60, -123 };
     private static final String DESC = "''{0}'' should {1} have access to ''{2}''";
     private static final String CONTEXT = TestUtil.LOC + "testContexts/";
     private static final String LOC = "src/test/resources/data/";
@@ -85,7 +88,7 @@ public class ResourceHelperTest {
     @DisplayName("Hash is porperly calculated")
     @ParameterizedTest(name = "''{1}'' should be hash of ''{0}''")
     @CsvFileSource(resources = "/data/csv/sha.csv")
-    public void testHash(String text, String sha) {
+    public void testHash(String text, String sha) throws AuthenticationException {
         assertEquals(sha, ResourceHelper.sha1(text));
     }
 
@@ -132,8 +135,8 @@ public class ResourceHelperTest {
         when(mock.getRealPath(anyString())).thenReturn(CONTEXT + 1);
         when(mock.getServerInfo()).thenReturn("tomcat");
         ResourceHelper.init(mock, LOC);
-        String test = new String(TEST_STRING.getBytes(), StandardCharsets.ISO_8859_1);
-        assertEquals(TEST_STRING, ResourceHelper.decodeParam(test));
+        String test = new String(TEST_STRING, StandardCharsets.ISO_8859_1);
+        Assertions.assertArrayEquals(TEST_STRING, ResourceHelper.decodeParam(test).getBytes(StandardCharsets.UTF_8));
     }
 
     @Test
@@ -143,6 +146,7 @@ public class ResourceHelperTest {
         when(mock.getRealPath(anyString())).thenReturn(CONTEXT + 1);
         when(mock.getServerInfo()).thenReturn("jetty");
         ResourceHelper.init(mock, STRUCTURE);
-        assertEquals(TEST_STRING, ResourceHelper.decodeParam(TEST_STRING));
+        String test = new String(TEST_STRING, StandardCharsets.UTF_8);
+        Assertions.assertArrayEquals(TEST_STRING, ResourceHelper.decodeParam(test).getBytes(StandardCharsets.UTF_8));
     }
 }

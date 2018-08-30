@@ -4,7 +4,7 @@ import lulewiczg.contentserver.utils.json.JSONModel;
 import lulewiczg.contentserver.utils.json.JSONProperty;
 
 /**
- * Model for settings..
+ * Model for settings.
  */
 public class Setting extends JSONModel<Setting> implements Comparable<Setting> {
 
@@ -35,5 +35,18 @@ public class Setting extends JSONModel<Setting> implements Comparable<Setting> {
     @Override
     public int compareTo(Setting o) {
         return name.compareTo(o.name);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Setting)) {
+            return false;
+        }
+        return name.equals(((Setting) obj).name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
     }
 }

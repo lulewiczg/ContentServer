@@ -87,8 +87,7 @@ public class ResourceServlet extends HttpServlet {
      * @throws IOException
      *             when could not read file
      */
-    private void display(HttpServletRequest request, HttpServletResponse response, File f)
-            throws IOException {
+    private void display(HttpServletRequest request, HttpServletResponse response, File f) throws IOException {
         long length = f.length();
         long start = 0;
         long end = length - 1;
@@ -109,9 +108,9 @@ public class ResourceServlet extends HttpServlet {
             } else {
                 endStr = null;
             }
-            start = startStr == null || startStr.isEmpty() ? start : Long.valueOf(startStr);
+            start = parsePosition(start, startStr);
             start = start < 0 ? 0 : start;
-            end = endStr == null || endStr.isEmpty() ? end : Long.valueOf(endStr);
+            end = parsePosition(end, endStr);
             end = end > length - 1 ? length - 1 : end;
         }
 
@@ -122,15 +121,67 @@ public class ResourceServlet extends HttpServlet {
         setHeaders(response, f, length, start, end, download, contentLength);
 
         long bytesLeft = contentLength;
+        print(response, f, start, bufferSize, bytesLeft);
+    }
+
+    /**
+     * Parses range position.
+     * 
+     * @param defaultPos
+     *            default position
+     * @param parsedPos
+     *            parsed position
+     * @return parsed position
+     */
+    private long parsePosition(long defaultPos, String parsedPos) {
+        defaultPos = parsedPos == null || parsedPos.isEmpty() ? defaultPos : Long.valueOf(parsedPos);
+        return defaultPos;
+    }
+
+    /**
+     * Prints response to output stream
+     * 
+     * @param response
+     *            response
+     * @param f
+     *            file
+     * @param start
+     *            start position
+     * @param bufferSize
+     *            buffer size
+     * @param bytesLeft
+     *            bytes left
+     * @throws IOException
+     *             the IOException
+     */
+    private void print(HttpServletResponse response, File f, long start, int bufferSize, long bytesLeft)
+            throws IOException {
         long bytesRead;
         try (BufferedInputStream stream = new BufferedInputStream(new FileInputStream(f));
                 OutputStream output = response.getOutputStream()) {
-            stream.skip(start);
+            skip(start, stream);
             byte[] buff = new byte[bufferSize];
             while ((bytesRead = stream.read(buff)) != -1 && bytesLeft > 0) {
                 output.write(buff, 0, (int) (bytesLeft < bytesRead ? bytesLeft : bytesRead));
                 bytesLeft -= bytesRead;
             }
+        }
+    }
+
+    /**
+     * Skips given amount of bytes
+     * 
+     * @param skip
+     *            bytes to skip
+     * @param stream
+     *            stream
+     * @throws IOException
+     *             the IOException
+     */
+    private void skip(long skip, BufferedInputStream stream) throws IOException {
+        long skipped = 0;
+        while (skipped != skip) {
+            skipped += stream.skip(skip);
         }
     }
 

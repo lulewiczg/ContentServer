@@ -25,7 +25,8 @@ public class ErrorServlet extends HttpServlet {
     /**
      * Retuns error code.
      *
-     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest,
+     *      javax.servlet.http.HttpServletResponse)
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -41,7 +42,11 @@ public class ErrorServlet extends HttpServlet {
         String servletName = (String) req.getAttribute(SERVLET_NAME);
         errorMsg = errorMsg == null ? "" : errorMsg;
         servletName = servletName == null ? "" : servletName;
-        resp.getWriter().write(String.format("%s error from %s: %s", statusCode, servletName, errorMsg));
+        try {
+            resp.getWriter().write(String.format("%s error from %s: %s", statusCode, servletName, errorMsg));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

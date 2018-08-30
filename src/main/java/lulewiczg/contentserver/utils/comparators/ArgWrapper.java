@@ -58,6 +58,19 @@ class ArgWrapper<T extends Comparable<T>> implements Comparable<ArgWrapper<? ext
         }
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ArgWrapper<?>)) {
+            return false;
+        }
+        return arg.equals(((ArgWrapper<?>) obj).arg);
+    }
+
+    @Override
+    public int hashCode() {
+        return arg.hashCode();
+    }
+
     /**
      * Default argument comparison.
      *

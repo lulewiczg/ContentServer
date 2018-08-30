@@ -330,15 +330,17 @@ public class ResourceHelper {
      * @param text
      *            text to hash
      * @return hashed string
+     * @throws AuthenticationException
+     *             the AuthenticationException
      */
-    public static String sha1(String text) {
+    public static String sha1(String text) throws AuthenticationException {
         byte[] textBytes;
         MessageDigest md;
         try {
             md = MessageDigest.getInstance("SHA-1");
             textBytes = text.getBytes("UTF-8");
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
+            throw new AuthenticationException("Hash algoritm not found", e);
         }
 
         md.update(textBytes, 0, textBytes.length);
@@ -375,13 +377,23 @@ public class ResourceHelper {
                 }
             }
         }
+        removeEmptyPaths(list);
+        Collections.sort(list);
+    }
+
+    /**
+     * Removes empty paths.
+     * 
+     * @param list
+     *            list to clean
+     */
+    private static void removeEmptyPaths(List<String> list) {
         Iterator<String> i = list.iterator();
         while (i.hasNext()) {
             if (i.next().equals(Constants.EMPTY)) {
                 i.remove();
             }
         }
-        Collections.sort(list);
     }
 
     /**

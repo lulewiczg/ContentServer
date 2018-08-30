@@ -11,7 +11,7 @@ import lulewiczg.contentserver.test.utils.TestUtil;
  * 
  * @author lulewiczg
  */
-public class LoginTestSelenium extends SeleniumTestTemplate {
+public class LoginSeleniumTest extends SeleniumTestTemplate {
     private static final String CONTEXT = TestUtil.LOC + "testContexts/";
     private static final String LOC = "src/test/resources/data/";
 
@@ -31,12 +31,11 @@ public class LoginTestSelenium extends SeleniumTestTemplate {
     @Test
     @DisplayName("Logs in")
     public void testLogin() {
-        ResourceHelper.init(CONTEXT + 4, LOC);
         clickLogin();
         setInputValue(LOGIN_ID, "test");
         setInputValue(PASSWORD_ID, "test");
         clickButton(LOGIN_MODAL_BUTTON_ID);
         assertloginPopupClosed();
-        assertToolbarNotLogged();
+        assertToolbarLogged();
     }
 }
