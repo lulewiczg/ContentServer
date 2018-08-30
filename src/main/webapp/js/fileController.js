@@ -3,6 +3,7 @@ angular.module('app').controller("fileController", function($http, $location, $s
     $scope.user;
     $scope.initPerformed = false;
     $scope.actualFolder;
+    $scope.depth = 0;
     $scope.folders;
     $scope.admin;
     $scope.context;
@@ -70,6 +71,7 @@ angular.module('app').controller("fileController", function($http, $location, $s
         }
         var folders = path.replace(/\\/g, '/').split('/');
         $scope.actualFolder = folders[folders.length - 1];
+        $scope.depth = folders.length - 1;
         var limit;
         var url = $scope.appName + "rest/roots?path=" + path;
         $http.get(url).then(function(result) {
@@ -86,12 +88,12 @@ angular.module('app').controller("fileController", function($http, $location, $s
                 });
             }
             $scope.folders[$scope.folders.length - 1].disabled = true;
+            console.log($scope.folders);
         }, function(result) {
             alert("Błąd!");
             console.log(result);
         });
 
-        console.log($scope.folders);
         $scope.load();
     }
 

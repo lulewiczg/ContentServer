@@ -57,8 +57,8 @@
     </nav>
     <div class="container">
         <ul class="nav nav-pills">
-            <li class="path-breadcrumb" ng-repeat="path in folders track by path.name"
-                ng-attr-id="{{path.name  === actualFolder? 'actualFolder': ''}}" ng-class="{disabled: path.disabled}"><a
+            <li class="path-breadcrumb" ng-repeat="path in folders track by path.path"
+                ng-attr-id="{{$index  === depth ? 'actualFolder': ''}}" ng-class="{disabled: path.disabled}"><a
                 ng-href="{{path.disabled ? '' : '?path='+path.path}}">{{path.name}}/</a></li>
         </ul>
         <h2>{{actualFolder}}/ :</h2>
@@ -73,7 +73,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="file in files track by file.name">
+                        <tr ng-repeat="file in files track by file.path">
                             <td class="fileName"><a class="nounderline" ng-href="{{getFileURL(file)}}"
                                 ng-attr-target="{{file.file ? '_self' :undefined}}">{{file.name}}</a></td>
                             <td class="fileSize">{{file.size}}</td>
