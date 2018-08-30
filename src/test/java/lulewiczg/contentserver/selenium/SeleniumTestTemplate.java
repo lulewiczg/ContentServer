@@ -1,6 +1,9 @@
 package lulewiczg.contentserver.selenium;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -18,6 +21,7 @@ import lulewiczg.contentserver.test.utils.TestUtil;
 
 public class SeleniumTestTemplate {
 
+    private static final String WELCOME_TXT = "Witaj, %s";
     protected static final String LOGIN_BUTTON_ID = "loginBtn";
     protected static final String LOGOUT_BUTTON_ID = "logoutBtn";
     protected static final String SETTINGS_BUTTON_ID = "settingsBtn";
@@ -29,6 +33,9 @@ public class SeleniumTestTemplate {
     protected static final String LOGIN_MODAL_BUTTON_ID = "loginModalBtn";
     protected static final String LOGIN_ID = "login";
     protected static final String PASSWORD_ID = "password";
+    protected static final String TEST3 = "test3";
+    protected static final String ADMIN = "admin";
+    protected static final String TEST = "test";
     protected WebDriver driver;
 
     /**
@@ -45,7 +52,7 @@ public class SeleniumTestTemplate {
      */
     @AfterEach
     public void after() {
-        driver.close();
+        driver.quit();
     }
 
     /**
@@ -180,12 +187,28 @@ public class SeleniumTestTemplate {
     /**
      * Tests if proper data is displayed on toolbar when logged.
      */
-    protected void assertToolbarLogged() {
+    protected void assertToolbarLogged(String name) {
         assertToolbarsItems();
         Assertions.assertFalse(driver.findElement(By.id(LOGIN_BUTTON_ID)).isDisplayed());
-        Assertions.assertTrue(driver.findElement(By.id(WELCOME_LABEL_ID)).isDisplayed());
+        WebElement label = driver.findElement(By.id(WELCOME_LABEL_ID));
+        Assertions.assertTrue(label.isDisplayed());
+        Assertions.assertEquals(String.format(WELCOME_TXT, name), label.getText());
         Assertions.assertFalse(driver.findElement(By.id(SETTINGS_BUTTON_ID)).isDisplayed());
         Assertions.assertFalse(driver.findElement(By.id(LOGS_BUTTON_ID)).isDisplayed());
+        Assertions.assertTrue(driver.findElement(By.id(LOGOUT_BUTTON_ID)).isDisplayed());
+    }
+
+    /**
+     * Tests if proper data is displayed on toolbar when admin logged.
+     */
+    protected void assertToolbarAdminLogged() {
+        assertToolbarsItems();
+        Assertions.assertFalse(driver.findElement(By.id(LOGIN_BUTTON_ID)).isDisplayed());
+        WebElement label = driver.findElement(By.id(WELCOME_LABEL_ID));
+        Assertions.assertTrue(label.isDisplayed());
+        Assertions.assertEquals(String.format(WELCOME_TXT, ADMIN), label.getText());
+        Assertions.assertTrue(driver.findElement(By.id(SETTINGS_BUTTON_ID)).isDisplayed());
+        Assertions.assertTrue(driver.findElement(By.id(LOGS_BUTTON_ID)).isDisplayed());
         Assertions.assertTrue(driver.findElement(By.id(LOGOUT_BUTTON_ID)).isDisplayed());
     }
 
@@ -222,5 +245,41 @@ public class SeleniumTestTemplate {
         } catch (NoSuchElementException e) {
             return null;
         }
+    }
+
+    /**
+     * Logs outs
+     */
+    protected void logout() {
+        clickButton(LOGOUT_BUTTON_ID);
+        driver.manage().timeouts().implicitlyWait(200, TimeUnit.MILLISECONDS);
+        clickButton(LOGOUT_BUTTON_ID);
+    }
+
+    /**
+     * Logs in
+     * 
+     * @param name
+     *            name
+     * @param password
+     *            password
+     */
+    protected void login(String name, String password) {
+        clickLogin();
+        setInputValue(LOGIN_ID, name);
+        setInputValue(PASSWORD_ID, password);
+        clickButton(LOGIN_MODAL_BUTTON_ID);
+    }
+
+    /**
+     * Opens logs
+     */
+    protected void openLogs() {
+        String handle = driver.getWindowHandle();
+        clickButton(LOGS_BUTTON_ID);
+        Set<String> handles = driver.getWindowHandles();
+        handles.remove(handle);
+        Assertions.assertEquals(1, handles.size());
+        driver = driver.switchTo().window(new ArrayList<>(handles).get(0));
     }
 }
