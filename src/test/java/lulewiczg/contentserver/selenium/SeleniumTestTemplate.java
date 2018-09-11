@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -281,5 +282,53 @@ public class SeleniumTestTemplate {
         handles.remove(handle);
         Assertions.assertEquals(1, handles.size());
         driver = driver.switchTo().window(new ArrayList<>(handles).get(0));
+    }
+
+    /**
+     * Obtains shortcuts URLs
+     * 
+     * @return shortcuts
+     */
+    protected List<String> getShortcuts() {
+        driver.findElement(By.id(SHORTCUTS_BUTTON_ID)).click();
+        List<WebElement> shortcuts = driver.findElements(By.xpath("//*[contains(@class,'shortcut-dropdown')]/a"));
+        List<String> links = shortcuts.stream().map(i -> i.getAttribute("href")).collect(Collectors.toList());
+        return links;
+    }
+
+    /**
+     * Goes to shortcut.
+     * 
+     * @param index
+     * @return shortcuts
+     */
+    protected void gotoShortcut(int index) {
+        driver.findElement(By.id(SHORTCUTS_BUTTON_ID)).click();
+        List<WebElement> shortcuts = driver.findElements(By.xpath("//*[contains(@class,'shortcut-dropdown')]/a"));
+        shortcuts.get(index).click();
+    }
+
+    protected void clickTableItem(int index) {
+        WebElement el = driver.findElement(
+                By.xpath(String.format("(//table[contains(@class,'content-table')]//tr)[%s]/td[1]/a", index + 1)));
+        Assertions.assertNotNull(el, "Table item not found");
+        el.click();
+    }
+
+    /**
+     * Obtains breadcrumbs.
+     * 
+     * @return breadcrumbs
+     */
+    protected List<WebElement> getBreadcrumbs() {
+        return driver.findElements(By.className("path-breadcrumb"));
+    }
+
+    /**
+     * Goes 1 directory up if possible.
+     */
+    protected void goUp() {
+        List<WebElement> breadcrumbs = getBreadcrumbs();
+        breadcrumbs.get(breadcrumbs.size() - 2).click();
     }
 }

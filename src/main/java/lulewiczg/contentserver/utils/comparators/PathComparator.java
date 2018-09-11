@@ -27,7 +27,15 @@ public class PathComparator implements Comparator<Dir> {
     public int compare(Dir dir1, Dir dir2) {
         String s1 = dir1.getName().toLowerCase();
         String s2 = dir2.getName().toLowerCase();
-
+        String tmpS1 = s1.replace(Constants.SEP, "");
+        String tmpS2 = s2.replace(Constants.SEP, "");
+        if (s1.endsWith(Constants.SEP) && s2.endsWith(Constants.SEP)) {
+            if (tmpS1.startsWith(tmpS2)) {
+                return 1;
+            } else if (tmpS2.startsWith(tmpS1)) {
+                return -1;
+            }
+        }
         List<ArgWrapper<? extends Comparable<?>>> split = split(s1);
         List<ArgWrapper<? extends Comparable<?>>> split2 = split(s2);
 
@@ -36,6 +44,7 @@ public class PathComparator implements Comparator<Dir> {
         } else if (!s1.endsWith(Constants.SEP) && s2.endsWith(Constants.SEP)) {
             return 1;
         }
+
         int result = 0;
         int min = Math.min(split.size(), split2.size());
         for (int i = 0; i < min; i++) {

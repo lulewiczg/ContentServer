@@ -61,7 +61,7 @@
                 ng-attr-id="{{$index  === depth ? 'actualFolder': ''}}" ng-class="{disabled: path.disabled}"><a
                 ng-href="{{path.disabled ? '' : '?path='+path.path}}">{{path.name}}/</a></li>
         </ul>
-        <h2>{{actualFolder}}/ :</h2>
+        <h2 id="folderTitle">{{actualFolder}}/ :</h2>
         <div class="modal-body">
             <form name="form">
                 <table class="table table-striped table-hover content-table">

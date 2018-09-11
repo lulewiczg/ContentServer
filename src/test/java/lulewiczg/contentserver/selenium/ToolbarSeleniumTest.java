@@ -1,12 +1,15 @@
 package lulewiczg.contentserver.selenium;
 
+import java.util.List;
+import java.util.stream.IntStream;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 
 /**
- * Selenium tests for login.
+ * Selenium tests for plain toolbar actions.
  * 
  * @author lulewiczg
  */
@@ -87,5 +90,34 @@ public class ToolbarSeleniumTest extends SeleniumTestTemplate {
         driver.navigate().refresh();
         String logs2 = driver.findElement(By.tagName("body")).getText();
         Assertions.assertTrue(logs2.length() > logs.length());
+    }
+
+    @Test
+    @DisplayName("Checks shortcuts menu as admin")
+    public void testShortcutsAdmin() {
+        login(ADMIN, TEST3);
+        List<String> shortcuts = getShortcuts();
+        List<String> expected = List.of("/data/structure");
+        Assertions.assertAll(IntStream.range(0, expected.size()).boxed().map(i -> () -> Assertions
+                .assertTrue(shortcuts.get(i).endsWith(expected.get(i)), "Shortcut path is invalid")));
+    }
+
+    @Test
+    @DisplayName("Checks shortcuts menu as user")
+    public void testShortcuts() {
+        login(TEST, TEST);
+        List<String> shortcuts = getShortcuts();
+        List<String> expected = List.of("/data/structure/folder1", "/data/structure/folder2/folder2");
+        Assertions.assertAll(IntStream.range(0, expected.size()).boxed().map(i -> () -> Assertions
+                .assertTrue(shortcuts.get(i).endsWith(expected.get(i)), "Shortcut path is invalid")));
+    }
+
+    @Test
+    @DisplayName("Checks shortcuts menu as guest")
+    public void testShortcutsGuest() {
+        List<String> shortcuts = getShortcuts();
+        List<String> expected = List.of("/data/structure/folder1/folder1", "/data/structure/folder2/folder2");
+        Assertions.assertAll(IntStream.range(0, expected.size()).boxed().map(i -> () -> Assertions
+                .assertTrue(shortcuts.get(i).endsWith(expected.get(i)), "Shortcut path is invalid")));
     }
 }
