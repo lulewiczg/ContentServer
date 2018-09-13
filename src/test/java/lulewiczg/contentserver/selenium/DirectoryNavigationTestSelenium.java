@@ -1,9 +1,12 @@
 package lulewiczg.contentserver.selenium;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +14,15 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.apache.http.HttpHeaders;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -68,6 +78,36 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
             testNav((i, len) -> i != len - 1);
             goUp();
         }
+    }
+
+    @Test
+    @DisplayName("Opens file")
+    public void testOpenFile() {
+        login(TEST, TEST);
+        gotoShortcut(0);
+        clickTableItem(4);
+        String text = driver.findElement(By.tagName("body")).getText();
+        Assertions.assertEquals(TEST, text);
+    }
+
+    @Test
+    @DisplayName("Downloads file")
+    public void testDownloadFile() throws ClientProtocolException, IOException {
+        login(TEST, TEST);
+        gotoShortcut(0);
+        String downloadLink = getDownloadLink(4);
+        HttpGet request = new HttpGet(downloadLink);
+        String auth = TEST + ":" + TEST;
+        byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.ISO_8859_1));
+        String authHeader = "Basic " + new String(encodedAuth);
+        request.setHeader(HttpHeaders.AUTHORIZATION, authHeader);
+
+        HttpClient client = HttpClientBuilder.create().build();
+        HttpResponse response = client.execute(request);
+        Assertions.assertEquals(response.getStatusLine().getStatusCode(), HttpStatus.SC_PARTIAL_CONTENT);
+        Assertions.assertEquals(response.getFirstHeader("Content-Type").getValue(), Constants.Setting.PLAIN_TEXT);
+        Assertions.assertEquals(response.getFirstHeader("Content-Length").getValue(), "4");
+
     }
 
     /**

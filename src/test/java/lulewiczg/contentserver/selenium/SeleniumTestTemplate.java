@@ -22,6 +22,7 @@ import lulewiczg.contentserver.test.utils.TestUtil;
 
 public class SeleniumTestTemplate {
 
+    private static final String HREF = "href";
     private static final String WELCOME_TXT = "Witaj, %s";
     protected static final String LOGIN_BUTTON_ID = "loginBtn";
     protected static final String LOGOUT_BUTTON_ID = "logoutBtn";
@@ -292,7 +293,7 @@ public class SeleniumTestTemplate {
     protected List<String> getShortcuts() {
         driver.findElement(By.id(SHORTCUTS_BUTTON_ID)).click();
         List<WebElement> shortcuts = driver.findElements(By.xpath("//*[contains(@class,'shortcut-dropdown')]/a"));
-        List<String> links = shortcuts.stream().map(i -> i.getAttribute("href")).collect(Collectors.toList());
+        List<String> links = shortcuts.stream().map(i -> i.getAttribute(HREF)).collect(Collectors.toList());
         return links;
     }
 
@@ -308,11 +309,31 @@ public class SeleniumTestTemplate {
         shortcuts.get(index).click();
     }
 
+    /**
+     * Clicks at table item
+     * 
+     * @param index
+     *            index
+     */
     protected void clickTableItem(int index) {
         WebElement el = driver.findElement(
                 By.xpath(String.format("(//table[contains(@class,'content-table')]//tr)[%s]/td[1]/a", index + 1)));
         Assertions.assertNotNull(el, "Table item not found");
         el.click();
+    }
+
+    /**
+     * Gets download link
+     * 
+     * @param index
+     *            index
+     * @return link
+     */
+    protected String getDownloadLink(int index) {
+        WebElement el = driver.findElement(
+                By.xpath(String.format("(//table[contains(@class,'content-table')]//tr)[%s]/td[1]/a", index + 1)));
+        Assertions.assertNotNull(el, "Table item not found");
+        return el.getAttribute(HREF);
     }
 
     /**
