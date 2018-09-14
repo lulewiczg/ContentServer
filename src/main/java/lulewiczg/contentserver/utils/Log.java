@@ -2,8 +2,10 @@ package lulewiczg.contentserver.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
@@ -18,12 +20,14 @@ import javax.servlet.http.HttpSession;
  *
  */
 public class Log {
+    private static final String FORMAT = "[%1$tF %1$tT] [%4$s] - %5$s %n";
     public static final String LOG_LOCATION = "/WEB-INF/logs/log.txt";
     private static final Log DUMMY_LOG = new DummyLog();
     private static Log instance;
     private static final Logger log = Logger.getLogger("Log");
     static {
-        System.setProperty("java.util.logging.SimpleFormatter.format", "[%1$tF %1$tT] [%4$-7s] - %5$s %n");
+        System.setProperty("java.util.logging.SimpleFormatter.format", FORMAT);
+        System.setProperty("jdk.system.logger.format", FORMAT);
     }
 
     private Log(String path) {
@@ -32,8 +36,29 @@ public class Log {
             file.getParentFile().mkdirs();
         }
         log.setLevel(Level.ALL);
-        SimpleFormatter formatter = new SimpleFormatter();
-        log.addHandler(new StreamHandler(System.out, formatter));
+        SimpleFormatter formatter = new SimpleFormatter() {
+
+            @Override
+            public synchronized String format(LogRecord lr) {
+                return String.format(FORMAT, new Date(lr.getMillis()), null, null, lr.getLevel().getLocalizedName(),
+                        lr.getMessage());
+            }
+        };
+        addHandlers(file, formatter);
+    }
+
+    /**
+     * Adds console and file handlers
+     * 
+     * @param file
+     *            file to log
+     * @param formatter
+     *            formatter
+     */
+    private void addHandlers(File file, SimpleFormatter formatter) {
+        StreamHandler consoleHandler = new StreamHandler(System.out, formatter);
+        consoleHandler.setFormatter(formatter);
+        log.addHandler(consoleHandler);
         try {
             FileHandler handler = new FileHandler(file.getPath());
             handler.setFormatter(formatter);
@@ -44,7 +69,7 @@ public class Log {
         }
     }
 
-    Log() {
+    protected Log() {
     }
 
     /**

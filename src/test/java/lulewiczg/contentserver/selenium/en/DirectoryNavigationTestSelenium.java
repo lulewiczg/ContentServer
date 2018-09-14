@@ -1,4 +1,4 @@
-package lulewiczg.contentserver.selenium;
+package lulewiczg.contentserver.selenium.en;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +32,9 @@ import org.opentest4j.MultipleFailuresError;
 
 import com.google.common.base.Charsets;
 
+import lulewiczg.contentserver.selenium.ExpectedMsg;
+import lulewiczg.contentserver.selenium.ExpectedMsgEN;
+import lulewiczg.contentserver.selenium.SeleniumTestTemplate;
 import lulewiczg.contentserver.test.utils.NavigationData;
 import lulewiczg.contentserver.test.utils.TestUtil;
 import lulewiczg.contentserver.utils.Constants;
@@ -44,6 +47,11 @@ import lulewiczg.contentserver.utils.models.Dir;
  * @author lulewiczg
  */
 public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
+
+    @Override
+    protected ExpectedMsg getMsgs() {
+        return new ExpectedMsgEN();
+    }
 
     @Test
     @DisplayName("Navigation is not clickable when it is nowhere to go")
@@ -168,7 +176,7 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
         WebElement table = driver.findElement(By.xpath("//table[contains(@class,'content-table')]"));
         List<String> headers = table.findElements(By.tagName("th")).stream().map(WebElement::getText)
                 .collect(Collectors.toList());
-        List<String> expectedHeaders = List.of("Nazwa Pliku", "Rozmiar", "Opcje");
+        List<String> expectedHeaders = List.of(msg.getFileName(), msg.getFileSize(), msg.getOptions());
         Assertions.assertEquals(expectedHeaders, headers);
 
         File[] files = getSortedFiles(path);

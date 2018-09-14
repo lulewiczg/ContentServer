@@ -17,13 +17,19 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.firefox.FirefoxProfile;
 
 import lulewiczg.contentserver.test.utils.TestUtil;
 
-public class SeleniumTestTemplate {
+/**
+ * Template for selenium tests.
+ * 
+ * @author lulewiczg
+ */
+public abstract class SeleniumTestTemplate {
 
     private static final String HREF = "href";
-    private static final String WELCOME_TXT = "Witaj, %s";
     protected static final String LOGIN_BUTTON_ID = "loginBtn";
     protected static final String LOGOUT_BUTTON_ID = "logoutBtn";
     protected static final String SETTINGS_BUTTON_ID = "settingsBtn";
@@ -39,15 +45,26 @@ public class SeleniumTestTemplate {
     protected static final String ADMIN = "admin";
     protected static final String TEST = "test";
     protected WebDriver driver;
+    protected ExpectedMsg msg;
 
     /**
      * Goes to main page.
      */
     @BeforeEach
     public void before() {
-        driver = new FirefoxDriver();
+        msg = getMsgs();
+        FirefoxOptions opt = new FirefoxOptions();
+        FirefoxProfile prof = new FirefoxProfile();
+        prof.setPreference("intl.accept_languages", msg.getLang());
+        opt.setProfile(prof);
+        driver = new FirefoxDriver(opt);
         driver.navigate().to(TestUtil.URL);
     }
+
+    /**
+     * Declare expected messages and lang.
+     */
+    protected abstract ExpectedMsg getMsgs();
 
     /**
      * Closes session.
@@ -140,18 +157,18 @@ public class SeleniumTestTemplate {
 
         WebElement logo = driver.findElement(By.id(LOGO_ID));
         Assertions.assertNotNull(logo);
-        Assertions.assertEquals("Pokazywarka", getText(driver, logo));
+        Assertions.assertEquals(msg.getAppTitle(), getText(driver, logo));
         Assertions.assertEquals(toolbarElements.get(0), logo);
 
         WebElement shortcuts = driver.findElement(By.id(SHORTCUTS_BUTTON_ID));
         Assertions.assertNotNull(shortcuts);
-        Assertions.assertEquals("Na Skróty", getText(driver, shortcuts));
+        Assertions.assertEquals(msg.getShortcuts(), getText(driver, shortcuts));
         Assertions.assertNotEquals(0, shortcuts.findElements(By.className("shortcut-dropdown")));
         Assertions.assertEquals(toolbarElements.get(1), shortcuts);
 
         WebElement login = driver.findElement(By.id(LOGIN_BUTTON_ID));
         Assertions.assertNotNull(login);
-        Assertions.assertEquals("Zaloguj", getText(driver, login));
+        Assertions.assertEquals(msg.getLogin(), getText(driver, login));
         Assertions.assertEquals(toolbarElements.get(2), login);
 
         WebElement label = driver.findElement(By.id(WELCOME_LABEL_ID));
@@ -160,17 +177,17 @@ public class SeleniumTestTemplate {
 
         WebElement logs = driver.findElement(By.id(LOGS_BUTTON_ID));
         Assertions.assertNotNull(logs);
-        Assertions.assertEquals("Logi", getText(driver, logs));
+        Assertions.assertEquals(msg.getLogs(), getText(driver, logs));
         Assertions.assertEquals(toolbarElements.get(4), logs);
 
         WebElement settings = driver.findElement(By.id(SETTINGS_BUTTON_ID));
         Assertions.assertNotNull(settings);
-        Assertions.assertEquals("Ustawienia", getText(driver, settings));
+        Assertions.assertEquals(msg.getSettings(), getText(driver, settings));
         Assertions.assertEquals(toolbarElements.get(5), settings);
 
         WebElement logout = driver.findElement(By.id(LOGOUT_BUTTON_ID));
         Assertions.assertNotNull(logout);
-        Assertions.assertEquals("Wyloguj", getText(driver, logout));
+        Assertions.assertEquals(msg.getLogout(), getText(driver, logout));
         Assertions.assertEquals(toolbarElements.get(6), logout);
     }
 
@@ -194,7 +211,7 @@ public class SeleniumTestTemplate {
         Assertions.assertFalse(driver.findElement(By.id(LOGIN_BUTTON_ID)).isDisplayed());
         WebElement label = driver.findElement(By.id(WELCOME_LABEL_ID));
         Assertions.assertTrue(label.isDisplayed());
-        Assertions.assertEquals(String.format(WELCOME_TXT, name), label.getText());
+        Assertions.assertEquals(String.format(msg.getWelcome(), name), label.getText());
         Assertions.assertFalse(driver.findElement(By.id(SETTINGS_BUTTON_ID)).isDisplayed());
         Assertions.assertFalse(driver.findElement(By.id(LOGS_BUTTON_ID)).isDisplayed());
         Assertions.assertTrue(driver.findElement(By.id(LOGOUT_BUTTON_ID)).isDisplayed());
@@ -208,7 +225,7 @@ public class SeleniumTestTemplate {
         Assertions.assertFalse(driver.findElement(By.id(LOGIN_BUTTON_ID)).isDisplayed());
         WebElement label = driver.findElement(By.id(WELCOME_LABEL_ID));
         Assertions.assertTrue(label.isDisplayed());
-        Assertions.assertEquals(String.format(WELCOME_TXT, ADMIN), label.getText());
+        Assertions.assertEquals(String.format(msg.getWelcome(), ADMIN), label.getText());
         Assertions.assertTrue(driver.findElement(By.id(SETTINGS_BUTTON_ID)).isDisplayed());
         Assertions.assertTrue(driver.findElement(By.id(LOGS_BUTTON_ID)).isDisplayed());
         Assertions.assertTrue(driver.findElement(By.id(LOGOUT_BUTTON_ID)).isDisplayed());

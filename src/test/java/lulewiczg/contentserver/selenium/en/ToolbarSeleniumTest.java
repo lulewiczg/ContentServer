@@ -1,4 +1,4 @@
-package lulewiczg.contentserver.selenium;
+package lulewiczg.contentserver.selenium.en;
 
 import java.util.List;
 import java.util.stream.IntStream;
@@ -8,6 +8,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 
+import lulewiczg.contentserver.selenium.ExpectedMsg;
+import lulewiczg.contentserver.selenium.ExpectedMsgEN;
+import lulewiczg.contentserver.selenium.SeleniumTestTemplate;
+
 /**
  * Selenium tests for plain toolbar actions.
  * 
@@ -15,11 +19,16 @@ import org.openqa.selenium.By;
  */
 public class ToolbarSeleniumTest extends SeleniumTestTemplate {
 
+    @Override
+    protected ExpectedMsg getMsgs() {
+        return new ExpectedMsgEN();
+    }
+
     @Test
     @DisplayName("Logs in with invalid credentials")
     public void testLoginInvalidCredentials() {
         login("abc", "bcd");
-        assertAlert("Użytkownik lub hasło jest niepoprawne!");
+        assertAlert(msg.getInvalidCredentialsError());
         assertloginPopupPresent();
         assertToolbarNotLogged();
     }
@@ -120,4 +129,5 @@ public class ToolbarSeleniumTest extends SeleniumTestTemplate {
         Assertions.assertAll(IntStream.range(0, expected.size()).boxed().map(i -> () -> Assertions
                 .assertTrue(shortcuts.get(i).endsWith(expected.get(i)), "Shortcut path is invalid")));
     }
+
 }
