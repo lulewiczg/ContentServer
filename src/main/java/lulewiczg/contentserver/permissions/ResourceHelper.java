@@ -24,6 +24,7 @@ import java.util.logging.Level;
 
 import javax.security.sasl.AuthenticationException;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 
 import lulewiczg.contentserver.utils.Constants;
 import lulewiczg.contentserver.utils.Log;
@@ -310,14 +311,17 @@ public class ResourceHelper {
      *            login
      * @param password
      *            password
+     * @param session
+     *            session
      * @throws AuthenticationException
      *             when login or password were incorrect
      */
-    public void login(String login, String password) throws AuthenticationException {
+    public void login(String login, String password, HttpSession session) throws AuthenticationException {
         User user = users.get(login);
         String sha = sha1(password);
         if (user != null && user.getPassword().equalsIgnoreCase(sha)) {
             Log.getLog().logInfo("Logged: " + login);
+            session.setAttribute(Constants.Web.USER, login);
             return;
         }
         Log.getLog().logError("Invalid password: " + login);

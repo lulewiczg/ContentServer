@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import lulewiczg.contentserver.utils.Constants;
+import lulewiczg.contentserver.utils.Log;
 
 /**
  * Handles errors.
@@ -32,20 +33,23 @@ public class ErrorServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType(Constants.Setting.PLAIN_TEXT);
         String errorMsg = (String) req.getAttribute(ERROR_MSG);
-        if (errorMsg == null || errorMsg.isEmpty()) {
-            Throwable throwable = (Throwable) req.getAttribute(ERROR_EXC);
-            if (throwable != null) {
-                errorMsg = throwable.getMessage() + "\n" + throwable.toString();
-            }
+        Throwable throwable = (Throwable) req.getAttribute(ERROR_EXC);
+        if ((errorMsg == null || errorMsg.isEmpty()) && throwable != null) {
+            errorMsg = throwable.getMessage() + "\n" + throwable.toString();
         }
         Integer statusCode = (Integer) req.getAttribute(ERROR_CODE);
         String servletName = (String) req.getAttribute(SERVLET_NAME);
         errorMsg = errorMsg == null ? "" : errorMsg;
         servletName = servletName == null ? "" : servletName;
         try {
-            resp.getWriter().write(String.format("%s error from %s: %s", statusCode, servletName, errorMsg));
+            String error = String.format("%s error from %s: %s", statusCode, servletName, errorMsg);
+            resp.getWriter().write(error);
+            Log.getLog().logError(error);
+            if (throwable != null) {
+                Log.getLog().log(throwable);
+            }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.getLog().log(e);
         }
     }
 

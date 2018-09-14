@@ -24,7 +24,8 @@ public class LoginServlet extends HttpServlet {
     /**
      * Returns currenly logged user.
      *
-     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest,
+     *      javax.servlet.http.HttpServletResponse)
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -39,7 +40,8 @@ public class LoginServlet extends HttpServlet {
     /**
      * Logs in.
      *
-     * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest,
+     *      javax.servlet.http.HttpServletResponse)
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -56,8 +58,7 @@ public class LoginServlet extends HttpServlet {
                 return;
             }
             try {
-                ResourceHelper.getInstance().login(login, password);
-                session.setAttribute(Constants.Web.USER, login);
+                ResourceHelper.getInstance().login(login, password, session);
                 resp.getWriter().write(login);
             } catch (Exception e) {
                 Log.getLog().log(e);

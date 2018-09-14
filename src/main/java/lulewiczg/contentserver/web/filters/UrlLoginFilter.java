@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import lulewiczg.contentserver.permissions.ResourceHelper;
-import lulewiczg.contentserver.utils.Constants;
 
 /**
  * Performs basic HTTP login
@@ -44,8 +43,7 @@ public class UrlLoginFilter implements Filter {
             auth = auth.replace(BASIC, "");
             String decode = new String(Base64.getDecoder().decode(auth));
             String[] split = decode.split("\\:");
-            ResourceHelper.getInstance().login(split[0], split[1]);
-            session.setAttribute(Constants.Web.USER, split[0]);
+            ResourceHelper.getInstance().login(split[0], split[1], session);
         }
         chain.doFilter(req, resp);
     }

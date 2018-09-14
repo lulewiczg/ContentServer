@@ -1,7 +1,10 @@
 package lulewiczg.contentserver.web.servlets;
 
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -54,6 +57,7 @@ public class LoginServletTest extends ServletTestTemplate {
         servlet.doPost(request, response);
 
         verifyError(401);
+        verify(session, never()).setAttribute(anyString(), anyString());
     }
 
     @Test
@@ -66,6 +70,7 @@ public class LoginServletTest extends ServletTestTemplate {
         servlet.doPost(request, response);
 
         verifyError(401);
+        verify(session, never()).setAttribute(anyString(), anyString());
     }
 
     @Test
@@ -78,6 +83,7 @@ public class LoginServletTest extends ServletTestTemplate {
         servlet.doPost(request, response);
 
         verifyError(403);
+        verify(session, never()).setAttribute(anyString(), anyString());
     }
 
     @Test
@@ -90,6 +96,7 @@ public class LoginServletTest extends ServletTestTemplate {
         servlet.doPost(request, response);
 
         verifyError(403);
+        verify(session, never()).setAttribute(anyString(), anyString());
     }
 
     @Test
@@ -98,11 +105,12 @@ public class LoginServletTest extends ServletTestTemplate {
         when(request.getParameter(Constants.Web.LOGIN)).thenReturn(TEST);
         when(request.getParameter(Constants.Web.PASSWORD)).thenReturn(TEST);
         when(session.getAttribute(Constants.Web.USER)).thenReturn(null);
-        doThrow(AuthenticationException.class).when(helper).login(eq(TEST), eq(TEST));
+        doThrow(AuthenticationException.class).when(helper).login(eq(TEST), eq(TEST), eq(session));
 
         servlet.doPost(request, response);
 
         verifyError(401);
+        verify(session, never()).setAttribute(anyString(), anyString());
     }
 
     @Test

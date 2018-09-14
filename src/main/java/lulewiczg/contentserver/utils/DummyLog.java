@@ -21,7 +21,7 @@ public class DummyLog extends Log {
      * @see lulewiczg.contentserver.utils.Log#log(java.lang.Exception)
      */
     @Override
-    public void log(Exception ex) {
+    public void log(Throwable ex) {
         // Do nothing
     }
 

@@ -2,6 +2,11 @@ package lulewiczg.contentserver.permissions;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -12,6 +17,7 @@ import java.util.List;
 
 import javax.security.sasl.AuthenticationException;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -96,19 +102,24 @@ public class ResourceHelperTest {
     @ParameterizedTest(name = "User ''{0}'' should log in with password ''{1}''")
     @CsvFileSource(resources = "/data/csv/logins.csv")
     public void testLogin(String user, String password) throws AuthenticationException {
+        HttpSession session = mock(HttpSession.class);
         ResourceHelper.init(CONTEXT + 4, STRUCTURE);
         ResourceHelper instance = ResourceHelper.getInstance();
-        instance.login(user, password);
+        instance.login(user, password, session);
+        verify(session, times(1)).setAttribute(eq(Constants.Web.USER), eq(user));
     }
 
     @DisplayName("User can not login with invalid password or login")
     @ParameterizedTest(name = "User ''{0}'' should not log in with password ''{1}''")
     @CsvFileSource(resources = "/data/csv/logins-invalid.csv")
     public void testLoginFailed(String user, String password) throws AuthenticationException {
+        HttpSession session = mock(HttpSession.class);
         ResourceHelper.init(CONTEXT + 4, STRUCTURE);
         ResourceHelper instance = ResourceHelper.getInstance();
-        Assertions.assertThrows(AuthenticationException.class, () -> instance.login(user, password),
+        Assertions.assertThrows(AuthenticationException.class, () -> instance.login(user, password, session),
                 "Invalid login or password");
+        verify(session, never()).setAttribute(anyString(), anyString());
+
     }
 
     @Test

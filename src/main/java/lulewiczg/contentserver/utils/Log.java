@@ -85,7 +85,7 @@ public class Log {
      * @param str
      *            string
      */
-    public void log(Exception ex) {
+    public void log(Throwable ex) {
         log.log(Level.SEVERE, "Exception - ", ex);
     }
 
