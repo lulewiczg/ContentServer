@@ -35,7 +35,8 @@ public abstract class SeleniumTestTemplate {
     protected static final String SETTINGS_BUTTON_ID = "settingsBtn";
     protected static final String LOGS_BUTTON_ID = "logsBtn";
     protected static final String WELCOME_LABEL_ID = "userLbl";
-
+    protected static final String CLOSE_BTN_ID = "closeBtn";
+    protected static final String SAVE_BTN_ID = "saveBtn";
     protected static final String SHORTCUTS_BUTTON_ID = "shortcutsBtn";
     protected static final String LOGO_ID = "logo";
     protected static final String LOGIN_MODAL_BUTTON_ID = "loginModalBtn";
@@ -102,6 +103,14 @@ public abstract class SeleniumTestTemplate {
     }
 
     /**
+     * Checks if settings popup is opened.
+     */
+    protected void assertSettingsPopupPresent() {
+        WebElement settingsBox = getElementIfPresent(driver, By.className("settings-box"));
+        Assertions.assertNotNull(settingsBox);
+    }
+
+    /**
      * Checks if login popup is closed.
      */
     protected void assertloginPopupClosed() {
@@ -145,7 +154,20 @@ public abstract class SeleniumTestTemplate {
     protected void setInputValue(String id, String value) {
         WebElement input = driver.findElement(By.id(id));
         Assertions.assertNotNull(input);
+        input.clear();
         input.sendKeys(value);
+    }
+
+    /**
+     * Gets input value.
+     * 
+     * @param id
+     *            input ID
+     */
+    protected String getInputValue(String id) {
+        WebElement input = driver.findElement(By.id(id));
+        Assertions.assertNotNull(input);
+        return input.getAttribute("value");
     }
 
     /**
@@ -291,6 +313,24 @@ public abstract class SeleniumTestTemplate {
     }
 
     /**
+     * Closes popup.
+     */
+    protected void closePopup() {
+        WebElement btn = driver.findElement(By.id(CLOSE_BTN_ID));
+        Assertions.assertNotNull(btn);
+        btn.click();
+    }
+
+    /**
+     * Saves settings
+     */
+    protected void saveSettings() {
+        WebElement btn = driver.findElement(By.id(SAVE_BTN_ID));
+        Assertions.assertNotNull(btn);
+        btn.click();
+    }
+
+    /**
      * Opens logs
      */
     protected void openLogs() {
@@ -300,6 +340,7 @@ public abstract class SeleniumTestTemplate {
         handles.remove(handle);
         Assertions.assertEquals(1, handles.size());
         driver = driver.switchTo().window(new ArrayList<>(handles).get(0));
+        driver.manage().timeouts().pageLoadTimeout(1, TimeUnit.SECONDS);
     }
 
     /**

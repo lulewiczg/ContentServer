@@ -20,6 +20,16 @@ public abstract class ExpectedMsg {
     protected String welcome;
     protected String logs;
     protected String settings;
+    protected String settingsNotSavedError;
+    protected String settingsSaved;
+
+    public String getSettingsNotSavedError() {
+        return settingsNotSavedError;
+    }
+
+    public String getSettingsSaved() {
+        return settingsSaved;
+    }
 
     public String getLang() {
         return lang;

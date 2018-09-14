@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public final class JSONUtil {
 
@@ -20,6 +21,8 @@ public final class JSONUtil {
         List toProcess;
         if (value instanceof Collection<?>) {
             toProcess = new ArrayList<>((Collection<?>) value);
+        } else if (value instanceof Map<?, ?>) {
+            toProcess = new ArrayList<>(((Map<?, ?>) value).entrySet());
         } else {
             toProcess = new ArrayList<>();
             int length = Array.getLength(value);

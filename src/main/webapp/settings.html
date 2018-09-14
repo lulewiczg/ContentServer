@@ -5,7 +5,7 @@
 <title>Settings popup</title>
 </head>
 <div class="modal-header">
-    <div class="modal-body settings">
+    <div class="modal-body settings settings-box">
         <div class="container">
             <h2>{{'settings.title' | translate}}</h2>
             <form name="settingsForm">
@@ -20,10 +20,10 @@
                     <div class="form-group row">
                         <div class="col-sm-4"></div>
                         <div class="col-sm-2">
-                            <button class="btn form-control btn-warning" ng-click="save()">{{'popup.save' | translate}}</button>
+                            <button id="saveBtn" class="btn form-control btn-warning" ng-click="save()">{{'popup.save' | translate}}</button>
                         </div>
                         <div class="col-sm-2">
-                            <button class="btn form-control btn-info" ng-click="close()">{{'popup.close' | translate}}</button>
+                            <button id="closeBtn" class="btn form-control btn-info" ng-click="close()">{{'popup.close' | translate}}</button>
                         </div>
                     </div>
                 </div>

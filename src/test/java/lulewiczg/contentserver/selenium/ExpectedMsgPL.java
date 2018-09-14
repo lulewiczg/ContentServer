@@ -20,5 +20,7 @@ public class ExpectedMsgPL extends ExpectedMsg {
         this.welcome = "Witaj, %s";
         this.logs = "Logi";
         this.settings = "Ustawienia";
+        this.settingsNotSavedError = "Błąd przy zapisie ustawień!";
+        this.settingsSaved = "Ustawienia zapisane!";
     }
 }

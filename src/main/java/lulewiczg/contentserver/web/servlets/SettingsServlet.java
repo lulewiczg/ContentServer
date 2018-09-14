@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
@@ -54,11 +53,11 @@ public class SettingsServlet extends HttpServlet {
     @Override
     @SuppressWarnings("unchecked")
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Map<String, String[]> parameterMap = req.getParameterMap();
+        List<Setting> settings = Setting.load(req.getParameterMap());
         Properties props = ResourceHelper.getInstance().getSettingsProperties();
-        for (Entry<String, String[]> e : parameterMap.entrySet()) {
-            props.setProperty(e.getKey(), e.getValue()[0]);
-            Log.getLog().logInfo(String.format("Changed %s to %s", e.getKey(), e.getValue()[0]));
+        for (Setting s : settings) {
+            props.setProperty(s.getName(), s.getValue().toString());
+            Log.getLog().logInfo(String.format("Changed %s to %s", s.getName(), s.getValue()));
         }
         ResourceHelper.getInstance().saveSettings();
     }

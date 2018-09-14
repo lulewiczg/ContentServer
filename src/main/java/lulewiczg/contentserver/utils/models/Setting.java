@@ -1,5 +1,13 @@
 package lulewiczg.contentserver.utils.models;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.logging.Level;
+
+import lulewiczg.contentserver.utils.Constants;
 import lulewiczg.contentserver.utils.json.JSONModel;
 import lulewiczg.contentserver.utils.json.JSONProperty;
 
@@ -48,5 +56,36 @@ public class Setting extends JSONModel<Setting> implements Comparable<Setting> {
     @Override
     public int hashCode() {
         return name.hashCode();
+    }
+
+    /**
+     * Parses settings to save.
+     * 
+     * @param data
+     *            data to save
+     * @return parsed settings
+     */
+    public static List<Setting> load(Map<String, Object> data) {
+        // Maybe change this later?
+        List<Setting> settings = new ArrayList<>();
+        Set<Entry<String, Object>> entrySet = data.entrySet();
+        for (Map.Entry<String, Object> e : entrySet) {
+            String key = e.getKey();
+            String value;
+            if (e.getValue().getClass().isArray()) {
+                value = ((String[]) e.getValue())[0];
+            } else {
+                value = e.getValue().toString();
+            }
+            Setting parsed;
+            if (key.equals(Constants.Setting.BUFFER_SIZE)) {
+                value = Integer.parseInt(value) + "";
+            } else if (key.equals(Constants.Setting.LOGGER_LEVEL)) {
+                value = Level.parse(value).toString();
+            }
+            parsed = new Setting(key, value);
+            settings.add(parsed);
+        }
+        return settings;
     }
 }

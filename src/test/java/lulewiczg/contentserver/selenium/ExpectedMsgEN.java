@@ -20,5 +20,7 @@ public class ExpectedMsgEN extends ExpectedMsg {
         this.welcome = "Hello, %s";
         this.logs = "Logs";
         this.settings = "Settings";
+        this.settingsNotSavedError = "Failed to save settings!";
+        this.settingsSaved = "Settings saved!";
     }
 }
