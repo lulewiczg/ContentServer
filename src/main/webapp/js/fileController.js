@@ -1,4 +1,4 @@
-angular.module('app').controller("fileController", function($http, $location, $scope, $modal, $window) {
+angular.module('app').controller("fileController", function($http, $location, $scope, $modal, $window, $translate) {
     $scope.files = [];
     $scope.user;
     $scope.initPerformed = false;
@@ -9,7 +9,14 @@ angular.module('app').controller("fileController", function($http, $location, $s
     $scope.context;
     $scope.appName = ''
     $scope.roots = [];
+
+    $scope.getLocale = function() {
+        var lang = navigator.languages ? navigator.languages[0] : (navigator.language || navigator.userLanguage);
+        return lang.split('-')[0];
+    }
+
     $scope.init = function() {
+        $translate.use($scope.getLocale());
         if ($scope.appName === '') {
             var loc = window.location.pathname.indexOf('/', 1);
             $scope.appName = window.location.pathname.substring(0, loc + 1);
@@ -32,7 +39,7 @@ angular.module('app').controller("fileController", function($http, $location, $s
                     $scope.context += '/';
                 }
             }, function(result) {
-                alert("Nie można pobrać kontekstu!");
+                alert($translate.instant("error.context.unableToGetPath"));
                 console.log(result);
             });
         } else {
@@ -50,7 +57,7 @@ angular.module('app').controller("fileController", function($http, $location, $s
                     }
                 }
             }, function(result) {
-                alert("Błąd!");
+                alert($translate.instant("error.context.reload"));
                 console.log(result);
             });
         }
@@ -90,7 +97,7 @@ angular.module('app').controller("fileController", function($http, $location, $s
             $scope.folders[$scope.folders.length - 1].disabled = true;
             console.log($scope.folders);
         }, function(result) {
-            alert("Błąd!");
+            alert($translate.instant("error.context.fileLoadFailed"));
             console.log(result);
         });
 
@@ -103,7 +110,7 @@ angular.module('app').controller("fileController", function($http, $location, $s
                 $scope.files = result.data;
             }
         }, function(result) {
-            alert("Nieprawidlowa siezka");
+            alert($translate.instant("error.context.fileNotFound"));
             console.log(result);
         });
     }

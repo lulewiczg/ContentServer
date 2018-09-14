@@ -168,7 +168,7 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
         WebElement table = driver.findElement(By.xpath("//table[contains(@class,'content-table')]"));
         List<String> headers = table.findElements(By.tagName("th")).stream().map(WebElement::getText)
                 .collect(Collectors.toList());
-        List<String> expectedHeaders = List.of("Nazwa pliku", "Rozmiar", "");
+        List<String> expectedHeaders = List.of("Nazwa Pliku", "Rozmiar", "Opcje");
         Assertions.assertEquals(expectedHeaders, headers);
 
         File[] files = getSortedFiles(path);

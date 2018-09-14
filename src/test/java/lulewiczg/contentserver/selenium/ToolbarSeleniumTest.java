@@ -19,7 +19,7 @@ public class ToolbarSeleniumTest extends SeleniumTestTemplate {
     @DisplayName("Logs in with invalid credentials")
     public void testLoginInvalidCredentials() {
         login("abc", "bcd");
-        assertAlert("Nieprawidłowe dane");
+        assertAlert("Użytkownik lub hasło jest niepoprawne!");
         assertloginPopupPresent();
         assertToolbarNotLogged();
     }

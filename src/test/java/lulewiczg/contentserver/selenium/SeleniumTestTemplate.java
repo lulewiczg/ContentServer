@@ -145,7 +145,7 @@ public class SeleniumTestTemplate {
 
         WebElement shortcuts = driver.findElement(By.id(SHORTCUTS_BUTTON_ID));
         Assertions.assertNotNull(shortcuts);
-        Assertions.assertEquals("Na skróty", getText(driver, shortcuts));
+        Assertions.assertEquals("Na Skróty", getText(driver, shortcuts));
         Assertions.assertNotEquals(0, shortcuts.findElements(By.className("shortcut-dropdown")));
         Assertions.assertEquals(toolbarElements.get(1), shortcuts);
 

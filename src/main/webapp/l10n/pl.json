@@ -1,0 +1,51 @@
+{
+	"header": {
+		"title": "Pokazywarka",
+		"shortcuts": "Na Skróty",
+		"settings": "Ustawienia",
+		"logs": "Logi",
+		"login": "Zaloguj",
+		"logout": "Wyloguj",
+		"hello": "Witaj, "
+	},
+	"settings": {
+		"title": "Ustawienia"
+	},
+	"popup": {
+		"save": "Zapisz",
+		"close": "Zamknij"
+	},
+	"login": {
+		"title": "Logowanie",
+		"login": "Login",
+		"loginbtn": "Zaloguj",
+		"password": "Hasło"
+	},
+	"table": {
+		"header": {
+			"filename": "Nazwa Pliku",
+			"size": "Rozmiar",
+			"options": "Opcje"
+		}
+	},
+	"error": {
+		"context": {
+			"unableToGetPath": "Nie udało się pobrać ścieżki kontekstu!",
+			"reload": "Błąd przy przeładowaniu kontekstu!",
+			"fileLoadFailed": "Błąd przy wczytywaniu plików",
+			"fileNotFound": "Plik nie znaleziony!"
+		},
+		"login": {
+			"invalid": "Użytkownik lub hasło jest niepoprawne!"
+		},
+		"settings": {
+			"failedToLoad": "Błąd przy wczytywaniu ustawień!",
+			"failedToSave": "Błąd przy zapisie ustawień!"
+		}
+	},
+	"info": {
+		"settings": {
+			"saved": "Ustawienia zapisane!"
+		}
+	}
+}

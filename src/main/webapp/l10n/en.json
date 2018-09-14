@@ -1,0 +1,51 @@
+{
+	"header": {
+		"title": "Content Server",
+		"shortcuts": "Shortcuts",
+		"settings": "Settings",
+		"logs": "Settings",
+		"login": "Login",
+		"logout": "Logout",
+		"hello": "Hello, "
+	},
+	"settings": {
+		"title": "Settings"
+	},
+	"popup": {
+		"save": "Save",
+		"close": "Close"
+	},
+	"login": {
+		"title": "Log In",
+		"login": "Login",
+		"loginBtn": "Log in",
+		"password": "Password"
+	},
+	"table": {
+		"header": {
+			"filename": "File Name",
+			"size": "Size",
+			"options": "Options"
+		}
+	},
+	"error": {
+		"context": {
+			"unableToGetPath": "Unable to get context directory!",
+			"reload": "Error while reloading context!",
+			"fileLoadFailed": "Error while fetching files!",
+			"fileNotFound": "File not found!"
+		},
+		"login": {
+			"invalid": "User or password is invalid!"
+		},
+		"settings": {
+			"failedToLoad": "Failed to load settings!",
+			"failedToSave": "Failed to save settings!"
+		}
+	},
+	"info": {
+		"settings": {
+			"saved": "Settings saved!"
+		}
+	}
+}

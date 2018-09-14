@@ -10,6 +10,8 @@
 <script type="text/javascript" src="js/lib/bootstrap/bootstrap.min.js"></script>
 <script type="text/javascript" src="js/lib/angular.js"></script>
 <script type="text/javascript" src="js/lib/angular-ngroute.js"></script>
+<script type="text/javascript" src="js/lib/angular-translate.js"></script>
+<script type="text/javascript" src="js/lib/static-loader.js"></script>
 <script type="text/javascript" src="js/lib/ui-bootstrap-tpls-0.13.0.min.js"></script>
 <script type="text/javascript" src="js/app.js"></script>
 <script type="text/javascript" src="js/fileController.js"></script>
@@ -18,7 +20,7 @@
 
 <link rel="icon" type="image/gif" href="icon.jpeg" />
 
-<title>Pokazywarka</title>
+<title>{{'header.title' | translate}}</title>
 </head>
 <body>
     <nav class="navbar navbar-default">
@@ -30,7 +32,8 @@
                     <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a id="logo" href="{{appName}}" target="_self" class="navbar-brand toolbar-item">Pokazywarka</a>
+                <a id="logo" href="{{appName}}" target="_self" class="navbar-brand toolbar-item">{{'header.title' |
+                    translate}}</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -38,19 +41,24 @@
 
                 <ul class="nav navbar-nav">
                     <li id="shortcutsBtn" class="dropdown toolbar-item"><a class="dropdown-toggle"
-                        data-toggle="dropdown" href="#" role="button">Na skróty<span class="caret"></span>
+                        data-toggle="dropdown" href="#" role="button">{{'header.shortcuts' | translate}}<span
+                            class="caret"></span>
                     </a>
                         <ul class="dropdown-menu">
                             <li class="shortcut-dropdown" ng-repeat="root in roots"><a href="?path={{root}}">{{root}}</a></li>
                         </ul></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li id="loginBtn" class="toolbar-item" ng-show="!user"><a href="" ng-click="login()">Zaloguj</a></li>
-                    <li id="userLbl" class="toolbar-item" ng-show="user"><a>Witaj, {{user}} </a></li>
+                    <li id="loginBtn" class="toolbar-item" ng-show="!user"><a href="" ng-click="login()">{{'header.login'
+                            | translate}}</a></li>
+                    <li id="userLbl" class="toolbar-item" ng-show="user"><a>{{'header.hello' |
+                            translate}}{{user}} </a></li>
                     <li id="logsBtn" class="toolbar-item" ng-show="admin"><a href="{{getLogsUrl()}}"
-                        target="_blank">Logi</a></li>
-                    <li id="settingsBtn" class="toolbar-item" ng-show="admin"><a href="" ng-click="settings()">Ustawienia</a></li>
-                    <li id="logoutBtn" class="toolbar-item" ng-show="user"><a href="" ng-click="logout()">Wyloguj</a></li>
+                        target="_blank">{{'header.logs' | translate}}</a></li>
+                    <li id="settingsBtn" class="toolbar-item" ng-show="admin"><a href="" ng-click="settings()">{{'header.settings'
+                            | translate}}</a></li>
+                    <li id="logoutBtn" class="toolbar-item" ng-show="user"><a href="" ng-click="logout()">{{'header.logout'
+                            | translate}}</a></li>
                 </ul>
             </div>
         </div>
@@ -67,9 +75,9 @@
                 <table class="table table-striped table-hover content-table">
                     <thead>
                         <tr>
-                            <th>Nazwa pliku</th>
-                            <th>Rozmiar</th>
-                            <th></th>
+                            <th>{{'table.header.filename' | translate}}</th>
+                            <th>{{'table.header.size' | translate}}</th>
+                            <th>{{'table.header.options' | translate}}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -78,7 +86,8 @@
                                 ng-attr-target="{{file.file ? '_self' :undefined}}">{{file.name}}</a></td>
                             <td class="fileSize">{{file.size}}</td>
                             <td class="downloadBtn"><a ng-show="file.file" class="download-button" target="_blank"
-                                ng-href="{{getFileURL(file)+ '&download=true'}}"><img src="icons/download.png" alt="Download icon"></img></a>
+                                ng-href="{{getFileURL(file)+ '&download=true'}}"><img src="icons/download.png"
+                                    alt="Download icon"></img></a>
                         </tr>
                     </tbody>
                 </table>
