@@ -4,7 +4,6 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import lulewiczg.contentserver.permissions.ResourceHelper;
-import lulewiczg.contentserver.utils.Constants;
 import lulewiczg.contentserver.utils.Log;
 
 /**
@@ -22,7 +21,7 @@ public class ContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent event) {
         System.setProperty("java.net.preferIPv4Stack", "true");
-        String path = event.getServletContext().getRealPath(Constants.SEP);
+        String path = ResourceHelper.getContextPath(event.getServletContext());
         Log.init(path);
         ResourceHelper.init(event.getServletContext(), path + TEST_PATH);
         Log.getLog().logInfo("Config loaded!");

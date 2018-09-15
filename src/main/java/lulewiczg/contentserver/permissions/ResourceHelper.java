@@ -60,7 +60,7 @@ public class ResourceHelper {
     }
 
     public static synchronized void init(ServletContext context, String testPath) {
-        String path = context.getRealPath(Constants.SEP);
+        String path = getContextPath(context);
         encode = context.getServerInfo().toLowerCase().contains("tomcat");
         instance = new ResourceHelper(path, testPath);
         Log.setLevel(instance.logLevel);
@@ -353,8 +353,7 @@ public class ResourceHelper {
     }
 
     /**
-     * Normalizes paths to avoid duplicates and to set permissions for the shortest
-     * path as possible.
+     * Normalizes paths to avoid duplicates and to set permissions for the shortest path as possible.
      *
      * @param list
      *            paths to normalize
@@ -387,7 +386,7 @@ public class ResourceHelper {
 
     /**
      * Removes empty paths.
-     * 
+     *
      * @param list
      *            list to clean
      */
@@ -491,4 +490,18 @@ public class ResourceHelper {
         return new String(bytes, StandardCharsets.UTF_8);
     }
 
+    /**
+     * Obtains context path.
+     *
+     * @param context
+     *            context
+     * @return
+     */
+    public static String getContextPath(ServletContext context) {
+        String path = context.getRealPath(Constants.SEP);
+        if (!path.endsWith(Constants.SEP)) {
+            path += Constants.SEP;
+        }
+        return path;
+    }
 }
