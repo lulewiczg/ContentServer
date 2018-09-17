@@ -17,6 +17,7 @@ import lulewiczg.contentserver.models.TestModelCollections;
 import lulewiczg.contentserver.models.TestModelCollectionsEmpty;
 import lulewiczg.contentserver.models.TestModelCollision;
 import lulewiczg.contentserver.models.TestModelEmpty;
+import lulewiczg.contentserver.models.TestModelNoFields;
 import lulewiczg.contentserver.test.utils.TestUtil;
 
 /**
@@ -45,8 +46,8 @@ public class JSONModelTest {
     @Test
     @DisplayName("Model with collisions serialization")
     public void testModelwithcollisions() throws JSONException {
-        Assertions.assertThrows(JSONException.class, () -> new TestModelCollision().toJSON(),
-                "Duplicated fields found!");
+        Exception e = Assertions.assertThrows(JSONException.class, () -> new TestModelCollision().toJSON());
+        Assertions.assertEquals("Duplicated fields found!", e.getMessage());
     }
 
     @Test
@@ -88,6 +89,13 @@ public class JSONModelTest {
         String data = String.format("[%s, %s, %s]", json, json, json);
         String jsonArray = JSONModel.toJSONArray(Arrays.asList(new TestModel(), new TestModel(), new TestModel()));
         Assertions.assertEquals(new JSONArray(data).toString(), new JSONArray(jsonArray).toString());
+    }
+
+    @Test
+    @DisplayName("JSON object without fields")
+    public void testJSONEmptyModel() throws IOException {
+        String json = new TestModelNoFields().toJSON();
+        Assertions.assertEquals("{\n}", json);
     }
 
     /**

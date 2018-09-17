@@ -4,8 +4,12 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Abstract model represent JSON object. To add field to JSON result, use
@@ -33,14 +37,54 @@ public abstract class JSONModel<T> {
      *             the JSONException
      */
     public static String toJSONArray(List<?> objs) throws JSONException {
+        return toJSON(objs, ARR_OPEN_CHAR, ARR_CLOSE_CHAR);
+    }
+
+    /**
+     * Builds complex type from list of objects.
+     * 
+     * @param objs
+     *            objects
+     * @param open
+     *            open char
+     * @param close
+     *            close char
+     * @return
+     * @throws JSONException
+     *             the JSONException
+     */
+    private static String toJSON(List<?> objs, String open, String close) throws JSONException {
+        if (objs.isEmpty()) {
+            return open + close;
+        }
         StringBuilder builder = new StringBuilder();
-        builder.append(ARR_OPEN_CHAR);
+        builder.append(open);
         for (Object obj : objs) {
             builder.append(JSONUtil.toString(obj)).append(DELIM);
         }
         deleteLastDelim(builder);
-        builder.append(ARR_CLOSE_CHAR);
+        builder.append(close);
         return builder.toString();
+    }
+
+    /**
+     * Creates JSON object out of objects
+     * 
+     * @param objs
+     *            objects
+     * @return string JSON object
+     * @throws JSONException
+     *             the JSONException
+     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static String toJSONObject(List<?> objs) throws JSONException {
+        Collections.sort((List<Map.Entry<Comparable, ?>>) objs, new Comparator<Map.Entry<Comparable, ?>>() {
+            @Override
+            public int compare(Entry<Comparable, ?> o1, Entry<Comparable, ?> o2) {
+                return o1.getKey().compareTo(o2.getKey());
+            }
+        });
+        return toJSON(objs, OPEN_CHAR, CLOSE_CHAR);
     }
 
     /**
@@ -111,9 +155,6 @@ public abstract class JSONModel<T> {
      */
     private JSONProperty getJSONAnnotation(Field f) {
         Annotation[] annotations = f.getAnnotations();
-        if (annotations == null) {
-            return null;
-        }
         JSONProperty prop = null;
         for (Annotation a : annotations) {
             if (a instanceof JSONProperty) {

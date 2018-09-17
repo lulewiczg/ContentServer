@@ -1,0 +1,8 @@
+"test.test, test123, test.test1, test321, test1.test, test111, buffer.size, 1024, logger.level, ALL, loger.lvl, abc"
+"test.test,,test1,test, buffer.size, 1, logger.level, FINE"
+"buffer.size, 10101010, logger.level, FINER"
+"logger.level, FINEST"
+"logger.level, CONFIG"
+"logger.level, INFO"
+"logger.level, WARNING"
+"logger.level, SEVERE"

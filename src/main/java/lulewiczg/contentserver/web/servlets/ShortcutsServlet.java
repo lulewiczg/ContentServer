@@ -35,7 +35,6 @@ public class ShortcutsServlet extends HttpServlet {
         String user = (String) req.getSession().getAttribute(Constants.Web.USER);
         String path = req.getParameter(Constants.Web.PATH);
         path = ResourceHelper.decodeParam(path);
-        resp.setCharacterEncoding(Constants.Setting.UTF8);
         if (path == null) {
             processShortcutList(resp, user);
         } else {

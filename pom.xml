@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ContentServer</groupId>
     <artifactId>ContentServer</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.2</version>
     <name>ContentServer</name>
     <packaging>war</packaging>
     <description>Web app to serve content</description>
@@ -52,6 +52,16 @@
 
     </dependencies>
     <build>
+        <testSourceDirectory>src/test/java</testSourceDirectory>
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>src/main/webapp</directory>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import lulewiczg.contentserver.permissions.ResourceHelper;
+import lulewiczg.contentserver.utils.Constants;
 
 /**
  * Performs basic HTTP login
@@ -37,7 +38,7 @@ public class UrlLoginFilter implements Filter {
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
             throws IOException, ServletException {
-        String auth = ((HttpServletRequest) req).getHeader("Authorization");
+        String auth = ((HttpServletRequest) req).getHeader(Constants.Web.Headers.AUTHORIZATION);
         if (auth != null && auth.startsWith(BASIC)) {
             HttpSession session = ((HttpServletRequest) req).getSession();
             auth = auth.replace(BASIC, "");

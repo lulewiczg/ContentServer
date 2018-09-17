@@ -79,7 +79,7 @@ public class Setting extends JSONModel<Setting> implements Comparable<Setting> {
             }
             Setting parsed;
             if (key.equals(Constants.Setting.BUFFER_SIZE)) {
-                value = Integer.parseInt(value) + "";
+                value = parseBuffSize(value);
             } else if (key.equals(Constants.Setting.LOGGER_LEVEL)) {
                 value = Level.parse(value).toString();
             }
@@ -87,5 +87,25 @@ public class Setting extends JSONModel<Setting> implements Comparable<Setting> {
             settings.add(parsed);
         }
         return settings;
+    }
+
+    /**
+     * Parses buffer size.
+     * 
+     * @param value
+     *            value
+     * @return parsed value
+     */
+    private static String parseBuffSize(String value) {
+        int val;
+        try {
+            val = Integer.parseInt(value);
+        } catch (NumberFormatException ex) {
+            throw new IllegalArgumentException(value + " is not valid buffer size!");
+        }
+        if (val < 1) {
+            throw new IllegalArgumentException(value + " is not valid buffer size!");
+        }
+        return val + "";
     }
 }

@@ -60,7 +60,7 @@ public class ResourceFilterTest extends ServletTestTemplate {
 
         filter.doFilter(request, response, chain);
 
-        verifyFilterError(403);
+        verifyFilterError(403, String.format(Constants.Web.Errors.ACCESS_DENIED_TO, TEST));
     }
 
     @Test
@@ -84,7 +84,7 @@ public class ResourceFilterTest extends ServletTestTemplate {
 
         filter.doFilter(request, response, chain);
 
-        verifyFilterError(403);
+        verifyFilterError(403, String.format(Constants.Web.Errors.ACCESS_DENIED_TO, TEST));
     }
 
     @Test

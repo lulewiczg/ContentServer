@@ -27,6 +27,7 @@ public final class Constants {
             public static final String RANGE = "Range";
             public static final String EXPIRES = "Expires";
             public static final String APPLICATION_FORCE_DOWNLOAD = "application/force-download";
+            public static final String AUTHORIZATION = "Authorization";
 
             private Headers() {
             }

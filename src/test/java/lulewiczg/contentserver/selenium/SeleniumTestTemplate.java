@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
@@ -29,6 +30,7 @@ import lulewiczg.contentserver.test.utils.TestUtil;
  */
 public abstract class SeleniumTestTemplate {
 
+    private static final boolean SELENIUM_ENABLED = false;
     private static final String HREF = "href";
     protected static final String LOGIN_BUTTON_ID = "loginBtn";
     protected static final String LOGOUT_BUTTON_ID = "logoutBtn";
@@ -53,6 +55,7 @@ public abstract class SeleniumTestTemplate {
      */
     @BeforeEach
     public void before() {
+        Assumptions.assumeTrue(SELENIUM_ENABLED);
         msg = getMsgs();
         FirefoxOptions opt = new FirefoxOptions();
         FirefoxProfile prof = new FirefoxProfile();

@@ -76,6 +76,24 @@ public class ResourceHelperTest {
         assertEquals(access, instance.hasReadAccess(STRUCTURE + path, name));
     }
 
+    @Test
+    @DisplayName("Read permissions with invalid key")
+    public void testReadInvalidKey() {
+        Exception e = Assertions.assertThrows(IllegalArgumentException.class,
+                () -> ResourceHelper.init(CONTEXT + 5, LOC));
+        assertEquals("Key user.test is invalid!", e.getMessage());
+    }
+
+    @Test
+    @DisplayName("Read permissions with invalid permission type")
+    public void testReadInvalidPermissionType() {
+        Exception e = Assertions.assertThrows(IllegalArgumentException.class,
+                () -> ResourceHelper.init(CONTEXT + 6, LOC),
+                () -> "No enum constant lulewiczg.contentserver.permissions.Persmission.IKSDE");
+        assertEquals("No enum constant " + Persmission.class.getName() + ".IKSDE", e.getMessage());
+
+    }
+
     @DisplayName("Path normalization")
     @ParameterizedTest(name = "''{0}'' should be normalized to ''{1}''")
     @CsvFileSource(resources = "/data/csv/paths.csv")
@@ -116,8 +134,9 @@ public class ResourceHelperTest {
         HttpSession session = mock(HttpSession.class);
         ResourceHelper.init(CONTEXT + 4, STRUCTURE);
         ResourceHelper instance = ResourceHelper.getInstance();
-        Assertions.assertThrows(AuthenticationException.class, () -> instance.login(user, password, session),
-                "Invalid login or password");
+        Exception e = Assertions.assertThrows(AuthenticationException.class,
+                () -> instance.login(user, password, session));
+        assertEquals("Invalid login or password", e.getMessage());
         verify(session, never()).setAttribute(anyString(), anyString());
 
     }
@@ -160,4 +179,5 @@ public class ResourceHelperTest {
         String test = new String(TEST_STRING, StandardCharsets.UTF_8);
         Assertions.assertArrayEquals(TEST_STRING, ResourceHelper.decodeParam(test).getBytes(StandardCharsets.UTF_8));
     }
+
 }

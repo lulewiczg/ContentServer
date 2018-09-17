@@ -56,7 +56,7 @@ public class LoginServletTest extends ServletTestTemplate {
 
         servlet.doPost(request, response);
 
-        verifyError(401);
+        verifyError(401, Constants.Web.Errors.INVALID_CREDENTIALS);
         verify(session, never()).setAttribute(anyString(), anyString());
     }
 
@@ -69,7 +69,7 @@ public class LoginServletTest extends ServletTestTemplate {
 
         servlet.doPost(request, response);
 
-        verifyError(401);
+        verifyError(401, Constants.Web.Errors.INVALID_CREDENTIALS);
         verify(session, never()).setAttribute(anyString(), anyString());
     }
 
@@ -82,7 +82,7 @@ public class LoginServletTest extends ServletTestTemplate {
 
         servlet.doPost(request, response);
 
-        verifyError(403);
+        verifyError(403, Constants.Web.Errors.USER_ALREADY_LOGGED);
         verify(session, never()).setAttribute(anyString(), anyString());
     }
 
@@ -95,7 +95,7 @@ public class LoginServletTest extends ServletTestTemplate {
 
         servlet.doPost(request, response);
 
-        verifyError(403);
+        verifyError(403, Constants.Web.Errors.USER_ALREADY_LOGGED);
         verify(session, never()).setAttribute(anyString(), anyString());
     }
 
@@ -109,7 +109,7 @@ public class LoginServletTest extends ServletTestTemplate {
 
         servlet.doPost(request, response);
 
-        verifyError(401);
+        verifyError(401, Constants.Web.Errors.INVALID_CREDENTIALS);
         verify(session, never()).setAttribute(anyString(), anyString());
     }
 

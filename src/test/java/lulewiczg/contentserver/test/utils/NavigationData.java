@@ -1,5 +1,7 @@
 package lulewiczg.contentserver.test.utils;
 
+import lulewiczg.contentserver.utils.Constants;
+
 /**
  * Information for current breadcrumb.
  */
@@ -29,7 +31,7 @@ public class NavigationData {
     }
 
     private NavigationData(String label, String url, String path, boolean enabled) {
-        this.label = label + "/";
+        this.label = label + Constants.SEP;
         this.url = url;
         this.path = path;
         this.enabled = enabled;
@@ -40,7 +42,7 @@ public class NavigationData {
     }
 
     public static NavigationData create(NavigationData data, String label, boolean enabled) {
-        return new NavigationData(label, data.url, data.path + "/" + label, enabled);
+        return new NavigationData(label, data.url, data.path + Constants.SEP + label, enabled);
     }
 
     @Override

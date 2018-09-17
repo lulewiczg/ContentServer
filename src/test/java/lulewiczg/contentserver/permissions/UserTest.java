@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import lulewiczg.contentserver.utils.Constants;
 import lulewiczg.contentserver.utils.models.User;
 
 /**
@@ -69,7 +70,7 @@ public class UserTest {
     @Test
     @DisplayName("Tests read permissions with paths ended with slashes")
     public void testReadPermissionsSlashEnd() {
-        List<String> collect = Arrays.asList(PATHS).stream().map(i -> i + "/").collect(Collectors.toList());
+        List<String> collect = Arrays.asList(PATHS).stream().map(i -> i + Constants.SEP).collect(Collectors.toList());
         user.addRead(collect.toArray(new String[collect.size()]));
         user.normalize();
         compare(EXPECTED, user.getRead());

@@ -62,7 +62,7 @@ public class ResourceServletTest extends ServletTestTemplate {
         servlet.doGet(request, response);
 
         verifyZeroInteractions(helper);
-        verifyError(404);
+        verifyError(404, String.format(Constants.Web.Errors.NOT_FOUND, "null"));
     }
 
     @Test
@@ -73,7 +73,7 @@ public class ResourceServletTest extends ServletTestTemplate {
         servlet.doGet(request, response);
 
         verifyZeroInteractions(helper);
-        verifyError(404);
+        verifyError(404, String.format(Constants.Web.Errors.NOT_FOUND, base + "missingFolder"));
     }
 
     @Test

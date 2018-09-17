@@ -1,8 +1,5 @@
 package lulewiczg.contentserver.models;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,19 +15,13 @@ public class TestModelCollections extends JSONModel<TestModelCollections> {
     private String[] prop2 = new String[] { "a", "b", "c" };
 
     @JSONProperty(propertyName = "intList")
-    private List<Integer> prop3 = new ArrayList<>(Arrays.asList(4, 5, 6));
+    private List<Integer> prop3 = List.of(4, 5, 6);
 
     @JSONProperty(propertyName = "strList")
-    private List<String> prop4 = new ArrayList<>(Arrays.asList("d", "e", "f"));
+    private List<String> prop4 = List.of("d", "e", "f");
 
     @JSONProperty(propertyName = "map")
-    private Map<String, Integer> prop5 = new HashMap<>();
-
-    public TestModelCollections() {
-        // TODO
-//        prop5.put("ab", 11);
-//        prop5.put("cd", 22);
-    }
+    private Map<String, Integer> prop5 = Map.of("ab", 11, "cd", 22);
 
     public int[] getProp1() {
         return prop1;

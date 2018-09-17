@@ -66,6 +66,19 @@ public class ErrorServletTest extends ServletTestTemplate {
         verifyOk(buildMsg(404, "", TEST2));
     }
 
+    @Test
+    @DisplayName("Get error message when exception thrown")
+    public void testErrorException() throws IOException, ServletException {
+        when(request.getAttribute(ErrorServlet.ERROR_CODE)).thenReturn(500);
+        when(request.getAttribute(ErrorServlet.ERROR_MSG)).thenReturn("");
+        NullPointerException ex = new NullPointerException("test");
+        when(request.getAttribute(ErrorServlet.ERROR_EXC)).thenReturn(ex);
+
+        servlet.doGet(request, response);
+
+        verifyOk(buildMsg(500, "", ex.getMessage() + "\n" + ex.toString()));
+    }
+
     /**
      * Builds error message
      */

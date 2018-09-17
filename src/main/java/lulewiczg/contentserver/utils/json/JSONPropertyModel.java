@@ -1,6 +1,7 @@
 package lulewiczg.contentserver.utils.json;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * Represents single JSON property.
@@ -23,7 +24,7 @@ public class JSONPropertyModel {
     public JSONPropertyModel(String name, Object value) throws JSONException {
         this.name = name;
         if (value != null) {
-            if (value instanceof Collection<?> || value.getClass().isArray()) {
+            if (value instanceof Collection<?> || value instanceof Map<?, ?> || value.getClass().isArray()) {
                 this.value = JSONUtil.processCollection(value);
             } else {
                 this.value = JSONUtil.toString(value, false);

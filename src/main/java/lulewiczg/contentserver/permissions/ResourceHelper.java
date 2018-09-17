@@ -72,7 +72,7 @@ public class ResourceHelper {
         } catch (IOException e) {
             Log.getLog().log(e);
         }
-        path += "/";
+        path += Constants.SEP;
         this.contextPath = normalizePath(context);
         this.testPath = normalizePath(path);
         try {
@@ -102,12 +102,13 @@ public class ResourceHelper {
                 users.put(name, user);
             }
             String path = e.getValue().toString();
-            if (keys.length > 2) {
-                if (keys[2].equals(Constants.Setting.EXTENDS)) {
-                    toApply.put(user, path);
-                } else if (keys[2].equals(Constants.Setting.PASSWORD)) {
-                    user.setPassword(path);
-                }
+            if (keys.length <= 2) {
+                throw new IllegalArgumentException(String.format("Key %s is invalid!", e.getKey()));
+            }
+            if (keys[2].equals(Constants.Setting.EXTENDS)) {
+                toApply.put(user, path);
+            } else if (keys[2].equals(Constants.Setting.PASSWORD)) {
+                user.setPassword(path);
             }
 
             processUserPermissions(keys, user, path);
@@ -187,8 +188,6 @@ public class ResourceHelper {
                     case DELETE:
                         user.addDelete(values);
                         break;
-                    default:
-                        throw new IllegalArgumentException("Unknown permission type: " + type);
                 }
             }
         }
@@ -353,7 +352,8 @@ public class ResourceHelper {
     }
 
     /**
-     * Normalizes paths to avoid duplicates and to set permissions for the shortest path as possible.
+     * Normalizes paths to avoid duplicates and to set permissions for the shortest
+     * path as possible.
      *
      * @param list
      *            paths to normalize
@@ -361,7 +361,7 @@ public class ResourceHelper {
     public static void normalize(List<String> list) {
         for (int i = 0; i < list.size(); i++) {
             String path = list.get(i).replaceAll("\\\\+", Constants.SEP).replaceAll("\\/+", Constants.SEP);
-            if (path.endsWith("/")) {
+            if (path.endsWith(Constants.SEP)) {
                 path = path.substring(0, path.length() - 1);
             }
             list.set(i, path);
@@ -412,8 +412,8 @@ public class ResourceHelper {
         if (path2.length() > path.length()) {
             return false;
         }
-        String[] split = path.split("/");
-        String[] split2 = path2.split("/");
+        String[] split = path.split(Constants.SEP);
+        String[] split2 = path2.split(Constants.SEP);
         int size = split.length < split2.length ? split.length : split2.length;
         for (int i = 0; i < size; i++) {
             if (!split[i].equals(split2[i])) {
@@ -505,3 +505,4 @@ public class ResourceHelper {
         return path;
     }
 }
+

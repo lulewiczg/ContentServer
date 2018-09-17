@@ -3,5 +3,8 @@
 	"strArr": ["a", "b", "c"],
 	"intList": [4, 5, 6],
 	"strList": ["d", "e", "f"],
-	"map": {}
+	"map": {
+	"ab" : 11,
+	"cd" : 22
+	}
 }
