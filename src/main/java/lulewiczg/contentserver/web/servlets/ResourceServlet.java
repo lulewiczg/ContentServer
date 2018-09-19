@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +28,16 @@ public class ResourceServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private static final long EXPIRE_TIME = 1000L * 60L * 60L * 24L;
+
+    private ServletContext context;
+
+    /**
+     * @see javax.servlet.GenericServlet#init()
+     */
+    @Override
+    public void init() throws ServletException {
+        context = getServletContext();
+    }
 
     /**
      * Returns requested file or folder contents.
@@ -116,7 +127,7 @@ public class ResourceServlet extends HttpServlet {
 
         long contentLength = end - start + 1;
         response.reset();
-        int bufferSize = ResourceHelper.getInstance().getBufferSize();
+        int bufferSize = ResourceHelper.get(context).getBufferSize();
         response.setBufferSize(bufferSize);
         setHeaders(response, f, length, start, end, download, contentLength);
 
@@ -216,7 +227,7 @@ public class ResourceServlet extends HttpServlet {
         if ("true".equals(download)) {
             response.setContentType(Constants.Web.Headers.APPLICATION_FORCE_DOWNLOAD);
         } else {
-            String contentType = ResourceHelper.getInstance().getMIME(f.getName());
+            String contentType = ResourceHelper.get(context).getMIME(f.getName());
             response.setContentType(contentType);
         }
     }

@@ -34,9 +34,19 @@ public class UrlLoginFilterTest extends ServletTestTemplate {
 
     private static final String AUTH = "Basic " + Base64.getEncoder().encodeToString(CREDS.getBytes());
 
-    private UrlLoginFilter filter = new UrlLoginFilter();
+    private UrlLoginFilter filter;
 
     private FilterChain chain = mock(FilterChain.class);
+
+    /**
+     * Sets up tested class.
+     * 
+     * @see lulewiczg.contentserver.test.utils.ServletTestTemplate#additionalBefore()
+     */
+    @Override
+    protected void additionalBefore() throws ServletException {
+        filter = initFilter(() -> new UrlLoginFilter());
+    }
 
     @Test
     @DisplayName("Tries to login")

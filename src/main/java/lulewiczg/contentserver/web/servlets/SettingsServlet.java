@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +26,15 @@ import lulewiczg.contentserver.utils.models.Setting;
 public class SettingsServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
+    private ServletContext context;
+
+    /**
+     * @see javax.servlet.GenericServlet#init()
+     */
+    @Override
+    public void init() throws ServletException {
+        context = getServletContext();
+    }
 
     /**
      * Returns current application settings
@@ -35,7 +45,7 @@ public class SettingsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType(Constants.Setting.PLAIN_TEXT);
-        Properties props = ResourceHelper.getInstance().getSettingsProperties();
+        Properties props = ResourceHelper.get(context).getSettingsProperties();
         List<Setting> settings = new ArrayList<>();
         for (Entry<Object, Object> e : props.entrySet()) {
             settings.add(new Setting(e.getKey().toString(), e.getValue()));
@@ -53,11 +63,11 @@ public class SettingsServlet extends HttpServlet {
     @SuppressWarnings("unchecked")
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<Setting> settings = Setting.load(req.getParameterMap());
-        Properties props = ResourceHelper.getInstance().getSettingsProperties();
+        Properties props = ResourceHelper.get(context).getSettingsProperties();
         for (Setting s : settings) {
             props.setProperty(s.getName(), s.getValue().toString());
             Log.getLog().logInfo(String.format("Changed %s to %s", s.getName(), s.getValue()));
         }
-        ResourceHelper.getInstance().saveSettings();
+        ResourceHelper.get(context).saveSettings();
     }
 }

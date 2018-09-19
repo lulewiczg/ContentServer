@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,15 @@ import lulewiczg.contentserver.utils.json.JSONModel;
 public class ShortcutsServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
+    private ServletContext context;
+
+    /**
+     * @see javax.servlet.GenericServlet#init()
+     */
+    @Override
+    public void init() throws ServletException {
+        context = getServletContext();
+    }
 
     /**
      * Returns available shortcuts for user. If path is provided, returns number of
@@ -59,7 +69,7 @@ public class ShortcutsServlet extends HttpServlet {
         File f = new File(path);
         int counter = 0;
         while ((f = f.getParentFile()) != null) {
-            if (ResourceHelper.getInstance().hasReadAccess(f.getCanonicalPath(), user)) {
+            if (ResourceHelper.get(context).hasReadAccess(f.getCanonicalPath(), user)) {
                 counter++;
             } else {
                 break;
@@ -81,7 +91,7 @@ public class ShortcutsServlet extends HttpServlet {
      *             the IOException
      */
     private void processShortcutList(HttpServletResponse resp, String user) throws IOException {
-        List<String> dmz = ResourceHelper.getInstance().getAvailablePaths(user);
+        List<String> dmz = ResourceHelper.get(context).getAvailablePaths(user);
         List<String> dirs = new ArrayList<>();
         for (String s : dmz) {
             if (new File(s).exists()) {

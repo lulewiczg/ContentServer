@@ -1,5 +1,6 @@
 package lulewiczg.contentserver.web.servlets;
 
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -18,7 +19,17 @@ import lulewiczg.contentserver.test.utils.ServletTestTemplate;
  */
 public class ErrorServletTest extends ServletTestTemplate {
 
-    private ErrorServlet servlet = new ErrorServlet();
+    private ErrorServlet servlet = spy(ErrorServlet.class);
+
+    /**
+     * Sets up tested object.
+     * 
+     * @see lulewiczg.contentserver.test.utils.ServletTestTemplate#additionalBefore()
+     */
+    @Override
+    protected void additionalBefore() throws Exception {
+        setupServlet(servlet);
+    }
 
     @Test
     @DisplayName("Get error message")

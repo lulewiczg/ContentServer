@@ -21,7 +21,17 @@ import lulewiczg.contentserver.utils.Constants;
  */
 public class EncodingFilterTest extends ServletTestTemplate {
 
-    private EncodingFilter filter = new EncodingFilter();
+    private EncodingFilter filter;
+
+    /**
+     * Sets up tested class.
+     * 
+     * @see lulewiczg.contentserver.test.utils.ServletTestTemplate#additionalBefore()
+     */
+    @Override
+    protected void additionalBefore() throws ServletException {
+        filter = initFilter(() -> new EncodingFilter());
+    }
 
     @Test
     @DisplayName("Setting UTF-8")

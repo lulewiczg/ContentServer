@@ -2,6 +2,7 @@ package lulewiczg.contentserver.web.servlets;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -40,8 +41,18 @@ public class ResourceServletTest extends ServletTestTemplate {
     private static final String FOLDER1_11 = "folder1/folder11.txt";
     private static final String FOLDER3_11 = "folder3/folder11.txt";
     private static final String FILE11 = "folder11.txt";
-    private ResourceServlet servlet = new ResourceServlet();
+    private ResourceServlet servlet = spy(ResourceServlet.class);
     private static String base;
+
+    /**
+     * Sets up tested object.
+     * 
+     * @see lulewiczg.contentserver.test.utils.ServletTestTemplate#additionalBefore()
+     */
+    @Override
+    protected void additionalBefore() throws Exception {
+        setupServlet(servlet);
+    }
 
     /**
      * Prepares data.

@@ -44,7 +44,7 @@
 "test.zip",			"application/zip"
 "test.3gp",			"video/3gpp"
 "test.7z",			"application/x-7z-compressed"
-"test",				"application/octet-stream"
-"",					"application/octet-stream"
+"test",
+"",
 "test.txt.png.jpg",	"image/jpeg"
 "txt.png",			"image/png"

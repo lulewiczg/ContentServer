@@ -4,6 +4,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -25,7 +26,17 @@ import lulewiczg.contentserver.utils.Constants;
  */
 public class LoginServletTest extends ServletTestTemplate {
 
-    private LoginServlet servlet = new LoginServlet();
+    private LoginServlet servlet = spy(LoginServlet.class);
+
+    /**
+     * Sets up tested object.
+     * 
+     * @see lulewiczg.contentserver.test.utils.ServletTestTemplate#additionalBefore()
+     */
+    @Override
+    protected void additionalBefore() throws Exception {
+        setupServlet(servlet);
+    }
 
     @Test
     @DisplayName("Gets current user when not logged")

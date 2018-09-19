@@ -2,6 +2,7 @@ package lulewiczg.contentserver.web.servlets;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -29,11 +30,24 @@ import lulewiczg.contentserver.utils.json.JSONModel;
  */
 public class ShortcutsServletTest extends ServletTestTemplate {
 
-    private ShortcutsServlet servlet = new ShortcutsServlet();
+    private ShortcutsServlet servlet = spy(ShortcutsServlet.class);
     private static List<String> guestPaths;
     private static List<String> testPaths;
     private static List<String> adminPaths;
     private static String base;
+
+    /**
+     * Sets up tested object.
+     * 
+     * @see lulewiczg.contentserver.test.utils.ServletTestTemplate#additionalBefore()
+     */
+    @Override
+    public void additionalBefore() throws Exception {
+        when(helper.getAvailablePaths(null)).thenReturn(guestPaths);
+        when(helper.getAvailablePaths(TEST)).thenReturn(testPaths);
+        when(helper.getAvailablePaths(Constants.ADMIN)).thenReturn(adminPaths);
+        setupServlet(servlet);
+    }
 
     /**
      * Prepares data.
@@ -49,13 +63,6 @@ public class ShortcutsServletTest extends ServletTestTemplate {
         testPaths = Arrays.asList(base + "structure/folder1/folder1", base + "structure/folder2",
                 base + "testContexts");
         adminPaths = Arrays.asList(base + "structure", base + "csv/context1.csv");
-    }
-
-    @Override
-    public void additionalBefore() throws IOException, ReflectiveOperationException {
-        when(helper.getAvailablePaths(null)).thenReturn(guestPaths);
-        when(helper.getAvailablePaths(TEST)).thenReturn(testPaths);
-        when(helper.getAvailablePaths(Constants.ADMIN)).thenReturn(adminPaths);
     }
 
     @Test

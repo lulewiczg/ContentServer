@@ -1,6 +1,7 @@
 package lulewiczg.contentserver.web.servlets;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -28,9 +29,19 @@ import lulewiczg.contentserver.utils.models.Setting;
  */
 public class SettingsServletTest extends ServletTestTemplate {
 
-    private SettingsServlet servlet = new SettingsServlet();
+    private SettingsServlet servlet = spy(SettingsServlet.class);
     private List<Setting> settings = Arrays.asList(new Setting(TEST, TEST), new Setting("test.test", TEST),
             new Setting("test.1", "123"), new Setting("test.test.\\test;'1\"23", "!@#$%^&*()_;'[]}{./?><|"));
+
+    /**
+     * Sets up tested object.
+     * 
+     * @see lulewiczg.contentserver.test.utils.ServletTestTemplate#additionalBefore()
+     */
+    @Override
+    protected void additionalBefore() throws Exception {
+        setupServlet(servlet);
+    }
 
     @Test
     @DisplayName("Gets empty settings")

@@ -9,11 +9,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.security.sasl.AuthenticationException;
 import javax.servlet.ServletContext;
@@ -24,7 +21,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
-import org.mockito.Mockito;
 
 import lulewiczg.contentserver.test.utils.TestUtil;
 import lulewiczg.contentserver.utils.Constants;
@@ -40,21 +36,24 @@ public class ResourceHelperTest {
     private static final String LOC = "src/test/resources/data/";
     private static final String STRUCTURE = LOC + "structure/";
 
+    private ServletContext context = mock(ServletContext.class);
+
     @DisplayName("Read permissions with no admin")
     @ParameterizedTest(name = DESC)
     @CsvFileSource(resources = "/data/csv/context1.csv")
     public void testReadNoAdmin(String name, boolean access, String path) {
-        ResourceHelper.init(CONTEXT + 1, LOC);
-        ResourceHelper instance = ResourceHelper.getInstance();
+        ResourceHelper instance = getInstance(1);
+
         assertEquals(access, instance.hasReadAccess(STRUCTURE + path, name));
+        verify(context, times(1)).getAttribute(eq(ResourceHelper.HELPER));
     }
 
     @DisplayName("Read permissions")
     @ParameterizedTest(name = DESC)
     @CsvFileSource(resources = "/data/csv/context2.csv")
     public void testRead(String name, boolean access, String path) {
-        ResourceHelper.init(CONTEXT + 2, LOC);
-        ResourceHelper instance = ResourceHelper.getInstance();
+        ResourceHelper instance = getInstance(2);
+
         assertEquals(access, instance.hasReadAccess(STRUCTURE + path, name));
     }
 
@@ -62,8 +61,8 @@ public class ResourceHelperTest {
     @ParameterizedTest(name = DESC)
     @CsvFileSource(resources = "/data/csv/context3.csv")
     public void testReadExtended(String name, boolean access, String path) {
-        ResourceHelper.init(CONTEXT + 3, LOC);
-        ResourceHelper instance = ResourceHelper.getInstance();
+        ResourceHelper instance = getInstance(3);
+
         assertEquals(access, instance.hasReadAccess(STRUCTURE + path, name));
     }
 
@@ -71,24 +70,22 @@ public class ResourceHelperTest {
     @ParameterizedTest(name = DESC)
     @CsvFileSource(resources = "/data/csv/context4.csv")
     public void testReadExtendedWriteDelete(String name, boolean access, String path) {
-        ResourceHelper.init(CONTEXT + 4, LOC);
-        ResourceHelper instance = ResourceHelper.getInstance();
+        ResourceHelper instance = getInstance(4);
+
         assertEquals(access, instance.hasReadAccess(STRUCTURE + path, name));
     }
 
     @Test
     @DisplayName("Read permissions with invalid key")
     public void testReadInvalidKey() {
-        Exception e = Assertions.assertThrows(IllegalArgumentException.class,
-                () -> ResourceHelper.init(CONTEXT + 5, LOC));
+        Exception e = Assertions.assertThrows(IllegalArgumentException.class, () -> getInstance(5));
         assertEquals("Key user.test is invalid!", e.getMessage());
     }
 
     @Test
     @DisplayName("Read permissions with invalid permission type")
     public void testReadInvalidPermissionType() {
-        Exception e = Assertions.assertThrows(IllegalArgumentException.class,
-                () -> ResourceHelper.init(CONTEXT + 6, LOC),
+        Exception e = Assertions.assertThrows(IllegalArgumentException.class, () -> getInstance(6),
                 () -> "No enum constant lulewiczg.contentserver.permissions.Persmission.IKSDE");
         assertEquals("No enum constant " + Persmission.class.getName() + ".IKSDE", e.getMessage());
 
@@ -105,8 +102,8 @@ public class ResourceHelperTest {
     @ParameterizedTest(name = "''{0}'' should be resolved to ''{1}''")
     @CsvFileSource(resources = "/data/csv/mimes.csv")
     public void testResolveMIMEs(String fileName, String mime) {
-        ResourceHelper.init(CONTEXT + 1, STRUCTURE);
-        assertEquals(mime, ResourceHelper.getInstance().getMIME(fileName));
+        ResourceHelper instance = getInstance(1);
+        assertEquals(mime, instance.getMIME(fileName));
     }
 
     @DisplayName("Hash is porperly calculated")
@@ -121,8 +118,8 @@ public class ResourceHelperTest {
     @CsvFileSource(resources = "/data/csv/logins.csv")
     public void testLogin(String user, String password) throws AuthenticationException {
         HttpSession session = mock(HttpSession.class);
-        ResourceHelper.init(CONTEXT + 4, STRUCTURE);
-        ResourceHelper instance = ResourceHelper.getInstance();
+        ResourceHelper instance = getInstance(4);
+
         instance.login(user, password, session);
         verify(session, times(1)).setAttribute(eq(Constants.Web.USER), eq(user));
     }
@@ -132,8 +129,8 @@ public class ResourceHelperTest {
     @CsvFileSource(resources = "/data/csv/logins-invalid.csv")
     public void testLoginFailed(String user, String password) throws AuthenticationException {
         HttpSession session = mock(HttpSession.class);
-        ResourceHelper.init(CONTEXT + 4, STRUCTURE);
-        ResourceHelper instance = ResourceHelper.getInstance();
+        ResourceHelper instance = getInstance(4);
+
         Exception e = Assertions.assertThrows(AuthenticationException.class,
                 () -> instance.login(user, password, session));
         assertEquals("Invalid login or password", e.getMessage());
@@ -142,29 +139,9 @@ public class ResourceHelperTest {
     }
 
     @Test
-    @DisplayName("Helper initialization using servlet context")
-    public void testInitWithServletContext() throws IOException {
-        ServletContext mock = Mockito.mock(ServletContext.class);
-        when(mock.getRealPath(anyString())).thenReturn(CONTEXT + 1);
-        when(mock.getServerInfo()).thenReturn("tomcat");
-        ResourceHelper.init(mock, LOC);
-        String contextPath = new File(".").getCanonicalPath();
-        contextPath = ResourceHelper.normalizePath(contextPath);
-        List<String> expected = Arrays.asList(String
-                .format("%s/src/test/resources/data/structure/folder1;%s/src/test/resources/data/structure/folder2",
-                        contextPath, contextPath)
-                .split("\\;"));
-        List<String> availablePaths = ResourceHelper.getInstance().getAvailablePaths(Constants.GUEST);
-        assertEquals(expected, availablePaths);
-    }
-
-    @Test
     @DisplayName("Parameter decoding is perfomed on Tomcat")
     public void testDecodeParam() throws IOException {
-        ServletContext mock = Mockito.mock(ServletContext.class);
-        when(mock.getRealPath(anyString())).thenReturn(CONTEXT + 1);
-        when(mock.getServerInfo()).thenReturn("tomcat");
-        ResourceHelper.init(mock, LOC);
+        getInstance(1);
         String test = new String(TEST_STRING, StandardCharsets.ISO_8859_1);
         Assertions.assertArrayEquals(TEST_STRING, ResourceHelper.decodeParam(test).getBytes(StandardCharsets.UTF_8));
     }
@@ -172,12 +149,38 @@ public class ResourceHelperTest {
     @Test
     @DisplayName("Parameter decoding is not performed on other servlet container")
     public void testDontDecodeParam() throws IOException {
-        ServletContext mock = Mockito.mock(ServletContext.class);
-        when(mock.getRealPath(anyString())).thenReturn(CONTEXT + 1);
-        when(mock.getServerInfo()).thenReturn("jetty");
-        ResourceHelper.init(mock, STRUCTURE);
+        getInstance(1, "jetty");
         String test = new String(TEST_STRING, StandardCharsets.UTF_8);
         Assertions.assertArrayEquals(TEST_STRING, ResourceHelper.decodeParam(test).getBytes(StandardCharsets.UTF_8));
     }
 
+    /**
+     * Obtains helper instance.
+     * 
+     * @param contextIndex
+     *            context index
+     * @param server
+     *            server name
+     * @return helper
+     */
+    private ResourceHelper getInstance(int contextIndex, String server) {
+        when(context.getRealPath(eq(Constants.SEP))).thenReturn(CONTEXT + contextIndex);
+        when(context.getServerInfo()).thenReturn(server);
+        ResourceHelper helper = ResourceHelper.init(context, LOC);
+        when(context.getAttribute(eq(ResourceHelper.HELPER))).thenReturn(helper);
+        ResourceHelper instance = ResourceHelper.get(context);
+        verify(context, times(1)).getAttribute(eq(ResourceHelper.HELPER));
+        return instance;
+    }
+
+    /**
+     * Obtains helper instance.
+     * 
+     * @param contextIndex
+     *            context index
+     * @return helper
+     */
+    private ResourceHelper getInstance(int contextIndex) {
+        return getInstance(contextIndex, "tomcat");
+    }
 }

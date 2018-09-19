@@ -36,10 +36,10 @@ import lulewiczg.contentserver.utils.models.User;
  * @author lulewiczg
  */
 public class ResourceHelper {
+    public static final String HELPER = "helper";
     private static final String PERMISSIONS_PATH = "/WEB-INF/settings/permissions.properties";
     private static final String SETTINGS_PATH = "/WEB-INF/settings/settings.properties";
     private static final String DIR = "{DIR}";
-    private static ResourceHelper instance;
     private Map<String, User> users = new HashMap<>();
     private Map<String, String> mimes = new HashMap<>();
     private int bufferSize;
@@ -48,25 +48,24 @@ public class ResourceHelper {
     private Properties permissionsProperties;
     private String contextPath;
     private String testPath;
+    private ServletContext servletContext;
     private static boolean encode;
 
-    public static ResourceHelper getInstance() {
-        return instance;
+    public static ResourceHelper get(ServletContext context) {
+        return (ResourceHelper) context.getAttribute(HELPER);
     }
 
-    public static synchronized void init(String context, String testPath) {
-        instance = new ResourceHelper(context, testPath);
-        Log.setLevel(instance.logLevel);
-    }
-
-    public static synchronized void init(ServletContext context, String testPath) {
-        String path = getContextPath(context);
+    public static synchronized ResourceHelper init(ServletContext context, String testPath) {
+        ResourceHelper helper = new ResourceHelper(context, testPath);
+        Log.setLevel(helper.logLevel);
         encode = context.getServerInfo().toLowerCase().contains("tomcat");
-        instance = new ResourceHelper(path, testPath);
-        Log.setLevel(instance.logLevel);
+        context.setAttribute(HELPER, helper);
+        return helper;
     }
 
-    private ResourceHelper(String context, String path) {
+    private ResourceHelper(ServletContext servletContext, String path) {
+        this.servletContext = servletContext;
+        String context = getContextPath(servletContext);
         try {
             path = new File(path).getCanonicalPath();
         } catch (IOException e) {
@@ -434,7 +433,7 @@ public class ResourceHelper {
         String type = name.substring(name.lastIndexOf('.') + 1).toLowerCase();
         String mime = mimes.get(type);
         if (mime == null) {
-            mime = Constants.Setting.APPLICATION_OCTET_STREAM;
+            mime = servletContext.getMimeType(name);
         }
         return mime;
     }
@@ -461,7 +460,7 @@ public class ResourceHelper {
         try (FileOutputStream os = new FileOutputStream(new File(contextPath + SETTINGS_PATH))) {
             settingsProperties.store(os, null);
         }
-        init(contextPath, testPath);
+        init(servletContext, testPath);
     }
 
     /**
@@ -497,12 +496,11 @@ public class ResourceHelper {
      *            context
      * @return
      */
-    public static String getContextPath(ServletContext context) {
-        String path = context.getRealPath(Constants.SEP);
+    public static String getContextPath(ServletContext servletContext) {
+        String path = servletContext.getRealPath(Constants.SEP);
         if (!path.endsWith(Constants.SEP)) {
             path += Constants.SEP;
         }
-        return path;
+        return normalizePath(path);
     }
 }
-

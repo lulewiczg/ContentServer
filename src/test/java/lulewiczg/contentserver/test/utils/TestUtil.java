@@ -1,11 +1,14 @@
 package lulewiczg.contentserver.test.utils;
 
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.servlet.ServletContext;
 
 import lulewiczg.contentserver.permissions.ResourceHelper;
 import lulewiczg.contentserver.utils.Constants;
@@ -30,12 +33,10 @@ public final class TestUtil {
      * @throws ReflectiveOperationException
      *             the ReflectiveOperationException
      */
-    public static ResourceHelper mockHelper() throws ReflectiveOperationException {
+    public static ResourceHelper mockHelper(ServletContext context) throws ReflectiveOperationException {
         ResourceHelper helper = mock(ResourceHelper.class);
-        Field field = ResourceHelper.class.getDeclaredField("instance");
-        field.setAccessible(true);
-        field.set(null, helper);
-        return helper;
+        when(context.getAttribute(eq(ResourceHelper.HELPER))).thenReturn(helper);
+        return ResourceHelper.get(context);
     }
 
     /**

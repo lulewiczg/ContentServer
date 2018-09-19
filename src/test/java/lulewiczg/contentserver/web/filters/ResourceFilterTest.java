@@ -23,9 +23,19 @@ import lulewiczg.contentserver.utils.Constants;
  */
 public class ResourceFilterTest extends ServletTestTemplate {
 
-    private ResourceFilter filter = new ResourceFilter();
+    private ResourceFilter filter;
 
     private FilterChain chain = mock(FilterChain.class);
+
+    /**
+     * Sets up tested class.
+     * 
+     * @see lulewiczg.contentserver.test.utils.ServletTestTemplate#additionalBefore()
+     */
+    @Override
+    protected void additionalBefore() throws ServletException {
+        filter = initFilter(() -> new ResourceFilter());
+    }
 
     @Test
     @DisplayName("Tries to access as guest with empty path")

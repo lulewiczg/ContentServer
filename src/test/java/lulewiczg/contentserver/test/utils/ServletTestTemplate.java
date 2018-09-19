@@ -14,7 +14,14 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.function.Supplier;
 
+import javax.servlet.Filter;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -38,22 +45,22 @@ public abstract class ServletTestTemplate {
     protected HttpSession session;
     protected PrintWriter writer;
     protected ResourceHelper helper;
+    protected ServletContext context;
 
     /**
      * Sets up tests
-     *
-     * @throws IOException
-     *             the IOException
-     * @throws ReflectiveOperationException
-     *             the ReflectiveOperationException
+     * 
+     * @throws Exception
+     *             the Exception
      */
     @BeforeEach
-    public void before() throws IOException, ReflectiveOperationException {
-        helper = TestUtil.mockHelper();
+    public void before() throws Exception {
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
         session = mock(HttpSession.class);
         writer = mock(PrintWriter.class);
+        context = mock(ServletContext.class);
+        helper = TestUtil.mockHelper(context);
 
         when(request.getSession()).thenReturn(session);
         when(response.getWriter()).thenReturn(writer);
@@ -63,12 +70,18 @@ public abstract class ServletTestTemplate {
     /**
      * Additional logic to perform in @BeforeEach.
      * 
-     * @throws IOException
-     *             the IOException
-     * @throws ReflectiveOperationException
-     *             the ReflectiveOperationException
+     * @throws Exception
+     *             the Exception
      */
-    protected void additionalBefore() throws IOException, ReflectiveOperationException {
+    protected void additionalBefore() throws Exception {
+    }
+
+    protected <T extends Filter> T initFilter(Supplier<T> sup) throws ServletException {
+        T filter = sup.get();
+        FilterConfig config = mock(FilterConfig.class);
+        when(config.getServletContext()).thenReturn(context);
+        filter.init(config);
+        return filter;
     }
 
     /**
@@ -220,5 +233,18 @@ public abstract class ServletTestTemplate {
         verify(request, never()).setCharacterEncoding(anyString());
         verify(request, never()).removeAttribute(anyString());
 
+    }
+
+    /**
+     * Sets up servlet.
+     * 
+     * @throws ServletException
+     *             the ServletException
+     */
+    protected void setupServlet(HttpServlet servlet) throws ServletException {
+        ServletConfig config = mock(ServletConfig.class);
+        when(servlet.getServletConfig()).thenReturn(config);
+        when(config.getServletContext()).thenReturn(context);
+        servlet.init();
     }
 }

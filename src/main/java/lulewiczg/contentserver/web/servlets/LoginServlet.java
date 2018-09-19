@@ -58,7 +58,7 @@ public class LoginServlet extends HttpServlet {
                 return;
             }
             try {
-                ResourceHelper.getInstance().login(login, password, session);
+                ResourceHelper.get(getServletContext()).login(login, password, session);
                 resp.getWriter().write(login);
             } catch (Exception e) {
                 Log.getLog().log(e);

@@ -22,9 +22,19 @@ import lulewiczg.contentserver.utils.Constants;
  */
 public class AdminFilterTest extends ServletTestTemplate {
 
-    private AdminFilter filter = new AdminFilter();
+    private AdminFilter filter;
 
     private FilterChain chain = mock(FilterChain.class);
+
+    /**
+     * Sets up tested class.
+     * 
+     * @see lulewiczg.contentserver.test.utils.ServletTestTemplate#additionalBefore()
+     */
+    @Override
+    protected void additionalBefore() throws ServletException {
+        filter = initFilter(() -> new AdminFilter());
+    }
 
     @Test
     @DisplayName("Tries to access as guest")

@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -22,6 +23,8 @@ import lulewiczg.contentserver.utils.Log;
  * @author lulewiczg
  */
 public class ResourceFilter implements Filter {
+
+    private ServletContext context;
 
     /**
      * @see javax.servlet.Filter#destroy()
@@ -43,7 +46,7 @@ public class ResourceFilter implements Filter {
         String path = req.getParameter(Constants.Web.PATH);
         HttpSession session = ((HttpServletRequest) req).getSession();
         String user = (String) session.getAttribute(Constants.Web.USER);
-        if (path != null && !ResourceHelper.getInstance().hasReadAccess(path, user)) {
+        if (path != null && !ResourceHelper.get(context).hasReadAccess(path, user)) {
             Log.getLog().logAccessDenied(path, session, req);
             HttpServletResponse httpResponse = (HttpServletResponse) resp;
             httpResponse.sendError(403, String.format(Constants.Web.Errors.ACCESS_DENIED_TO, path));
@@ -58,6 +61,6 @@ public class ResourceFilter implements Filter {
      */
     @Override
     public void init(FilterConfig arg0) throws ServletException {
-        // Do nothing
+        this.context = arg0.getServletContext();
     }
 }

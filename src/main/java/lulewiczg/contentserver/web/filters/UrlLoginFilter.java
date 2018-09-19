@@ -6,6 +6,7 @@ import java.util.Base64;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -22,13 +23,14 @@ import lulewiczg.contentserver.utils.Constants;
  */
 public class UrlLoginFilter implements Filter {
     private static final String BASIC = "Basic ";
+    private ServletContext context;
 
     /**
      * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
      */
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        // Do nothing
+        context = filterConfig.getServletContext();
     }
 
     /**
@@ -44,7 +46,7 @@ public class UrlLoginFilter implements Filter {
             auth = auth.replace(BASIC, "");
             String decode = new String(Base64.getDecoder().decode(auth));
             String[] split = decode.split("\\:");
-            ResourceHelper.getInstance().login(split[0], split[1], session);
+            ResourceHelper.get(context).login(split[0], split[1], session);
         }
         chain.doFilter(req, resp);
     }
