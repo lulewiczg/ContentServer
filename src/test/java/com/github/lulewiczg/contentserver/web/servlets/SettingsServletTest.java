@@ -48,7 +48,7 @@ public class SettingsServletTest extends ServletTestTemplate {
     @DisplayName("Gets empty settings")
     public void testGetEmptySettings() throws IOException, ServletException {
         Properties props = new Properties();
-        when(helper.getSettingsProperties()).thenReturn(props);
+        when(settingsUtil.getSettingsProperties()).thenReturn(props);
 
         servlet.doGet(request, response);
 
@@ -61,7 +61,7 @@ public class SettingsServletTest extends ServletTestTemplate {
         Collections.sort(settings);
         Properties props = new Properties();
         settings.forEach(i -> props.setProperty(i.getName(), i.getValue().toString()));
-        when(helper.getSettingsProperties()).thenReturn(props);
+        when(settingsUtil.getSettingsProperties()).thenReturn(props);
 
         servlet.doGet(request, response);
 
@@ -76,13 +76,13 @@ public class SettingsServletTest extends ServletTestTemplate {
                 .collect(Collectors.toMap(Setting::getName, i -> new String[] { i.getValue().toString() }));
         when(request.getParameterMap()).thenReturn(params);
         Properties props = mock(Properties.class);
-        when(helper.getSettingsProperties()).thenReturn(props);
+        when(settingsUtil.getSettingsProperties()).thenReturn(props);
 
         servlet.doPost(request, response);
 
         params.forEach((i, j) -> verify(props).setProperty(i, j[0]));
 
-        verify(helper).saveSettings();
+        verify(settingsUtil).saveSettings();
         verifyOkEmptyResponse();
     }
 }

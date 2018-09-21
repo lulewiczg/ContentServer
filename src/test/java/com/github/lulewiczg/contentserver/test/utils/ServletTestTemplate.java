@@ -28,8 +28,9 @@ import javax.servlet.http.HttpSession;
 
 import org.junit.jupiter.api.BeforeEach;
 
-import com.github.lulewiczg.contentserver.permissions.ResourceHelper;
 import com.github.lulewiczg.contentserver.utils.Constants;
+import com.github.lulewiczg.contentserver.utils.ResourceUtil;
+import com.github.lulewiczg.contentserver.utils.SettingsUtil;
 
 /**
  * Test template for servlet tests.
@@ -44,8 +45,9 @@ public abstract class ServletTestTemplate {
     protected HttpServletResponse response;
     protected HttpSession session;
     protected PrintWriter writer;
-    protected ResourceHelper helper;
+    protected ResourceUtil resourceUtil;
     protected ServletContext context;
+    protected SettingsUtil settingsUtil;
 
     /**
      * Sets up tests
@@ -60,7 +62,8 @@ public abstract class ServletTestTemplate {
         session = mock(HttpSession.class);
         writer = mock(PrintWriter.class);
         context = mock(ServletContext.class);
-        helper = TestUtil.mockHelper(context);
+        resourceUtil = TestUtil.mockResourceUtil(context);
+        settingsUtil = TestUtil.mockSettingsUtil(context);
 
         when(request.getSession()).thenReturn(session);
         when(response.getWriter()).thenReturn(writer);

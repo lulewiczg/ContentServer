@@ -46,7 +46,7 @@ public class ResourceFilterTest extends ServletTestTemplate {
 
         filter.doFilter(request, response, chain);
 
-        verifyZeroInteractions(helper);
+        verifyZeroInteractions(resourceUtil);
         verifyFilterOK();
     }
 
@@ -55,7 +55,7 @@ public class ResourceFilterTest extends ServletTestTemplate {
     public void testAccessAsGuest() throws IOException, ServletException {
         when(session.getAttribute(Constants.Web.USER)).thenReturn(null);
         when(request.getParameter(Constants.Web.PATH)).thenReturn(TEST);
-        when(helper.hasReadAccess(eq(TEST), eq(null))).thenReturn(true);
+        when(resourceUtil.hasReadAccess(eq(TEST), eq(null))).thenReturn(true);
 
         filter.doFilter(request, response, chain);
 
@@ -67,7 +67,7 @@ public class ResourceFilterTest extends ServletTestTemplate {
     public void testAccessAsGuestPermissionDenied() throws IOException, ServletException {
         when(session.getAttribute(Constants.Web.USER)).thenReturn(null);
         when(request.getParameter(Constants.Web.PATH)).thenReturn(TEST);
-        when(helper.hasReadAccess(eq(TEST), eq(null))).thenReturn(false);
+        when(resourceUtil.hasReadAccess(eq(TEST), eq(null))).thenReturn(false);
 
         filter.doFilter(request, response, chain);
 
@@ -79,7 +79,7 @@ public class ResourceFilterTest extends ServletTestTemplate {
     public void testAccessAsUser() throws IOException, ServletException {
         when(session.getAttribute(Constants.Web.USER)).thenReturn(TEST2);
         when(request.getParameter(Constants.Web.PATH)).thenReturn(TEST);
-        when(helper.hasReadAccess(eq(TEST), eq(TEST2))).thenReturn(true);
+        when(resourceUtil.hasReadAccess(eq(TEST), eq(TEST2))).thenReturn(true);
 
         filter.doFilter(request, response, chain);
 
@@ -91,7 +91,7 @@ public class ResourceFilterTest extends ServletTestTemplate {
     public void testAccessAsUserPermissionDenied() throws IOException, ServletException {
         when(session.getAttribute(Constants.Web.USER)).thenReturn(TEST2);
         when(request.getParameter(Constants.Web.PATH)).thenReturn(TEST);
-        when(helper.hasReadAccess(eq(TEST), eq(TEST2))).thenReturn(false);
+        when(resourceUtil.hasReadAccess(eq(TEST), eq(TEST2))).thenReturn(false);
 
         filter.doFilter(request, response, chain);
 
@@ -103,7 +103,7 @@ public class ResourceFilterTest extends ServletTestTemplate {
     public void testAccessAsAdmin() throws IOException, ServletException {
         when(session.getAttribute(Constants.Web.USER)).thenReturn(Constants.ADMIN);
         when(request.getParameter(Constants.Web.PATH)).thenReturn(TEST);
-        when(helper.hasReadAccess(eq(TEST), eq(Constants.ADMIN))).thenReturn(true);
+        when(resourceUtil.hasReadAccess(eq(TEST), eq(Constants.ADMIN))).thenReturn(true);
 
         filter.doFilter(request, response, chain);
         verifyFilterOK();

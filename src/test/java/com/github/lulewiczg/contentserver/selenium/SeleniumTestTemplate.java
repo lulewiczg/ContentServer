@@ -81,7 +81,9 @@ public abstract class SeleniumTestTemplate {
      */
     @AfterEach
     public void after() {
-        driver.quit();
+        if (driver != null) {
+            driver.quit();
+        }
     }
 
     /**

@@ -13,9 +13,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.github.lulewiczg.contentserver.permissions.ResourceHelper;
 import com.github.lulewiczg.contentserver.utils.Constants;
 import com.github.lulewiczg.contentserver.utils.Log;
+import com.github.lulewiczg.contentserver.utils.SettingsUtil;
 import com.github.lulewiczg.contentserver.utils.models.Setting;
 
 /**
@@ -45,7 +45,7 @@ public class SettingsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType(Constants.Setting.PLAIN_TEXT);
-        Properties props = ResourceHelper.get(context).getSettingsProperties();
+        Properties props = SettingsUtil.get(context).getSettingsProperties();
         List<Setting> settings = new ArrayList<>();
         for (Entry<Object, Object> e : props.entrySet()) {
             settings.add(new Setting(e.getKey().toString(), e.getValue()));
@@ -63,11 +63,11 @@ public class SettingsServlet extends HttpServlet {
     @SuppressWarnings("unchecked")
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<Setting> settings = Setting.load(req.getParameterMap());
-        Properties props = ResourceHelper.get(context).getSettingsProperties();
+        Properties props = SettingsUtil.get(context).getSettingsProperties();
         for (Setting s : settings) {
             props.setProperty(s.getName(), s.getValue().toString());
             Log.getLog().logInfo(String.format("Changed %s to %s", s.getName(), s.getValue()));
         }
-        ResourceHelper.get(context).saveSettings();
+        SettingsUtil.get(context).saveSettings();
     }
 }

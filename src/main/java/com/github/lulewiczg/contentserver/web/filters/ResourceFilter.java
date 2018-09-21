@@ -13,9 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.github.lulewiczg.contentserver.permissions.ResourceHelper;
 import com.github.lulewiczg.contentserver.utils.Constants;
 import com.github.lulewiczg.contentserver.utils.Log;
+import com.github.lulewiczg.contentserver.utils.ResourceUtil;
 
 /**
  * Filter to validate user permissions to requested resources.
@@ -46,7 +46,7 @@ public class ResourceFilter implements Filter {
         String path = req.getParameter(Constants.Web.PATH);
         HttpSession session = ((HttpServletRequest) req).getSession();
         String user = (String) session.getAttribute(Constants.Web.USER);
-        if (path != null && !ResourceHelper.get(context).hasReadAccess(path, user)) {
+        if (path != null && !ResourceUtil.get(context).hasReadAccess(path, user)) {
             Log.getLog().logAccessDenied(path, session, req);
             HttpServletResponse httpResponse = (HttpServletResponse) resp;
             httpResponse.sendError(403, String.format(Constants.Web.Errors.ACCESS_DENIED_TO, path));

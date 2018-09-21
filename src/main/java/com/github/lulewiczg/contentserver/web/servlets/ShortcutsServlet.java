@@ -11,8 +11,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.github.lulewiczg.contentserver.permissions.ResourceHelper;
+import com.github.lulewiczg.contentserver.utils.CommonUtil;
 import com.github.lulewiczg.contentserver.utils.Constants;
+import com.github.lulewiczg.contentserver.utils.ResourceUtil;
+import com.github.lulewiczg.contentserver.utils.SettingsUtil;
 import com.github.lulewiczg.contentserver.utils.json.JSONModel;
 
 /**
@@ -44,7 +46,7 @@ public class ShortcutsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String user = (String) req.getSession().getAttribute(Constants.Web.USER);
         String path = req.getParameter(Constants.Web.PATH);
-        path = ResourceHelper.decodeParam(path);
+        path = SettingsUtil.decodeParam(path);
         if (path == null) {
             processShortcutList(resp, user);
         } else {
@@ -65,11 +67,11 @@ public class ShortcutsServlet extends HttpServlet {
      *             the IOException
      */
     private void processPathCheck(HttpServletResponse resp, String user, String path) throws IOException {
-        path = ResourceHelper.normalizePath(path);
+        path = CommonUtil.normalizePath(path);
         File f = new File(path);
         int counter = 0;
         while ((f = f.getParentFile()) != null) {
-            if (ResourceHelper.get(context).hasReadAccess(f.getCanonicalPath(), user)) {
+            if (ResourceUtil.get(context).hasReadAccess(f.getCanonicalPath(), user)) {
                 counter++;
             } else {
                 break;
@@ -91,7 +93,7 @@ public class ShortcutsServlet extends HttpServlet {
      *             the IOException
      */
     private void processShortcutList(HttpServletResponse resp, String user) throws IOException {
-        List<String> dmz = ResourceHelper.get(context).getAvailablePaths(user);
+        List<String> dmz = ResourceUtil.get(context).getAvailablePaths(user);
         List<String> dirs = new ArrayList<>();
         for (String s : dmz) {
             if (new File(s).exists()) {

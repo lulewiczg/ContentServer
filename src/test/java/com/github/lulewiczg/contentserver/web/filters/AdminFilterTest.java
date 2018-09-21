@@ -42,7 +42,7 @@ public class AdminFilterTest extends ServletTestTemplate {
     public void testAccessAsGuest() throws IOException, ServletException {
         when(session.getAttribute(Constants.Web.USER)).thenReturn(null);
         when(request.getRequestURI()).thenReturn(TEST);
-        verifyZeroInteractions(helper);
+        verifyZeroInteractions(resourceUtil);
 
         filter.doFilter(request, response, chain);
 
@@ -54,7 +54,7 @@ public class AdminFilterTest extends ServletTestTemplate {
     public void testAccessAsUser() throws IOException, ServletException {
         when(session.getAttribute(Constants.Web.USER)).thenReturn(TEST);
         when(request.getRequestURI()).thenReturn(TEST);
-        verifyZeroInteractions(helper);
+        verifyZeroInteractions(resourceUtil);
 
         filter.doFilter(request, response, chain);
 
@@ -66,7 +66,7 @@ public class AdminFilterTest extends ServletTestTemplate {
     public void testAccessAsAdmin() throws IOException, ServletException {
         when(session.getAttribute(Constants.Web.USER)).thenReturn(Constants.ADMIN);
         when(request.getRequestURI()).thenReturn(TEST);
-        verifyZeroInteractions(helper);
+        verifyZeroInteractions(resourceUtil);
 
         filter.doFilter(request, response, chain);
 

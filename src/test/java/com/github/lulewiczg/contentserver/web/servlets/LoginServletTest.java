@@ -117,7 +117,7 @@ public class LoginServletTest extends ServletTestTemplate {
         when(request.getParameter(Constants.Web.LOGIN)).thenReturn(TEST);
         when(request.getParameter(Constants.Web.PASSWORD)).thenReturn(TEST);
         when(session.getAttribute(Constants.Web.USER)).thenReturn(null);
-        doThrow(AuthenticationException.class).when(helper).login(eq(TEST), eq(TEST), eq(session));
+        doThrow(AuthenticationException.class).when(resourceUtil).login(eq(TEST), eq(TEST), eq(session));
 
         servlet.doPost(request, response);
 

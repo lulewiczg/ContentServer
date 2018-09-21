@@ -1,10 +1,13 @@
 package com.github.lulewiczg.contentserver.web.listeners;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import com.github.lulewiczg.contentserver.permissions.ResourceHelper;
+import com.github.lulewiczg.contentserver.utils.CommonUtil;
 import com.github.lulewiczg.contentserver.utils.Log;
+import com.github.lulewiczg.contentserver.utils.ResourceUtil;
+import com.github.lulewiczg.contentserver.utils.SettingsUtil;
 
 /**
  * Servlet context listener for loading settings on startup.
@@ -21,9 +24,12 @@ public class ContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent event) {
         System.setProperty("java.net.preferIPv4Stack", "true");
-        String path = ResourceHelper.getContextPath(event.getServletContext());
+        ServletContext context = event.getServletContext();
+        String path = CommonUtil.getContextPath(context);
+
         Log.init(path);
-        ResourceHelper.init(event.getServletContext(), path + TEST_PATH);
+        SettingsUtil.init(context);
+        ResourceUtil.init(context, path + TEST_PATH);
         Log.getLog().logInfo("Config loaded!");
     }
 

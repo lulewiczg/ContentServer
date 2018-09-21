@@ -10,8 +10,9 @@ import java.util.stream.Collectors;
 
 import javax.servlet.ServletContext;
 
-import com.github.lulewiczg.contentserver.permissions.ResourceHelper;
 import com.github.lulewiczg.contentserver.utils.Constants;
+import com.github.lulewiczg.contentserver.utils.ResourceUtil;
+import com.github.lulewiczg.contentserver.utils.SettingsUtil;
 import com.github.lulewiczg.contentserver.utils.models.Dir;
 
 /**
@@ -25,18 +26,33 @@ public final class TestUtil {
     public static final String URL = "http://localhost:8080/ContentServer";
 
     /**
-     * Swaps helper for tests
+     * Mocks ResourceUtil for tests.
      *
-     * @param helper
-     *            mocked helper
+     * @param util
+     *            mocked util
      * @return
      * @throws ReflectiveOperationException
      *             the ReflectiveOperationException
      */
-    public static ResourceHelper mockHelper(ServletContext context) throws ReflectiveOperationException {
-        ResourceHelper helper = mock(ResourceHelper.class);
-        when(context.getAttribute(eq(ResourceHelper.HELPER))).thenReturn(helper);
-        return ResourceHelper.get(context);
+    public static ResourceUtil mockResourceUtil(ServletContext context) throws ReflectiveOperationException {
+        ResourceUtil util = mock(ResourceUtil.class);
+        when(context.getAttribute(eq(ResourceUtil.NAME))).thenReturn(util);
+        return ResourceUtil.get(context);
+    }
+
+    /**
+     * Mocks SettingsUtil for tests.
+     *
+     * @param util
+     *            mocked util
+     * @return
+     * @throws ReflectiveOperationException
+     *             the ReflectiveOperationException
+     */
+    public static SettingsUtil mockSettingsUtil(ServletContext context) throws ReflectiveOperationException {
+        SettingsUtil util = mock(SettingsUtil.class);
+        when(context.getAttribute(eq(SettingsUtil.NAME))).thenReturn(util);
+        return SettingsUtil.get(context);
     }
 
     /**

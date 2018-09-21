@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.github.lulewiczg.contentserver.permissions.ResourceHelper;
+import com.github.lulewiczg.contentserver.utils.ResourceUtil;
 
 /**
  * Represents user.
@@ -110,8 +110,8 @@ public class User {
         }
         read.addAll(write);
         read.addAll(delete);
-        ResourceHelper.normalize(read);
-        ResourceHelper.normalize(write);
-        ResourceHelper.normalize(delete);
+        ResourceUtil.normalize(read);
+        ResourceUtil.normalize(write);
+        ResourceUtil.normalize(delete);
     }
 }

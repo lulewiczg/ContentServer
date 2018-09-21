@@ -1,4 +1,4 @@
-package com.github.lulewiczg.contentserver.permissions;
+package com.github.lulewiczg.contentserver.utils.models;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

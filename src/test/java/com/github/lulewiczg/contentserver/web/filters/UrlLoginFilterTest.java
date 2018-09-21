@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test;
 import com.github.lulewiczg.contentserver.test.utils.ServletTestTemplate;
 import com.github.lulewiczg.contentserver.utils.Constants;
 import com.github.lulewiczg.contentserver.utils.models.User;
-import com.github.lulewiczg.contentserver.web.filters.UrlLoginFilter;
 
 /**
  * Tests UrlLoginFilter.
@@ -57,7 +56,7 @@ public class UrlLoginFilterTest extends ServletTestTemplate {
 
         filter.doFilter(request, response, chain);
 
-        verify(helper, times(1)).login(eq(TEST), eq(TEST2), eq(session));
+        verify(resourceUtil, times(1)).login(eq(TEST), eq(TEST2), eq(session));
         verifyFilterOK();
     }
 
@@ -66,12 +65,12 @@ public class UrlLoginFilterTest extends ServletTestTemplate {
     public void testLoginInvalidCredentials() throws IOException, ServletException {
         when(request.getHeader(Constants.Web.Headers.AUTHORIZATION)).thenReturn(AUTH);
         when(session.getAttribute(Constants.Web.USER)).thenReturn(null);
-        doThrow(new AuthenticationException("Invalid login or password")).when(helper).login(eq(TEST), eq(TEST2),
-                eq(session));
+        doThrow(new AuthenticationException("Invalid login or password")).when(resourceUtil).login(eq(TEST),
+                eq(TEST2), eq(session));
 
         Assertions.assertThrows(AuthenticationException.class, () -> filter.doFilter(request, response, chain));
 
-        verify(helper, times(1)).login(eq(TEST), eq(TEST2), eq(session));
+        verify(resourceUtil, times(1)).login(eq(TEST), eq(TEST2), eq(session));
         verifyFilterOK();
     }
 
@@ -83,7 +82,7 @@ public class UrlLoginFilterTest extends ServletTestTemplate {
 
         filter.doFilter(request, response, chain);
 
-        verifyZeroInteractions(helper);
+        verifyZeroInteractions(resourceUtil);
         verifyFilterOK();
     }
 
@@ -95,7 +94,7 @@ public class UrlLoginFilterTest extends ServletTestTemplate {
 
         filter.doFilter(request, response, chain);
 
-        verify(helper, times(1)).login(eq(TEST), eq(TEST2), eq(session));
+        verify(resourceUtil, times(1)).login(eq(TEST), eq(TEST2), eq(session));
         verifyFilterOK();
     }
 
@@ -107,7 +106,7 @@ public class UrlLoginFilterTest extends ServletTestTemplate {
 
         filter.doFilter(request, response, chain);
 
-        verifyZeroInteractions(helper);
+        verifyZeroInteractions(resourceUtil);
         verifyFilterOK();
     }
 }

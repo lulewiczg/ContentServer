@@ -13,8 +13,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import com.github.lulewiczg.contentserver.permissions.ResourceHelper;
 import com.github.lulewiczg.contentserver.utils.Constants;
+import com.github.lulewiczg.contentserver.utils.ResourceUtil;
 
 /**
  * Performs basic HTTP login
@@ -46,7 +46,7 @@ public class UrlLoginFilter implements Filter {
             auth = auth.replace(BASIC, "");
             String decode = new String(Base64.getDecoder().decode(auth));
             String[] split = decode.split("\\:");
-            ResourceHelper.get(context).login(split[0], split[1], session);
+            ResourceUtil.get(context).login(split[0], split[1], session);
         }
         chain.doFilter(req, resp);
     }

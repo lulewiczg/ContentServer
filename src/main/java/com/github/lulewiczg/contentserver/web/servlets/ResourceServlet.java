@@ -13,8 +13,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.github.lulewiczg.contentserver.permissions.ResourceHelper;
+import com.github.lulewiczg.contentserver.utils.CommonUtil;
 import com.github.lulewiczg.contentserver.utils.Constants;
+import com.github.lulewiczg.contentserver.utils.SettingsUtil;
 import com.github.lulewiczg.contentserver.utils.Constants.Setting;
 import com.github.lulewiczg.contentserver.utils.models.Dir;
 
@@ -49,13 +50,13 @@ public class ResourceServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String path = request.getParameter(Constants.Web.PATH);
-        path = ResourceHelper.decodeParam(path);
+        path = SettingsUtil.decodeParam(path);
         if (path == null) {
             response.setContentType(Constants.Setting.PLAIN_TEXT);
             response.sendError(404, String.format(Constants.Web.Errors.NOT_FOUND, path));
             return;
         }
-        path = ResourceHelper.normalizePath(path);
+        path = CommonUtil.normalizePath(path);
         File f = new File(path);
         if (!f.exists()) {
             response.setContentType(Constants.Setting.PLAIN_TEXT);
@@ -127,7 +128,7 @@ public class ResourceServlet extends HttpServlet {
 
         long contentLength = end - start + 1;
         response.reset();
-        int bufferSize = ResourceHelper.get(context).getBufferSize();
+        int bufferSize = SettingsUtil.get(context).getBufferSize();
         response.setBufferSize(bufferSize);
         setHeaders(response, f, length, start, end, download, contentLength);
 
@@ -227,7 +228,7 @@ public class ResourceServlet extends HttpServlet {
         if ("true".equals(download)) {
             response.setContentType(Constants.Web.Headers.APPLICATION_FORCE_DOWNLOAD);
         } else {
-            String contentType = ResourceHelper.get(context).getMIME(f.getName());
+            String contentType = SettingsUtil.get(context).getMIME(f.getName());
             response.setContentType(contentType);
         }
     }

@@ -24,13 +24,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.github.lulewiczg.contentserver.permissions.ResourceHelper;
 import com.github.lulewiczg.contentserver.test.utils.ServletTestTemplate;
 import com.github.lulewiczg.contentserver.test.utils.TestUtil;
+import com.github.lulewiczg.contentserver.utils.CommonUtil;
 import com.github.lulewiczg.contentserver.utils.Constants;
 import com.github.lulewiczg.contentserver.utils.json.JSONModel;
 import com.github.lulewiczg.contentserver.utils.models.Dir;
-import com.github.lulewiczg.contentserver.web.servlets.ResourceServlet;
 
 /**
  * Tests ResourceServlet.
@@ -63,7 +62,7 @@ public class ResourceServletTest extends ServletTestTemplate {
      */
     @BeforeAll
     public static void setup() throws IOException {
-        base = ResourceHelper.normalizePath(new File(TestUtil.LOC + "structure").getCanonicalPath() + Constants.SEP);
+        base = CommonUtil.normalizePath(new File(TestUtil.LOC + "structure").getCanonicalPath() + Constants.SEP);
     }
 
     @Test
@@ -73,7 +72,7 @@ public class ResourceServletTest extends ServletTestTemplate {
 
         servlet.doGet(request, response);
 
-        verifyZeroInteractions(helper);
+        verifyZeroInteractions(resourceUtil);
         verifyError(404, String.format(Constants.Web.Errors.NOT_FOUND, "null"));
     }
 
@@ -84,7 +83,7 @@ public class ResourceServletTest extends ServletTestTemplate {
 
         servlet.doGet(request, response);
 
-        verifyZeroInteractions(helper);
+        verifyZeroInteractions(resourceUtil);
         verifyError(404, String.format(Constants.Web.Errors.NOT_FOUND, base + "missingFolder"));
     }
 
@@ -98,7 +97,7 @@ public class ResourceServletTest extends ServletTestTemplate {
                 new Dir(FILE11, 4, base + "folder1/" + FILE11, true));
         servlet.doGet(request, response);
 
-        verifyZeroInteractions(helper);
+        verifyZeroInteractions(resourceUtil);
         String json = JSONModel.toJSONArray(dirs);
         verifyOkJSON(json);
     }
@@ -166,7 +165,7 @@ public class ResourceServletTest extends ServletTestTemplate {
 
         servlet.doGet(request, response);
 
-        verify(helper, never()).getMIME(anyString());
+        verify(settingsUtil, never()).getMIME(anyString());
         verifyHeaders(FILE11, Constants.Web.Headers.APPLICATION_FORCE_DOWNLOAD, buff, len, 0, len - 1);
         Assertions.assertEquals(TEST, stream.get());
     }
@@ -375,8 +374,8 @@ public class ResourceServletTest extends ServletTestTemplate {
         when(request.getParameter(Constants.Web.PATH)).thenReturn(base + FOLDER3_11);
         when(request.getParameter(Constants.Web.DOWNLOAD)).thenReturn(null);
         when(request.getHeader(Constants.Web.Headers.RANGE)).thenReturn(buildRange(start, end));
-        when(helper.getMIME(FILE11)).thenReturn(Constants.Setting.PLAIN_TEXT);
-        when(helper.getBufferSize()).thenReturn(buff);
+        when(settingsUtil.getMIME(FILE11)).thenReturn(Constants.Setting.PLAIN_TEXT);
+        when(settingsUtil.getBufferSize()).thenReturn(buff);
         MockOutputStream stream = new MockOutputStream(len);
         when(response.getOutputStream()).thenReturn(stream);
         return stream;
@@ -401,8 +400,8 @@ public class ResourceServletTest extends ServletTestTemplate {
         when(request.getParameter(Constants.Web.PATH)).thenReturn(base + path);
         when(request.getParameter(Constants.Web.DOWNLOAD)).thenReturn(download != null ? download + "" : null);
         when(request.getHeader(Constants.Web.Headers.RANGE)).thenReturn(null);
-        when(helper.getBufferSize()).thenReturn(buffsize);
-        when(helper.getMIME(FILE11)).thenReturn(Constants.Setting.PLAIN_TEXT);
+        when(settingsUtil.getBufferSize()).thenReturn(buffsize);
+        when(settingsUtil.getMIME(FILE11)).thenReturn(Constants.Setting.PLAIN_TEXT);
         MockOutputStream stream = new MockOutputStream(len);
         when(response.getOutputStream()).thenReturn(stream);
         return stream;

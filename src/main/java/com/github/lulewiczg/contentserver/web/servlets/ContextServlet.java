@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.github.lulewiczg.contentserver.permissions.ResourceHelper;
+import com.github.lulewiczg.contentserver.utils.CommonUtil;
 import com.github.lulewiczg.contentserver.utils.Constants;
 
 /**
@@ -38,7 +38,7 @@ public class ContextServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType(Constants.Setting.PLAIN_TEXT);
-        String path = ResourceHelper.normalizePath(ResourceHelper.getContextPath(context));
+        String path = CommonUtil.normalizePath(CommonUtil.getContextPath(context));
         resp.getWriter().write(path);
     }
 }

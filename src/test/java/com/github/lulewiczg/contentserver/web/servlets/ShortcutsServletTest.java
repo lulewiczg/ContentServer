@@ -17,12 +17,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.github.lulewiczg.contentserver.permissions.ResourceHelper;
 import com.github.lulewiczg.contentserver.test.utils.ServletTestTemplate;
 import com.github.lulewiczg.contentserver.test.utils.TestUtil;
+import com.github.lulewiczg.contentserver.utils.CommonUtil;
 import com.github.lulewiczg.contentserver.utils.Constants;
 import com.github.lulewiczg.contentserver.utils.json.JSONModel;
-import com.github.lulewiczg.contentserver.web.servlets.ShortcutsServlet;
 
 /**
  * Tests ShortcutsServlet.
@@ -44,9 +43,9 @@ public class ShortcutsServletTest extends ServletTestTemplate {
      */
     @Override
     public void additionalBefore() throws Exception {
-        when(helper.getAvailablePaths(null)).thenReturn(guestPaths);
-        when(helper.getAvailablePaths(TEST)).thenReturn(testPaths);
-        when(helper.getAvailablePaths(Constants.ADMIN)).thenReturn(adminPaths);
+        when(resourceUtil.getAvailablePaths(null)).thenReturn(guestPaths);
+        when(resourceUtil.getAvailablePaths(TEST)).thenReturn(testPaths);
+        when(resourceUtil.getAvailablePaths(Constants.ADMIN)).thenReturn(adminPaths);
         setupServlet(servlet);
     }
 
@@ -58,7 +57,7 @@ public class ShortcutsServletTest extends ServletTestTemplate {
      */
     @BeforeAll
     public static void setup() throws IOException {
-        base = ResourceHelper.normalizePath(new File(TestUtil.LOC).getCanonicalPath() + Constants.SEP);
+        base = CommonUtil.normalizePath(new File(TestUtil.LOC).getCanonicalPath() + Constants.SEP);
         guestPaths = Arrays.asList(base + "structure/folder1/folder1", base + "structure/folder2/folder1",
                 base + "structure/folder1/folder1.txt", base + "structure/folder1");
         testPaths = Arrays.asList(base + "structure/folder1/folder1", base + "structure/folder2",
@@ -105,7 +104,7 @@ public class ShortcutsServletTest extends ServletTestTemplate {
         when(session.getAttribute(Constants.Web.USER)).thenReturn(TEST2);
         when(request.getParameter(Constants.Web.PATH)).thenReturn(null);
         List<String> paths = Arrays.asList(base + "structure/folder1/folder1", base + "missingFolder");
-        when(helper.getAvailablePaths(TEST2)).thenReturn(paths);
+        when(resourceUtil.getAvailablePaths(TEST2)).thenReturn(paths);
 
         servlet.doGet(request, response);
 
@@ -117,7 +116,7 @@ public class ShortcutsServletTest extends ServletTestTemplate {
     public void testNoPaths() throws IOException, ServletException {
         when(session.getAttribute(Constants.Web.USER)).thenReturn(TEST2);
         when(request.getParameter(Constants.Web.PATH)).thenReturn(null);
-        when(helper.getAvailablePaths(TEST2)).thenReturn(new ArrayList<>());
+        when(resourceUtil.getAvailablePaths(TEST2)).thenReturn(new ArrayList<>());
 
         servlet.doGet(request, response);
 
@@ -129,7 +128,7 @@ public class ShortcutsServletTest extends ServletTestTemplate {
     public void testNumberOfFoldersInvalidPath() throws IOException, ServletException {
         when(session.getAttribute(Constants.Web.USER)).thenReturn(null);
         when(request.getParameter(Constants.Web.PATH)).thenReturn(base);
-        when(helper.hasReadAccess(base + TEST, Constants.GUEST)).thenReturn(false);
+        when(resourceUtil.hasReadAccess(base + TEST, Constants.GUEST)).thenReturn(false);
 
         servlet.doGet(request, response);
 
@@ -142,8 +141,8 @@ public class ShortcutsServletTest extends ServletTestTemplate {
         when(session.getAttribute(Constants.Web.USER)).thenReturn(TEST);
         when(request.getParameter(Constants.Web.PATH)).thenReturn(base);
         File file = new File(base).getCanonicalFile();
-        when(helper.hasReadAccess(file.getCanonicalPath(), TEST)).thenReturn(true);
-        when(helper.hasReadAccess(file.getParentFile().getPath(), TEST)).thenReturn(false);
+        when(resourceUtil.hasReadAccess(file.getCanonicalPath(), TEST)).thenReturn(true);
+        when(resourceUtil.hasReadAccess(file.getParentFile().getPath(), TEST)).thenReturn(false);
 
         servlet.doGet(request, response);
 
@@ -156,9 +155,9 @@ public class ShortcutsServletTest extends ServletTestTemplate {
         when(session.getAttribute(Constants.Web.USER)).thenReturn(TEST);
         when(request.getParameter(Constants.Web.PATH)).thenReturn(base);
         File file = new File(base).getCanonicalFile();
-        when(helper.hasReadAccess(file.getCanonicalPath(), TEST)).thenReturn(true);
-        when(helper.hasReadAccess(file.getParentFile().getPath(), TEST)).thenReturn(true);
-        when(helper.hasReadAccess(file.getParentFile().getParentFile().getPath(), TEST)).thenReturn(false);
+        when(resourceUtil.hasReadAccess(file.getCanonicalPath(), TEST)).thenReturn(true);
+        when(resourceUtil.hasReadAccess(file.getParentFile().getPath(), TEST)).thenReturn(true);
+        when(resourceUtil.hasReadAccess(file.getParentFile().getParentFile().getPath(), TEST)).thenReturn(false);
 
         servlet.doGet(request, response);
 
@@ -170,7 +169,7 @@ public class ShortcutsServletTest extends ServletTestTemplate {
     public void testNumberOfFoldersFullPathAnotherUser() throws IOException, ServletException {
         when(session.getAttribute(Constants.Web.USER)).thenReturn(TEST2);
         when(request.getParameter(Constants.Web.PATH)).thenReturn(base);
-        when(helper.hasReadAccess(anyString(), eq(TEST))).thenReturn(true);
+        when(resourceUtil.hasReadAccess(anyString(), eq(TEST))).thenReturn(true);
 
         servlet.doGet(request, response);
 
@@ -183,7 +182,7 @@ public class ShortcutsServletTest extends ServletTestTemplate {
         when(session.getAttribute(Constants.Web.USER)).thenReturn(TEST);
         when(request.getParameter(Constants.Web.PATH)).thenReturn(base);
         File file = new File(base).getCanonicalFile();
-        when(helper.hasReadAccess(anyString(), eq(TEST))).thenReturn(true);
+        when(resourceUtil.hasReadAccess(anyString(), eq(TEST))).thenReturn(true);
         int parents = 0;
         while ((file = file.getParentFile()) != null) {
             parents++;

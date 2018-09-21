@@ -8,9 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.github.lulewiczg.contentserver.permissions.ResourceHelper;
 import com.github.lulewiczg.contentserver.utils.Constants;
 import com.github.lulewiczg.contentserver.utils.Log;
+import com.github.lulewiczg.contentserver.utils.ResourceUtil;
 
 /**
  * Servlet for handling logging in.
@@ -58,7 +58,7 @@ public class LoginServlet extends HttpServlet {
                 return;
             }
             try {
-                ResourceHelper.get(getServletContext()).login(login, password, session);
+                ResourceUtil.get(getServletContext()).login(login, password, session);
                 resp.getWriter().write(login);
             } catch (Exception e) {
                 Log.getLog().log(e);

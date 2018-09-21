@@ -1,15 +1,9 @@
-package com.github.lulewiczg.contentserver.permissions;
+package com.github.lulewiczg.contentserver.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -19,68 +13,47 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Set;
-import java.util.logging.Level;
 
 import javax.security.sasl.AuthenticationException;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
-import com.github.lulewiczg.contentserver.utils.Constants;
-import com.github.lulewiczg.contentserver.utils.Log;
 import com.github.lulewiczg.contentserver.utils.models.User;
 
 /**
- * Helper class for resource management.
+ * Util class for resource management.
  *
  * @author lulewiczg
  */
-public class ResourceHelper {
-    public static final String HELPER = "helper";
+public class ResourceUtil {
+    public static final String NAME = ResourceUtil.class.getName();
     private static final String PERMISSIONS_PATH = "/WEB-INF/settings/permissions.properties";
-    private static final String SETTINGS_PATH = "/WEB-INF/settings/settings.properties";
     private static final String DIR = "{DIR}";
     private Map<String, User> users = new HashMap<>();
-    private Map<String, String> mimes = new HashMap<>();
-    private int bufferSize;
-    private Level logLevel = Level.OFF;
-    private Properties settingsProperties;
-    private Properties permissionsProperties;
     private String contextPath;
     private String testPath;
-    private ServletContext servletContext;
-    private static boolean encode;
 
-    public static ResourceHelper get(ServletContext context) {
-        return (ResourceHelper) context.getAttribute(HELPER);
+    public static ResourceUtil get(ServletContext context) {
+        return (ResourceUtil) context.getAttribute(NAME);
     }
 
-    public static synchronized ResourceHelper init(ServletContext context, String testPath) {
-        ResourceHelper helper = new ResourceHelper(context, testPath);
-        Log.setLevel(helper.logLevel);
-        encode = context.getServerInfo().toLowerCase().contains("tomcat");
-        context.setAttribute(HELPER, helper);
-        return helper;
+    public static synchronized ResourceUtil init(ServletContext context, String testPath) {
+        ResourceUtil util = new ResourceUtil(context, testPath);
+        context.setAttribute(NAME, util);
+        return util;
     }
 
-    private ResourceHelper(ServletContext servletContext, String path) {
-        this.servletContext = servletContext;
-        String context = getContextPath(servletContext);
+    private ResourceUtil(ServletContext servletContext, String path) {
+        String context = CommonUtil.getContextPath(servletContext);
         try {
             path = new File(path).getCanonicalPath();
         } catch (IOException e) {
             Log.getLog().log(e);
         }
         path += Constants.SEP;
-        this.contextPath = normalizePath(context);
-        this.testPath = normalizePath(path);
-        try {
-            loadPermissions(context);
-            loadSettings(context);
-        } catch (IOException e) {
-            Log.getLog().log(e);
-            throw new IllegalStateException(e);
-        }
+        this.contextPath = CommonUtil.normalizePath(context);
+        this.testPath = CommonUtil.normalizePath(path);
+        loadPermissions(this.contextPath);
     }
 
     /**
@@ -163,7 +136,7 @@ public class ResourceHelper {
      * Sets permissions for user.
      *
      * @param keys
-     *            splitted property key
+     *            split property key
      * @param user
      *            user
      * @param value
@@ -193,30 +166,6 @@ public class ResourceHelper {
     }
 
     /**
-     * Loads settings.
-     *
-     * @param path
-     *            servlet context
-     * @throws IOException
-     *             when could not read settings
-     */
-    private void loadSettings(String path) throws IOException {
-        settingsProperties = new Properties();
-        try (InputStream input = new FileInputStream(path + SETTINGS_PATH)) {
-            settingsProperties.load(input);
-        }
-        Set<Entry<Object, Object>> entrySet = settingsProperties.entrySet();
-        for (Map.Entry<Object, Object> prop : entrySet) {
-            String key = prop.getKey().toString();
-            if (key.startsWith(Constants.Setting.MIME)) {
-                mimes.put(key.substring(5), prop.getValue().toString());
-            }
-        }
-        bufferSize = Integer.parseInt(settingsProperties.getProperty(Constants.Setting.BUFFER_SIZE)) * 1024;
-        logLevel = Level.parse(settingsProperties.getProperty(Constants.Setting.LOGGER_LEVEL));
-    }
-
-    /**
      * Loads properties.
      *
      * @param contextPath
@@ -224,7 +173,7 @@ public class ResourceHelper {
      * @return properties
      */
     private Properties loadProps(String contextPath) {
-        permissionsProperties = new Properties();
+        Properties permissionsProperties = new Properties();
         try {
             String path = contextPath + PERMISSIONS_PATH;
             try (InputStream input = new FileInputStream(path)) {
@@ -267,7 +216,7 @@ public class ResourceHelper {
         if (dir && !path.endsWith(Constants.SEP)) {
             path += Constants.SEP;
         }
-        path = normalizePath(path);
+        path = CommonUtil.normalizePath(path);
         for (String s : user.getRead()) {
             if (startsWith(path, s)) {
                 return true;
@@ -316,7 +265,7 @@ public class ResourceHelper {
      */
     public void login(String login, String password, HttpSession session) throws AuthenticationException {
         User user = users.get(login);
-        String sha = sha1(password);
+        String sha = CommonUtil.sha1(password);
         if (user != null && user.getPassword().equalsIgnoreCase(sha)) {
             Log.getLog().logInfo("Logged: " + login);
             session.setAttribute(Constants.Web.USER, login);
@@ -324,30 +273,6 @@ public class ResourceHelper {
         }
         Log.getLog().logError("Invalid password: " + login);
         throw new AuthenticationException("Invalid login or password");
-    }
-
-    /**
-     * Generates SHA for given string.
-     *
-     * @param text
-     *            text to hash
-     * @return hashed string
-     * @throws AuthenticationException
-     *             the AuthenticationException
-     */
-    public static String sha1(String text) throws AuthenticationException {
-        byte[] textBytes;
-        MessageDigest md;
-        try {
-            md = MessageDigest.getInstance("SHA-1");
-            textBytes = text.getBytes("UTF-8");
-        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-            throw new AuthenticationException("Hash algoritm not found", e);
-        }
-
-        md.update(textBytes, 0, textBytes.length);
-        byte[] sha1hash = md.digest();
-        return new BigInteger(1, sha1hash).toString(16).toUpperCase();
     }
 
     /**
@@ -422,85 +347,4 @@ public class ResourceHelper {
         return true;
     }
 
-    /**
-     * Obtains MIME type for given file.
-     *
-     * @param name
-     *            file name
-     * @return MIME
-     */
-    public String getMIME(String name) {
-        String type = name.substring(name.lastIndexOf('.') + 1).toLowerCase();
-        String mime = mimes.get(type);
-        if (mime == null) {
-            mime = servletContext.getMimeType(name);
-        }
-        return mime;
-    }
-
-    public int getBufferSize() {
-        return bufferSize;
-    }
-
-    public Properties getSettingsProperties() {
-        return settingsProperties;
-    }
-
-    public Properties getPermissionsProperties() {
-        return permissionsProperties;
-    }
-
-    /**
-     * Saves settings.
-     *
-     * @throws IOException
-     *             the IOException
-     */
-    public synchronized void saveSettings() throws IOException {
-        try (FileOutputStream os = new FileOutputStream(new File(contextPath + SETTINGS_PATH))) {
-            settingsProperties.store(os, null);
-        }
-        init(servletContext, testPath);
-    }
-
-    /**
-     * Normalizes path.
-     *
-     * @param path
-     *            path
-     * @return normalized path
-     */
-    public static String normalizePath(String path) {
-        return path.replaceAll("\\\\+", Constants.SEP).replaceAll(String.format("\\%s+", Constants.SEP), Constants.SEP);
-    }
-
-    /**
-     * Converts parameter to UTF8 if run on Tomcat.
-     *
-     * @param param
-     *            param
-     * @return UTF8 param
-     */
-    public static String decodeParam(String param) {
-        if (!encode || param == null) {
-            return param;
-        }
-        byte[] bytes = param.getBytes(StandardCharsets.ISO_8859_1);
-        return new String(bytes, StandardCharsets.UTF_8);
-    }
-
-    /**
-     * Obtains context path.
-     *
-     * @param context
-     *            context
-     * @return
-     */
-    public static String getContextPath(ServletContext servletContext) {
-        String path = servletContext.getRealPath(Constants.SEP);
-        if (!path.endsWith(Constants.SEP)) {
-            path += Constants.SEP;
-        }
-        return normalizePath(path);
-    }
 }
