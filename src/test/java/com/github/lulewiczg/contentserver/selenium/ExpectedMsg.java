@@ -22,6 +22,31 @@ public abstract class ExpectedMsg {
     protected String settings;
     protected String settingsNotSavedError;
     protected String settingsSaved;
+    protected String loginTitle;
+    protected String loginButton;
+    protected String closeButton;
+    protected String settingsTitle;
+    protected String save;
+
+    public String getSettingsTitle() {
+        return settingsTitle;
+    }
+
+    public String getSave() {
+        return save;
+    }
+
+    public String getCloseButton() {
+        return closeButton;
+    }
+
+    public String getLoginButton() {
+        return loginButton;
+    }
+
+    public String getLoginTitle() {
+        return loginTitle;
+    }
 
     public String getSettingsNotSavedError() {
         return settingsNotSavedError;

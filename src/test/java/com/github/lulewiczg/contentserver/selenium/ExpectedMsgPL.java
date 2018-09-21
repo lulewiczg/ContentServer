@@ -22,5 +22,10 @@ public class ExpectedMsgPL extends ExpectedMsg {
         this.settings = "Ustawienia";
         this.settingsNotSavedError = "Błąd przy zapisie ustawień!";
         this.settingsSaved = "Ustawienia zapisane!";
+        this.loginTitle = "Logowanie";
+        this.loginButton = "Zaloguj";
+        this.closeButton = "Zamknij";
+        this.settingsTitle = "Ustawienia";
+        this.save = "Zapisz";
     }
 }

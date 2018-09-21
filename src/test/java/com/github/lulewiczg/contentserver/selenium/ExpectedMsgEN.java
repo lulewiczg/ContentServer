@@ -22,5 +22,10 @@ public class ExpectedMsgEN extends ExpectedMsg {
         this.settings = "Settings";
         this.settingsNotSavedError = "Failed to save settings!";
         this.settingsSaved = "Settings saved!";
+        this.loginTitle = "Log In";
+        this.loginButton = "Log in";
+        this.closeButton = "Close";
+        this.settingsTitle = "Settings";
+        this.save = "Save";
     }
 }

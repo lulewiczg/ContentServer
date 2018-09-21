@@ -24,6 +24,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -80,6 +81,7 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
     @Test
     @DisplayName("Every dir is accessible by admin")
     public void testNavAdmin() {
+        Assumptions.assumeTrue(LOCAL_SELENIUM);
         login(ADMIN, TEST3);
         while (getBreadcrumbs().size() > 2) {
             testNav((i, len) -> i != len - 1);
@@ -206,7 +208,7 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
     }
 
     /**
-     * Gets files in given directory and returns them in soreted order.
+     * Gets files in given directory and returns them in sorted order.
      * 
      * @param path
      *            path
@@ -289,6 +291,14 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
         return args;
     }
 
+    /**
+     * Tests breadcrumbs.
+     * 
+     * @param data
+     *            nav data
+     * @throws MultipleFailuresError
+     *             the MultipleFailuresError
+     */
     private void assertBreadcrumbs(List<NavigationData> data) throws MultipleFailuresError {
         List<WebElement> elements = getBreadcrumbs();
         String actualFolder = driver.findElement(By.id("folderTitle")).getText();

@@ -29,7 +29,7 @@ public class ToolbarSeleniumTest extends SeleniumTestTemplate {
     public void testLoginInvalidCredentials() {
         login("abc", "bcd");
         assertAlert(msg.getInvalidCredentialsError());
-        assertloginPopupPresent();
+        assertloginPopup();
         assertToolbarNotLogged();
     }
 

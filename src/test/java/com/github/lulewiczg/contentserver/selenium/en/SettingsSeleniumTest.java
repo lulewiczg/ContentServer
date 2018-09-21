@@ -28,7 +28,7 @@ public class SettingsSeleniumTest extends SeleniumTestTemplate {
     public void testSaveInvalidSettings() {
         login(ADMIN, TEST3);
         clickButton(SETTINGS_BUTTON_ID);
-        assertSettingsPopupPresent();
+        assertSettingsPopup();
         String oldVal = getInputValue(BUFF_SET);
         setInputValue(BUFF_SET, TEST);
         saveSettings();
@@ -43,7 +43,7 @@ public class SettingsSeleniumTest extends SeleniumTestTemplate {
     public void test() {
         login(ADMIN, TEST3);
         clickButton(SETTINGS_BUTTON_ID);
-        assertSettingsPopupPresent();
+        assertSettingsPopup();
         String oldVal = getInputValue(BUFF_SET);
         String newVal = oldVal.equals("10240") ? "1024" : "10240";
         setInputValue(BUFF_SET, newVal);

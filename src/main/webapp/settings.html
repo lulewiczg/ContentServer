@@ -7,12 +7,12 @@
 <div class="modal-header">
     <div class="modal-body settings settings-box">
         <div class="container">
-            <h2>{{'settings.title' | translate}}</h2>
+            <h2 class="popup-title">{{'settings.title' | translate}}</h2>
             <form name="settingsForm">
                 <div class="form-group row" ng-repeat="setting in settings">
                     <label for="setting-{{setting.name}}" class="col-sm-4 col-form-label">{{setting.name}}</label>
                     <div class="col-sm-4">
-                        <input id="setting-{{setting.name}}" name="{{setting.name}}" class="form-control"
+                        <input id="setting-{{setting.name}}" name="{{setting.name}}" class="form-control setting-input"
                             ng-model="setting.value" type="text">
                     </div>
                 </div>

@@ -30,7 +30,12 @@ import com.github.lulewiczg.contentserver.test.utils.TestUtil;
  */
 public abstract class SeleniumTestTemplate {
 
+    /**
+     * Set to false when tests are run on Android.
+     */
+    protected static final boolean LOCAL_SELENIUM = true;
     private static final boolean SELENIUM_ENABLED = true;
+    private static final String POPUP_TITLE = "popup-title";
     private static final String HREF = "href";
     protected static final String LOGIN_BUTTON_ID = "loginBtn";
     protected static final String LOGOUT_BUTTON_ID = "logoutBtn";
@@ -62,6 +67,7 @@ public abstract class SeleniumTestTemplate {
         prof.setPreference("intl.accept_languages", msg.getLang());
         opt.setProfile(prof);
         driver = new FirefoxDriver(opt);
+        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
         driver.navigate().to(TestUtil.URL);
     }
 
@@ -94,23 +100,41 @@ public abstract class SeleniumTestTemplate {
      */
     protected void clickLogin() {
         clickButton(LOGIN_BUTTON_ID);
-        assertloginPopupPresent();
+        assertloginPopup();
     }
 
     /**
      * Checks if login popup is opened.
      */
-    protected void assertloginPopupPresent() {
+    protected void assertloginPopup() {
         WebElement loginBox = getElementIfPresent(driver, By.className("login-box"));
         Assertions.assertNotNull(loginBox);
+        WebElement title = loginBox.findElement(By.className(POPUP_TITLE));
+        Assertions.assertNotNull(title);
+        Assertions.assertEquals(msg.getLoginTitle(), title.getText());
+        WebElement loginButton = loginBox.findElement(By.id(LOGIN_MODAL_BUTTON_ID));
+        Assertions.assertNotNull(loginButton);
+        Assertions.assertEquals(msg.getLoginButton(), loginButton.getText());
+        WebElement closeButton = loginBox.findElement(By.id(CLOSE_BTN_ID));
+        Assertions.assertNotNull(closeButton);
+        Assertions.assertEquals(msg.getCloseButton(), closeButton.getText());
     }
 
     /**
      * Checks if settings popup is opened.
      */
-    protected void assertSettingsPopupPresent() {
+    protected void assertSettingsPopup() {
         WebElement settingsBox = getElementIfPresent(driver, By.className("settings-box"));
         Assertions.assertNotNull(settingsBox);
+        WebElement title = settingsBox.findElement(By.className(POPUP_TITLE));
+        Assertions.assertNotNull(title);
+        Assertions.assertEquals(msg.getSettingsTitle(), title.getText());
+        WebElement saveButton = settingsBox.findElement(By.id(SAVE_BTN_ID));
+        Assertions.assertNotNull(saveButton);
+        Assertions.assertEquals(msg.getSave(), saveButton.getText());
+        WebElement closeButton = settingsBox.findElement(By.id(CLOSE_BTN_ID));
+        Assertions.assertNotNull(closeButton);
+        Assertions.assertEquals(msg.getCloseButton(), closeButton.getText());
     }
 
     /**
