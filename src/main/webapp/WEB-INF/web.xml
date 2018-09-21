@@ -7,7 +7,7 @@
 
     <servlet>
         <servlet-name>ResourceServlet</servlet-name>
-        <servlet-class>lulewiczg.contentserver.web.servlets.ResourceServlet</servlet-class>
+        <servlet-class>com.github.lulewiczg.contentserver.web.servlets.ResourceServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ResourceServlet</servlet-name>
@@ -16,7 +16,7 @@
 
     <servlet>
         <servlet-name>ShortcutsServlet</servlet-name>
-        <servlet-class>lulewiczg.contentserver.web.servlets.ShortcutsServlet</servlet-class>
+        <servlet-class>com.github.lulewiczg.contentserver.web.servlets.ShortcutsServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ShortcutsServlet</servlet-name>
@@ -25,7 +25,7 @@
 
     <servlet>
         <servlet-name>LoginServlet</servlet-name>
-        <servlet-class>lulewiczg.contentserver.web.servlets.LoginServlet</servlet-class>
+        <servlet-class>com.github.lulewiczg.contentserver.web.servlets.LoginServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
@@ -34,7 +34,7 @@
 
     <servlet>
         <servlet-name>LogoutServlet</servlet-name>
-        <servlet-class>lulewiczg.contentserver.web.servlets.LogoutServlet</servlet-class>
+        <servlet-class>com.github.lulewiczg.contentserver.web.servlets.LogoutServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LogoutServlet</servlet-name>
@@ -43,7 +43,7 @@
 
     <servlet>
         <servlet-name>SettingsServlet</servlet-name>
-        <servlet-class>lulewiczg.contentserver.web.servlets.SettingsServlet</servlet-class>
+        <servlet-class>com.github.lulewiczg.contentserver.web.servlets.SettingsServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>SettingsServlet</servlet-name>
@@ -52,7 +52,7 @@
 
     <servlet>
         <servlet-name>ContextServlet</servlet-name>
-        <servlet-class>lulewiczg.contentserver.web.servlets.ContextServlet</servlet-class>
+        <servlet-class>com.github.lulewiczg.contentserver.web.servlets.ContextServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ContextServlet</servlet-name>
@@ -61,7 +61,7 @@
 
     <servlet>
         <servlet-name>ErrorServlet</servlet-name>
-        <servlet-class>lulewiczg.contentserver.web.servlets.ErrorServlet</servlet-class>
+        <servlet-class>com.github.lulewiczg.contentserver.web.servlets.ErrorServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ErrorServlet</servlet-name>
@@ -70,7 +70,7 @@
 
     <filter>
         <filter-name>UrlLoginFilter</filter-name>
-        <filter-class>lulewiczg.contentserver.web.filters.UrlLoginFilter</filter-class>
+        <filter-class>com.github.lulewiczg.contentserver.web.filters.UrlLoginFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>UrlLoginFilter</filter-name>
@@ -79,7 +79,7 @@
 
     <filter>
         <filter-name>EncodingFilter</filter-name>
-        <filter-class>lulewiczg.contentserver.web.filters.EncodingFilter</filter-class>
+        <filter-class>com.github.lulewiczg.contentserver.web.filters.EncodingFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>EncodingFilter</filter-name>
@@ -88,7 +88,7 @@
 
     <filter>
         <filter-name>ResourceFilter</filter-name>
-        <filter-class>lulewiczg.contentserver.web.filters.ResourceFilter</filter-class>
+        <filter-class>com.github.lulewiczg.contentserver.web.filters.ResourceFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>ResourceFilter</filter-name>
@@ -97,7 +97,7 @@
 
     <filter>
         <filter-name>AdminFilter</filter-name>
-        <filter-class>lulewiczg.contentserver.web.filters.AdminFilter</filter-class>
+        <filter-class>com.github.lulewiczg.contentserver.web.filters.AdminFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>
@@ -113,6 +113,6 @@
         <location>/error</location>
     </error-page>
     <listener>
-        <listener-class>lulewiczg.contentserver.web.listeners.ContextListener</listener-class>
+        <listener-class>com.github.lulewiczg.contentserver.web.listeners.ContextListener</listener-class>
     </listener>
 </web-app>
