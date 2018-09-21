@@ -31,7 +31,7 @@ public class DummyLog extends Log {
      * @see com.github.lulewiczg.contentserver.utils.Log#logInfo(java.lang.String)
      */
     @Override
-    public void logInfo(String str) {
+    public void logInfo(Object str) {
         // Do nothing
     }
 
@@ -41,7 +41,7 @@ public class DummyLog extends Log {
      * @see com.github.lulewiczg.contentserver.utils.Log#logError(java.lang.String)
      */
     @Override
-    public void logError(String str) {
+    public void logError(Object str) {
         // Do nothing
     }
 
@@ -49,7 +49,7 @@ public class DummyLog extends Log {
      * @see com.github.lulewiczg.contentserver.utils.Log#logDebug(java.lang.String)
      */
     @Override
-    public void logDebug(String str) {
+    public void logDebug(Object str) {
         // Do nothing
     }
 

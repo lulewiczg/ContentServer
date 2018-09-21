@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.security.sasl.AuthenticationException;
 import javax.servlet.ServletContext;
@@ -53,6 +54,8 @@ public class ResourceUtil {
         path += Constants.SEP;
         this.contextPath = CommonUtil.normalizePath(context);
         this.testPath = CommonUtil.normalizePath(path);
+        Log.getLog().logDebug("Context path: " + contextPath);
+        Log.getLog().logDebug("Test path: " + testPath);
         loadPermissions(this.contextPath);
     }
 
@@ -93,6 +96,39 @@ public class ResourceUtil {
         for (Map.Entry<String, User> u : users.entrySet()) {
             u.getValue().normalize();
         }
+        logUsers();
+    }
+
+    /**
+     * Logs users.
+     */
+    private void logUsers() {
+        if (Log.isEnabled(Level.FINEST)) {
+            Log.getLog().logDebug("Loaded users:");
+            for (Map.Entry<String, User> u : users.entrySet()) {
+                User user = u.getValue();
+                Log.getLog().logDebug("User: " + user.getName());
+                Log.getLog().logDebug("   READ:");
+                logPaths(user.getRead());
+                Log.getLog().logDebug("   WRITE:");
+                logPaths(user.getWrite());
+                Log.getLog().logDebug("   DELETE:");
+                logPaths(user.getDelete());
+            }
+        }
+    }
+
+    /**
+     * Logs paths.
+     * 
+     * @param paths
+     *            paths
+     */
+    private void logPaths(List<String> paths) {
+        for (String s : paths) {
+            Log.getLog().logDebug("       " + s);
+        }
+        Log.getLog().logDebug("==Paths end==");
     }
 
     /**

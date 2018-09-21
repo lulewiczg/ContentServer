@@ -100,8 +100,8 @@ public class Log {
      * @param s
      *            string
      */
-    private void write(String s, Level level) {
-        log.log(level, s);
+    private void write(Object s, Level level) {
+        log.log(level, s.toString());
     }
 
     /**
@@ -120,7 +120,7 @@ public class Log {
      * @param str
      *            string
      */
-    public void logInfo(String str) {
+    public void logInfo(Object str) {
         write(str, Level.INFO);
     }
 
@@ -130,7 +130,7 @@ public class Log {
      * @param str
      *            string
      */
-    public void logError(String str) {
+    public void logError(Object str) {
         write(str, Level.SEVERE);
     }
 
@@ -140,7 +140,7 @@ public class Log {
      * @param str
      *            string
      */
-    public void logDebug(String str) {
+    public void logDebug(Object str) {
         write(str, Level.FINEST);
     }
 
@@ -182,5 +182,9 @@ public class Log {
 
     public static void setLevel(Level level) {
         log.setLevel(level);
+    }
+
+    public static boolean isEnabled(Level l) {
+        return log.isLoggable(l);
     }
 }

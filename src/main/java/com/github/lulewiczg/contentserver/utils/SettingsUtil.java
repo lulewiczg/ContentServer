@@ -48,6 +48,7 @@ public class SettingsUtil {
         this.servletContext = servletContext;
         String context = CommonUtil.getContextPath(servletContext);
         this.contextPath = CommonUtil.normalizePath(context);
+        Log.getLog().logDebug("Context path: " + contextPath);
         try {
             loadSettings(this.contextPath);
         } catch (IOException e) {
@@ -78,6 +79,22 @@ public class SettingsUtil {
         }
         bufferSize = Integer.parseInt(settingsProperties.getProperty(Constants.Setting.BUFFER_SIZE)) * 1024;
         logLevel = Level.parse(settingsProperties.getProperty(Constants.Setting.LOGGER_LEVEL));
+        logSettings();
+    }
+
+    /**
+     * Logs settings.
+     */
+    private void logSettings() {
+        if (Log.isEnabled(Level.FINEST)) {
+            Log.getLog().logDebug("Buffer size: " + bufferSize);
+            Log.getLog().logDebug("Log level: " + logLevel);
+            Log.getLog().logDebug("Loaded mimes: ");
+            for (Map.Entry<String, String> m : mimes.entrySet()) {
+                Log.getLog().logDebug(m);
+            }
+            Log.getLog().logDebug("==Mimes end==");
+        }
     }
 
     /**
@@ -91,6 +108,7 @@ public class SettingsUtil {
             settingsProperties.store(os, null);
         }
         init(servletContext);
+        Log.getLog().logDebug("Settings saved!");
     }
 
     public int getBufferSize() {
