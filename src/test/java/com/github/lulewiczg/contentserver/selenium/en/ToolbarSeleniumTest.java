@@ -14,7 +14,7 @@ import com.github.lulewiczg.contentserver.selenium.SeleniumTestTemplate;
 
 /**
  * Selenium tests for plain toolbar actions.
- * 
+ *
  * @author lulewiczg
  */
 public class ToolbarSeleniumTest extends SeleniumTestTemplate {
@@ -27,8 +27,7 @@ public class ToolbarSeleniumTest extends SeleniumTestTemplate {
     @Test
     @DisplayName("Logs in with invalid credentials")
     public void testLoginInvalidCredentials() {
-        login("abc", "bcd");
-        assertAlert(msg.getInvalidCredentialsError());
+        invalidLogin("abc", "bcd");
         assertloginPopup();
         assertToolbarNotLogged();
     }
@@ -37,7 +36,6 @@ public class ToolbarSeleniumTest extends SeleniumTestTemplate {
     @DisplayName("Logs in")
     public void testLogin() {
         login(TEST, TEST);
-        assertloginPopupClosed();
         assertToolbarLogged(TEST);
         driver.navigate().refresh();
         assertToolbarLogged(TEST);
@@ -47,7 +45,6 @@ public class ToolbarSeleniumTest extends SeleniumTestTemplate {
     @DisplayName("Logs in as admin")
     public void testLoginAdmin() {
         login(ADMIN, TEST3);
-        assertloginPopupClosed();
         assertToolbarAdminLogged();
         driver.navigate().refresh();
         assertToolbarAdminLogged();
@@ -57,7 +54,6 @@ public class ToolbarSeleniumTest extends SeleniumTestTemplate {
     @DisplayName("Logs out")
     public void testLogout() {
         login(TEST, TEST);
-        assertloginPopupClosed();
         logout();
         assertToolbarNotLogged();
         driver.navigate().refresh();
@@ -68,7 +64,6 @@ public class ToolbarSeleniumTest extends SeleniumTestTemplate {
     @DisplayName("Logs out as admin")
     public void testAdminLogout() {
         login(ADMIN, TEST3);
-        assertloginPopupClosed();
         logout();
         assertToolbarNotLogged();
         driver.navigate().refresh();
@@ -79,11 +74,9 @@ public class ToolbarSeleniumTest extends SeleniumTestTemplate {
     @DisplayName("Relogin")
     public void testRelogin() {
         login(ADMIN, TEST3);
-        assertloginPopupClosed();
         assertToolbarAdminLogged();
         logout();
         login(TEST, TEST);
-        assertloginPopupClosed();
         assertToolbarLogged(TEST);
         driver.navigate().refresh();
         assertToolbarLogged(TEST);
@@ -107,8 +100,8 @@ public class ToolbarSeleniumTest extends SeleniumTestTemplate {
         login(ADMIN, TEST3);
         List<String> shortcuts = getShortcuts();
         List<String> expected = List.of("/data/structure");
-        Assertions.assertAll(IntStream.range(0, expected.size()).boxed().map(i -> () -> Assertions
-                .assertTrue(shortcuts.get(i).endsWith(expected.get(i)), "Shortcut path is invalid")));
+        Assertions.assertAll(IntStream.range(0, expected.size()).boxed()
+                .map(i -> () -> Assertions.assertTrue(shortcuts.get(i).endsWith(expected.get(i)), "Shortcut path is invalid")));
     }
 
     @Test
@@ -117,8 +110,8 @@ public class ToolbarSeleniumTest extends SeleniumTestTemplate {
         login(TEST, TEST);
         List<String> shortcuts = getShortcuts();
         List<String> expected = List.of("/data/structure/folder1", "/data/structure/folder2/folder2");
-        Assertions.assertAll(IntStream.range(0, expected.size()).boxed().map(i -> () -> Assertions
-                .assertTrue(shortcuts.get(i).endsWith(expected.get(i)), "Shortcut path is invalid")));
+        Assertions.assertAll(IntStream.range(0, expected.size()).boxed()
+                .map(i -> () -> Assertions.assertTrue(shortcuts.get(i).endsWith(expected.get(i)), "Shortcut path is invalid")));
     }
 
     @Test
@@ -126,8 +119,8 @@ public class ToolbarSeleniumTest extends SeleniumTestTemplate {
     public void testShortcutsGuest() {
         List<String> shortcuts = getShortcuts();
         List<String> expected = List.of("/data/structure/folder1/folder1", "/data/structure/folder2/folder2");
-        Assertions.assertAll(IntStream.range(0, expected.size()).boxed().map(i -> () -> Assertions
-                .assertTrue(shortcuts.get(i).endsWith(expected.get(i)), "Shortcut path is invalid")));
+        Assertions.assertAll(IntStream.range(0, expected.size()).boxed()
+                .map(i -> () -> Assertions.assertTrue(shortcuts.get(i).endsWith(expected.get(i)), "Shortcut path is invalid")));
     }
 
 }

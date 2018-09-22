@@ -20,21 +20,20 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.github.lulewiczg.contentserver.test.utils.TestUtil;
+import com.github.lulewiczg.contentserver.test.utils.TestMode;
 
 /**
  * Template for selenium tests.
- * 
+ *
  * @author lulewiczg
  */
 public abstract class SeleniumTestTemplate {
 
-    /**
-     * Set to false when tests are run on Android.
-     */
-    protected static final boolean LOCAL_SELENIUM = true;
-    private static final boolean SELENIUM_ENABLED = true;
+    protected static final TestMode MODE = TestMode.SELENIUM;
+    private static final String LOGIN_BOX = "login-box";
     private static final String POPUP_TITLE = "popup-title";
     private static final String HREF = "href";
     protected static final String LOGIN_BUTTON_ID = "loginBtn";
@@ -60,7 +59,7 @@ public abstract class SeleniumTestTemplate {
      */
     @BeforeEach
     public void before() {
-        Assumptions.assumeTrue(SELENIUM_ENABLED);
+        Assumptions.assumeTrue(MODE.isSelenium());
         msg = getMsgs();
         FirefoxOptions opt = new FirefoxOptions();
         FirefoxProfile prof = new FirefoxProfile();
@@ -68,7 +67,10 @@ public abstract class SeleniumTestTemplate {
         opt.setProfile(prof);
         driver = new FirefoxDriver(opt);
         driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
-        driver.navigate().to(TestUtil.URL);
+        driver.manage().timeouts().pageLoadTimeout(5, TimeUnit.SECONDS);
+        driver.manage().timeouts().setScriptTimeout(5, TimeUnit.SECONDS);
+
+        driver.navigate().to(MODE.getUrl());
     }
 
     /**
@@ -88,7 +90,7 @@ public abstract class SeleniumTestTemplate {
 
     /**
      * Finds button.
-     * 
+     *
      * @param id
      *            button ID
      * @return button
@@ -109,7 +111,7 @@ public abstract class SeleniumTestTemplate {
      * Checks if login popup is opened.
      */
     protected void assertloginPopup() {
-        WebElement loginBox = getElementIfPresent(driver, By.className("login-box"));
+        WebElement loginBox = getElementIfPresent(driver, By.className(LOGIN_BOX));
         Assertions.assertNotNull(loginBox);
         WebElement title = loginBox.findElement(By.className(POPUP_TITLE));
         Assertions.assertNotNull(title);
@@ -140,16 +142,8 @@ public abstract class SeleniumTestTemplate {
     }
 
     /**
-     * Checks if login popup is closed.
-     */
-    protected void assertloginPopupClosed() {
-        WebElement loginBox = getElementIfPresent(driver, By.className("login-box"));
-        Assertions.assertNull(loginBox);
-    }
-
-    /**
      * Checks if alert with given message is present.
-     * 
+     *
      * @param msg
      *            message
      */
@@ -162,19 +156,21 @@ public abstract class SeleniumTestTemplate {
 
     /**
      * Clicks button
-     * 
+     *
      * @param id
      *            button ID
      */
     protected void clickButton(String id) {
         WebElement btn = findBtn(id);
         Assertions.assertNotNull(btn);
+        WebDriverWait wait = new WebDriverWait(driver, 5);
+        wait.until(ExpectedConditions.visibilityOf(btn));
         btn.click();
     }
 
     /**
      * Sets input value
-     * 
+     *
      * @param id
      *            input ID
      * @param value
@@ -189,7 +185,7 @@ public abstract class SeleniumTestTemplate {
 
     /**
      * Gets input value.
-     * 
+     *
      * @param id
      *            input ID
      */
@@ -284,7 +280,7 @@ public abstract class SeleniumTestTemplate {
 
     /**
      * Gets text from element
-     * 
+     *
      * @param driver
      *            driver
      * @param element
@@ -296,13 +292,12 @@ public abstract class SeleniumTestTemplate {
         if (a != null) {
             element = a;
         }
-        return ((JavascriptExecutor) driver).executeScript("return jQuery(arguments[0]).text();", element).toString()
-                .trim();
+        return ((JavascriptExecutor) driver).executeScript("return jQuery(arguments[0]).text();", element).toString().trim();
     }
 
     /**
      * Finds element if present.
-     * 
+     *
      * @param el
      *            search context
      * @param by
@@ -322,19 +317,58 @@ public abstract class SeleniumTestTemplate {
      */
     protected void logout() {
         clickButton(LOGOUT_BUTTON_ID);
-        driver.manage().timeouts().implicitlyWait(200, TimeUnit.MILLISECONDS);
-        clickButton(LOGOUT_BUTTON_ID);
     }
 
     /**
-     * Logs in
-     * 
+     * Logs in.
+     *
      * @param name
      *            name
      * @param password
      *            password
      */
     protected void login(String name, String password) {
+        loginInternal(name, password);
+        new WebDriverWait(driver, 5)
+                .until(ExpectedConditions.not(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.id(LOGIN_MODAL_BUTTON_ID))));
+        WebElement loginBox = getElementIfPresent(driver, By.className(LOGIN_BOX));
+        Assertions.assertNull(loginBox);
+    }
+
+    /**
+     * Opens settings box.
+     */
+    protected void openSettings() {
+        clickButton(SETTINGS_BUTTON_ID);
+        assertSettingsPopup();
+        new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.id(SAVE_BTN_ID)));
+
+    }
+
+    /**
+     * Logs in with invalid credentials.
+     *
+     * @param name
+     *            name
+     * @param password
+     *            password
+     */
+    protected void invalidLogin(String name, String password) {
+        loginInternal(name, password);
+        assertAlert(msg.getInvalidCredentialsError());
+        WebElement loginBox = getElementIfPresent(driver, By.className(LOGIN_BOX));
+        Assertions.assertNotNull(loginBox);
+    }
+
+    /**
+     * Log in internal logic.
+     *
+     * @param name
+     *            name
+     * @param password
+     *            password
+     */
+    private void loginInternal(String name, String password) {
         clickLogin();
         setInputValue(LOGIN_ID, name);
         setInputValue(PASSWORD_ID, password);
@@ -369,12 +403,11 @@ public abstract class SeleniumTestTemplate {
         handles.remove(handle);
         Assertions.assertEquals(1, handles.size());
         driver = driver.switchTo().window(new ArrayList<>(handles).get(0));
-        driver.manage().timeouts().pageLoadTimeout(1, TimeUnit.SECONDS);
     }
 
     /**
      * Obtains shortcuts URLs
-     * 
+     *
      * @return shortcuts
      */
     protected List<String> getShortcuts() {
@@ -386,7 +419,7 @@ public abstract class SeleniumTestTemplate {
 
     /**
      * Goes to shortcut.
-     * 
+     *
      * @param index
      * @return shortcuts
      */
@@ -398,34 +431,34 @@ public abstract class SeleniumTestTemplate {
 
     /**
      * Clicks at table item
-     * 
+     *
      * @param index
      *            index
      */
     protected void clickTableItem(int index) {
-        WebElement el = driver.findElement(
-                By.xpath(String.format("(//table[contains(@class,'content-table')]//tr)[%s]/td[1]/a", index + 1)));
+        WebElement el = driver
+                .findElement(By.xpath(String.format("(//table[contains(@class,'content-table')]//tr)[%s]/td[1]/a", index + 1)));
         Assertions.assertNotNull(el, "Table item not found");
         el.click();
     }
 
     /**
      * Gets download link
-     * 
+     *
      * @param index
      *            index
      * @return link
      */
     protected String getDownloadLink(int index) {
-        WebElement el = driver.findElement(
-                By.xpath(String.format("(//table[contains(@class,'content-table')]//tr)[%s]/td[1]/a", index + 1)));
+        WebElement el = driver
+                .findElement(By.xpath(String.format("(//table[contains(@class,'content-table')]//tr)[%s]/td[1]/a", index + 1)));
         Assertions.assertNotNull(el, "Table item not found");
         return el.getAttribute(HREF);
     }
 
     /**
      * Obtains breadcrumbs.
-     * 
+     *
      * @return breadcrumbs
      */
     protected List<WebElement> getBreadcrumbs() {

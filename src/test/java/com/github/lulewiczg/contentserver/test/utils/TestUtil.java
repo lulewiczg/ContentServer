@@ -17,13 +17,12 @@ import com.github.lulewiczg.contentserver.utils.models.Dir;
 
 /**
  * Test utility.
- * 
+ *
  * @author lulewiczg
  */
 public final class TestUtil {
     public static final String LOC = "src/main/resources/data/";
     private static final String COLON = "\\,";
-    public static final String URL = "http://localhost:8080/ContentServer";
 
     /**
      * Mocks ResourceUtil for tests.

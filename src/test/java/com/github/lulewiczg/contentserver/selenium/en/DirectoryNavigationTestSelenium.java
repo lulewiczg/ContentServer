@@ -35,7 +35,7 @@ import com.github.lulewiczg.contentserver.selenium.ExpectedMsg;
 import com.github.lulewiczg.contentserver.selenium.ExpectedMsgEN;
 import com.github.lulewiczg.contentserver.selenium.SeleniumTestTemplate;
 import com.github.lulewiczg.contentserver.test.utils.NavigationData;
-import com.github.lulewiczg.contentserver.test.utils.TestUtil;
+import com.github.lulewiczg.contentserver.test.utils.TestMode;
 import com.github.lulewiczg.contentserver.utils.Constants;
 import com.github.lulewiczg.contentserver.utils.comparators.PathComparator;
 import com.github.lulewiczg.contentserver.utils.models.Dir;
@@ -43,7 +43,7 @@ import com.google.common.base.Charsets;
 
 /**
  * Selenium tests for navigation through directories.
- * 
+ *
  * @author lulewiczg
  */
 public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
@@ -81,7 +81,7 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
     @Test
     @DisplayName("Every dir is accessible by admin")
     public void testNavAdmin() {
-        Assumptions.assumeTrue(LOCAL_SELENIUM);
+        Assumptions.assumeTrue(MODE != TestMode.ANDROID);
         login(ADMIN, TEST3);
         while (getBreadcrumbs().size() > 2) {
             testNav((i, len) -> i != len - 1);
@@ -113,15 +113,15 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
 
         HttpClient client = HttpClientBuilder.create().build();
         HttpResponse response = client.execute(request);
-        Assertions.assertEquals(response.getStatusLine().getStatusCode(), HttpStatus.SC_PARTIAL_CONTENT);
-        Assertions.assertEquals(response.getFirstHeader("Content-Type").getValue(), Constants.Setting.PLAIN_TEXT);
-        Assertions.assertEquals(response.getFirstHeader("Content-Length").getValue(), "4");
+        Assertions.assertEquals(HttpStatus.SC_PARTIAL_CONTENT, response.getStatusLine().getStatusCode());
+        Assertions.assertEquals(Constants.Setting.PLAIN_TEXT, response.getFirstHeader("Content-Type").getValue());
+        Assertions.assertEquals("4", response.getFirstHeader("Content-Length").getValue());
 
     }
 
     /**
      * Tests navigation
-     * 
+     *
      * @param f
      *            function to set enabled setting
      * @throws MultipleFailuresError
@@ -138,7 +138,7 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
 
     /**
      * Builds navigation data.
-     * 
+     *
      * @param baseUrl
      *            base URL
      * @param path
@@ -165,7 +165,7 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
 
     /**
      * Tests if proper directory info is displayed.
-     * 
+     *
      * @param path
      *            current file path
      * @param expectedData
@@ -203,13 +203,13 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
             WebElement downloadButton = downloadCol.findElement(By.tagName("a"));
             Assertions.assertEquals(expectedDownloadUrl, downloadButton.getAttribute("href"));
             String imgSrc = downloadButton.findElement(By.tagName("img")).getAttribute("src");
-            Assertions.assertEquals(TestUtil.URL + "/icons/download.png", imgSrc);
+            Assertions.assertEquals(MODE.getUrl() + "/icons/download.png", imgSrc);
         }));
     }
 
     /**
      * Gets files in given directory and returns them in sorted order.
-     * 
+     *
      * @param path
      *            path
      * @return sorted files
@@ -218,8 +218,7 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
         File[] files = Paths.get(path).toFile().listFiles();
 
         Map<String, File> tmpMap = Arrays.stream(files).collect(Collectors.toMap(i -> getFileName(i), i -> i));
-        List<Dir> tmpList = tmpMap.entrySet().stream()
-                .map(i -> new Dir(getFileName(i.getValue()), 0, "", i.getValue().isFile()))
+        List<Dir> tmpList = tmpMap.entrySet().stream().map(i -> new Dir(getFileName(i.getValue()), 0, "", i.getValue().isFile()))
                 .collect(Collectors.toList());
         Collections.sort(tmpList, new PathComparator());
         files = tmpList.stream().map(i -> tmpMap.get(i.getName())).collect(Collectors.toList()).toArray(new File[] {});
@@ -228,7 +227,7 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
 
     /**
      * Returns expected URL based on file type.
-     * 
+     *
      * @param expectedData
      *            expected nava data
      * @param f
@@ -238,16 +237,16 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
     private String getExpectedURL(NavigationData expectedData, File f) {
         String url;
         if (f.isFile()) {
-            url = TestUtil.URL + "/rest/files?path=" + expectedData.getPath() + Constants.SEP + f.getName();
+            url = MODE.getUrl() + "/rest/files?path=" + expectedData.getPath() + Constants.SEP + f.getName();
         } else {
-            url = TestUtil.URL + "/?path=" + expectedData.getPath() + Constants.SEP + f.getName();
+            url = MODE.getUrl() + "/?path=" + expectedData.getPath() + Constants.SEP + f.getName();
         }
         return url.replace(" ", "%20");
     }
 
     /**
      * Returns file name depending on file type
-     * 
+     *
      * @param f
      *            file
      * @return name
@@ -261,7 +260,7 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
 
     /**
      * Returns base URL.
-     * 
+     *
      * @return URL
      */
     private String getUrl() {
@@ -271,19 +270,18 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
 
     /**
      * Returns path to file
-     * 
+     *
      * @return path
      */
     private String getPath() {
         List<NameValuePair> args = parseUrl();
-        String path = args.stream().filter(i -> i.getName().equals("path")).map(NameValuePair::getValue).findFirst()
-                .get();
+        String path = args.stream().filter(i -> i.getName().equals("path")).map(NameValuePair::getValue).findFirst().get();
         return path;
     }
 
     /**
      * Parses URL
-     * 
+     *
      * @return name-value pairs
      */
     private List<NameValuePair> parseUrl() {
@@ -293,7 +291,7 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
 
     /**
      * Tests breadcrumbs.
-     * 
+     *
      * @param data
      *            nav data
      * @throws MultipleFailuresError
@@ -310,8 +308,8 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
         Assertions.assertAll(IntStream.range(0, elements.size()).boxed().map(i -> () -> {
             WebElement el = elements.get(i);
             NavigationData crumb = data.get(i);
-            Assertions.assertTrue(el.getAttribute("class").contains("disabled") != crumb.isEnabled(), String
-                    .format("Breadcrumb %s should %sbe clickable", crumb.getLabel(), crumb.isEnabled() ? "" : "not "));
+            Assertions.assertTrue(el.getAttribute("class").contains("disabled") != crumb.isEnabled(),
+                    String.format("Breadcrumb %s should %sbe clickable", crumb.getLabel(), crumb.isEnabled() ? "" : "not "));
             Assertions.assertEquals(crumb.getLabel(), el.getText(), "Labels shoud be the same");
             String attribute = el.findElement(By.tagName("a")).getAttribute("href");
             Assertions.assertEquals(getSlashUrl(crumb), attribute, "URLs shoud be the same");
@@ -320,7 +318,7 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
 
     /**
      * Gets URL with slash at end
-     * 
+     *
      * @param crumb
      *            crumb
      * @return URL
