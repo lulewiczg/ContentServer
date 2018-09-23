@@ -120,7 +120,7 @@ public class ResourceUtil {
 
     /**
      * Logs paths.
-     * 
+     *
      * @param paths
      *            paths
      */
@@ -307,13 +307,12 @@ public class ResourceUtil {
             session.setAttribute(Constants.Web.USER, login);
             return;
         }
-        Log.getLog().logError("Invalid password: " + login);
+        Log.getLog().logInfo("Invalid password: " + login);
         throw new AuthenticationException("Invalid login or password");
     }
 
     /**
-     * Normalizes paths to avoid duplicates and to set permissions for the shortest
-     * path as possible.
+     * Normalizes paths to avoid duplicates and to set permissions for the shortest path as possible.
      *
      * @param list
      *            paths to normalize

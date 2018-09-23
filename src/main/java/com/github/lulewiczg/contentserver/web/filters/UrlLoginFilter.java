@@ -17,8 +17,8 @@ import com.github.lulewiczg.contentserver.utils.Constants;
 import com.github.lulewiczg.contentserver.utils.ResourceUtil;
 
 /**
- * Performs basic HTTP login
- * 
+ * Performs basic HTTP login. Needs Android API >24.
+ *
  * @author lulewiczg
  */
 public class UrlLoginFilter implements Filter {
@@ -34,12 +34,10 @@ public class UrlLoginFilter implements Filter {
     }
 
     /**
-     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest,
-     *      javax.servlet.ServletResponse, javax.servlet.FilterChain)
+     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
      */
     @Override
-    public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
-            throws IOException, ServletException {
+    public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
         String auth = ((HttpServletRequest) req).getHeader(Constants.Web.Headers.AUTHORIZATION);
         if (auth != null && auth.startsWith(BASIC)) {
             HttpSession session = ((HttpServletRequest) req).getSession();
