@@ -2,6 +2,8 @@ package com.github.lulewiczg.contentserver.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Date;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -49,7 +51,7 @@ public class Log {
 
     /**
      * Adds console and file handlers
-     * 
+     *
      * @param file
      *            file to log
      * @param formatter
@@ -111,7 +113,11 @@ public class Log {
      *            string
      */
     public void log(Throwable ex) {
-        log.log(Level.SEVERE, "Exception - ", ex);
+        // WTF logger is not printing stacktrace?
+        StringWriter sw = new StringWriter();
+        ex.printStackTrace(new PrintWriter(sw));
+        String stringEx = sw.toString();
+        log.log(Level.SEVERE, stringEx);
     }
 
     /**
