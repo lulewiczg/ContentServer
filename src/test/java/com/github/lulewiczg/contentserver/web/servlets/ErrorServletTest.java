@@ -45,7 +45,7 @@ public class ErrorServletTest extends ServletTestTemplate {
     }
 
     @Test
-    @DisplayName("Get error message when exception thrown")
+    @DisplayName("Get error message when exception thrown and no message")
     public void testErrorMsgExc() throws IOException, ServletException {
         when(request.getAttribute(ErrorServlet.ERROR_CODE)).thenReturn(404);
         when(request.getAttribute(ErrorServlet.SERVLET_NAME)).thenReturn(TEST);
@@ -53,7 +53,7 @@ public class ErrorServletTest extends ServletTestTemplate {
 
         servlet.doGet(request, response);
 
-        verifyOk(buildMsg(404, TEST, TEST2 + "\n" + new Exception(TEST2).toString()));
+        verifyOk(buildMsg(404, TEST, TEST2));
     }
 
     @Test
@@ -88,7 +88,7 @@ public class ErrorServletTest extends ServletTestTemplate {
 
         servlet.doGet(request, response);
 
-        verifyOk(buildMsg(500, "", ex.getMessage() + "\n" + ex.toString()));
+        verifyOk(buildMsg(500, "", ex.getMessage()));
     }
 
     /**
