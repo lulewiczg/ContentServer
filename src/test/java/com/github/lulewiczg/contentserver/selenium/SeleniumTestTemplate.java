@@ -163,8 +163,7 @@ public abstract class SeleniumTestTemplate {
     protected void clickButton(String id) {
         WebElement btn = findBtn(id);
         Assertions.assertNotNull(btn);
-        WebDriverWait wait = new WebDriverWait(driver, 5);
-        wait.until(ExpectedConditions.visibilityOf(btn));
+        new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOf(btn));
         btn.click();
     }
 
@@ -292,7 +291,8 @@ public abstract class SeleniumTestTemplate {
         if (a != null) {
             element = a;
         }
-        return ((JavascriptExecutor) driver).executeScript("return jQuery(arguments[0]).text();", element).toString().trim();
+        return ((JavascriptExecutor) driver).executeScript("return jQuery(arguments[0]).text();", element).toString()
+                .trim();
     }
 
     /**
@@ -317,6 +317,10 @@ public abstract class SeleniumTestTemplate {
      */
     protected void logout() {
         clickButton(LOGOUT_BUTTON_ID);
+        //WTF Selenium??????
+        if (driver.findElement(By.id(LOGOUT_BUTTON_ID)) != null) {
+            clickButton(LOGOUT_BUTTON_ID);
+        }
     }
 
     /**
@@ -329,8 +333,8 @@ public abstract class SeleniumTestTemplate {
      */
     protected void login(String name, String password) {
         loginInternal(name, password);
-        new WebDriverWait(driver, 5)
-                .until(ExpectedConditions.not(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.id(LOGIN_MODAL_BUTTON_ID))));
+        new WebDriverWait(driver, 5).until(ExpectedConditions
+                .not(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.id(LOGIN_MODAL_BUTTON_ID))));
         WebElement loginBox = getElementIfPresent(driver, By.className(LOGIN_BOX));
         Assertions.assertNull(loginBox);
     }
@@ -436,8 +440,8 @@ public abstract class SeleniumTestTemplate {
      *            index
      */
     protected void clickTableItem(int index) {
-        WebElement el = driver
-                .findElement(By.xpath(String.format("(//table[contains(@class,'content-table')]//tr)[%s]/td[1]/a", index + 1)));
+        WebElement el = driver.findElement(
+                By.xpath(String.format("(//table[contains(@class,'content-table')]//tr)[%s]/td[1]/a", index + 1)));
         Assertions.assertNotNull(el, "Table item not found");
         el.click();
     }
@@ -450,8 +454,8 @@ public abstract class SeleniumTestTemplate {
      * @return link
      */
     protected String getDownloadLink(int index) {
-        WebElement el = driver
-                .findElement(By.xpath(String.format("(//table[contains(@class,'content-table')]//tr)[%s]/td[1]/a", index + 1)));
+        WebElement el = driver.findElement(
+                By.xpath(String.format("(//table[contains(@class,'content-table')]//tr)[%s]/td[1]/a", index + 1)));
         Assertions.assertNotNull(el, "Table item not found");
         return el.getAttribute(HREF);
     }
