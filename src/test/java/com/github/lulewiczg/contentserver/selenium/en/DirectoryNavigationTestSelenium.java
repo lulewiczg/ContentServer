@@ -35,7 +35,8 @@ import com.github.lulewiczg.contentserver.selenium.ExpectedMsg;
 import com.github.lulewiczg.contentserver.selenium.ExpectedMsgEN;
 import com.github.lulewiczg.contentserver.selenium.SeleniumTestTemplate;
 import com.github.lulewiczg.contentserver.test.utils.NavigationData;
-import com.github.lulewiczg.contentserver.test.utils.TestMode;
+import com.github.lulewiczg.contentserver.test.utils.SeleniumLocation;
+import com.github.lulewiczg.contentserver.test.utils.TestUtil;
 import com.github.lulewiczg.contentserver.utils.Constants;
 import com.github.lulewiczg.contentserver.utils.comparators.PathComparator;
 import com.github.lulewiczg.contentserver.utils.models.Dir;
@@ -81,7 +82,7 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
     @Test
     @DisplayName("Every dir is accessible by admin")
     public void testNavAdmin() {
-        Assumptions.assumeTrue(MODE != TestMode.ANDROID);
+        Assumptions.assumeTrue(TestUtil.MODE.getLocation() == SeleniumLocation.LOCAL);
         login(ADMIN, TEST3);
         while (getBreadcrumbs().size() > 2) {
             testNav((i, len) -> i != len - 1);
@@ -203,7 +204,7 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
             WebElement downloadButton = downloadCol.findElement(By.tagName("a"));
             Assertions.assertEquals(expectedDownloadUrl, downloadButton.getAttribute("href"));
             String imgSrc = downloadButton.findElement(By.tagName("img")).getAttribute("src");
-            Assertions.assertEquals(MODE.getUrl() + "/icons/download.png", imgSrc);
+            Assertions.assertEquals(TestUtil.MODE.getUrl() + "/icons/download.png", imgSrc);
         }));
     }
 
@@ -237,9 +238,9 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
     private String getExpectedURL(NavigationData expectedData, File f) {
         String url;
         if (f.isFile()) {
-            url = MODE.getUrl() + "/rest/files?path=" + expectedData.getPath() + Constants.SEP + f.getName();
+            url = TestUtil.MODE.getUrl() + "/rest/files?path=" + expectedData.getPath() + Constants.SEP + f.getName();
         } else {
-            url = MODE.getUrl() + "/?path=" + expectedData.getPath() + Constants.SEP + f.getName();
+            url = TestUtil.MODE.getUrl() + "/?path=" + expectedData.getPath() + Constants.SEP + f.getName();
         }
         return url.replace(" ", "%20");
     }

@@ -24,6 +24,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.github.lulewiczg.contentserver.test.utils.TestMode;
+import com.github.lulewiczg.contentserver.test.utils.TestUtil;
 
 /**
  * Template for selenium tests.
@@ -32,7 +33,6 @@ import com.github.lulewiczg.contentserver.test.utils.TestMode;
  */
 public abstract class SeleniumTestTemplate {
 
-    protected static final TestMode MODE = TestMode.SELENIUM;
     private static final String LOGIN_BOX = "login-box";
     private static final String POPUP_TITLE = "popup-title";
     private static final String HREF = "href";
@@ -59,7 +59,7 @@ public abstract class SeleniumTestTemplate {
      */
     @BeforeEach
     public void before() {
-        Assumptions.assumeTrue(MODE.isSelenium());
+        Assumptions.assumeTrue(TestUtil.MODE.contains(TestMode.SELENIUM));
         msg = getMsgs();
         FirefoxOptions opt = new FirefoxOptions();
         FirefoxProfile prof = new FirefoxProfile();
@@ -70,7 +70,7 @@ public abstract class SeleniumTestTemplate {
         driver.manage().timeouts().pageLoadTimeout(5, TimeUnit.SECONDS);
         driver.manage().timeouts().setScriptTimeout(5, TimeUnit.SECONDS);
 
-        driver.navigate().to(MODE.getUrl());
+        driver.navigate().to(TestUtil.MODE.getLocation().getUrl());
     }
 
     /**
@@ -291,8 +291,7 @@ public abstract class SeleniumTestTemplate {
         if (a != null) {
             element = a;
         }
-        return ((JavascriptExecutor) driver).executeScript("return jQuery(arguments[0]).text();", element).toString()
-                .trim();
+        return ((JavascriptExecutor) driver).executeScript("return jQuery(arguments[0]).text();", element).toString().trim();
     }
 
     /**
@@ -317,8 +316,8 @@ public abstract class SeleniumTestTemplate {
      */
     protected void logout() {
         clickButton(LOGOUT_BUTTON_ID);
-        //WTF Selenium??????
-        if (driver.findElement(By.id(LOGOUT_BUTTON_ID)) != null) {
+        // WTF Selenium??????
+        if (driver.findElement(By.id(LOGOUT_BUTTON_ID)).isDisplayed()) {
             clickButton(LOGOUT_BUTTON_ID);
         }
     }
@@ -333,8 +332,8 @@ public abstract class SeleniumTestTemplate {
      */
     protected void login(String name, String password) {
         loginInternal(name, password);
-        new WebDriverWait(driver, 5).until(ExpectedConditions
-                .not(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.id(LOGIN_MODAL_BUTTON_ID))));
+        new WebDriverWait(driver, 5)
+                .until(ExpectedConditions.not(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.id(LOGIN_MODAL_BUTTON_ID))));
         WebElement loginBox = getElementIfPresent(driver, By.className(LOGIN_BOX));
         Assertions.assertNull(loginBox);
     }
@@ -440,8 +439,8 @@ public abstract class SeleniumTestTemplate {
      *            index
      */
     protected void clickTableItem(int index) {
-        WebElement el = driver.findElement(
-                By.xpath(String.format("(//table[contains(@class,'content-table')]//tr)[%s]/td[1]/a", index + 1)));
+        WebElement el = driver
+                .findElement(By.xpath(String.format("(//table[contains(@class,'content-table')]//tr)[%s]/td[1]/a", index + 1)));
         Assertions.assertNotNull(el, "Table item not found");
         el.click();
     }
@@ -454,8 +453,8 @@ public abstract class SeleniumTestTemplate {
      * @return link
      */
     protected String getDownloadLink(int index) {
-        WebElement el = driver.findElement(
-                By.xpath(String.format("(//table[contains(@class,'content-table')]//tr)[%s]/td[1]/a", index + 1)));
+        WebElement el = driver
+                .findElement(By.xpath(String.format("(//table[contains(@class,'content-table')]//tr)[%s]/td[1]/a", index + 1)));
         Assertions.assertNotNull(el, "Table item not found");
         return el.getAttribute(HREF);
     }

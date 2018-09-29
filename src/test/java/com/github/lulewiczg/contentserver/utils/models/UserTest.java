@@ -14,10 +14,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.github.lulewiczg.contentserver.utils.Constants;
-import com.github.lulewiczg.contentserver.utils.models.User;
 
 /**
- * Represents user.
+ * Tests user.
  *
  * @author lulewiczg
  */
@@ -25,20 +24,19 @@ public class UserTest {
 
     private static final List<String> EMPTY = new ArrayList<>();
     private static final String TEST = "test";
-    private static final String[] PATHS = new String[] { "C:/a/a/a/b/a", "C:/a/b/a/a/a", "C:/a/1/2/3", "C:/a/1/2/4",
-            "C:/a/b", "C:/a/2", "C:/a/3", "C:/b", "C:/b/1", "C:/b/2/3", "C:/b/1/2", "D:", "/a/b/a/a", "/a/a/b/a",
-            "/a/b/a/b", "/a/b/a/b", "/a/b/a/c", "/a/b/a.c", "/a/b/a.d", "/a/b.a.d", "b", "a/b.a.d", "a/b/a.d",
-            "a/c/a.d", "a/c" };
+    private static final String[] PATHS = new String[] { "C:/a/a/a/b/a", "C:/a/b/a/a/a", "C:/a/1/2/3", "C:/a/1/2/4", "C:/a/b",
+            "C:/a/2", "C:/a/3", "C:/b", "C:/b/1", "C:/b/2/3", "C:/b/1/2", "D:", "/a/b/a/a", "/a/a/b/a", "/a/b/a/b", "/a/b/a/b",
+            "/a/b/a/c", "/a/b/a.c", "/a/b/a.d", "/a/b.a.d", "b", "a/b.a.d", "a/b/a.d", "a/c/a.d", "a/c" };
 
-    private static final String[] PATHS2 = new String[] { "C:/a/b/a", "D:/a/b", "C:/a/a/a/b/aa", "C:/a/a/a/b/a.a/c/f/e",
-            "C:/c", "/a/b" };
+    private static final String[] PATHS2 = new String[] { "C:/a/b/a", "D:/a/b", "C:/a/a/a/b/aa", "C:/a/a/a/b/a.a/c/f/e", "C:/c",
+            "/a/b" };
 
-    private static final List<String> EXPECTED = Arrays.asList("C:/b", "D:", "C:/a/1/2/3", "C:/a/1/2/4", "C:/a/2",
-            "C:/a/3", "C:/a/a/a/b/a", "C:/a/b", "/a/a/b/a", "/a/b/a/a", "/a/b/a/b", "/a/b/a/c", "/a/b/a.c", "/a/b/a.d",
-            "/a/b.a.d", "b", "a/b.a.d", "a/b/a.d", "a/c");
-    private static final List<String> EXPECTED2 = Arrays.asList("C:/b", "D:", "C:/a/1/2/3", "C:/a/1/2/4", "C:/a/2",
-            "C:/a/3", "C:/a/a/a/b/a", "C:/a/a/a/b/aa", "C:/a/a/a/b/a.a/c/f/e", "C:/c", "C:/a/b", "/a/a/b/a", "/a/b",
-            "/a/b.a.d", "b", "a/b.a.d", "a/b/a.d", "a/c");
+    private static final List<String> EXPECTED = Arrays.asList("C:/b", "D:", "C:/a/1/2/3", "C:/a/1/2/4", "C:/a/2", "C:/a/3",
+            "C:/a/a/a/b/a", "C:/a/b", "/a/a/b/a", "/a/b/a/a", "/a/b/a/b", "/a/b/a/c", "/a/b/a.c", "/a/b/a.d", "/a/b.a.d", "b",
+            "a/b.a.d", "a/b/a.d", "a/c");
+    private static final List<String> EXPECTED2 = Arrays.asList("C:/b", "D:", "C:/a/1/2/3", "C:/a/1/2/4", "C:/a/2", "C:/a/3",
+            "C:/a/a/a/b/a", "C:/a/a/a/b/aa", "C:/a/a/a/b/a.a/c/f/e", "C:/c", "C:/a/b", "/a/a/b/a", "/a/b", "/a/b.a.d", "b",
+            "a/b.a.d", "a/b/a.d", "a/c");
 
     private User user;
 
@@ -107,8 +105,7 @@ public class UserTest {
     }
 
     /**
-     * Tests if permissions are properly normalized when paths contain slashes and
-     * backslashes.
+     * Tests if permissions are properly normalized when paths contain slashes and backslashes.
      */
     @Test
     @DisplayName("Tests read permissions with paths with mixed slashes")
@@ -123,8 +120,7 @@ public class UserTest {
     }
 
     /**
-     * Tests if permissions are properly normalized when the same paths are set for
-     * READ and DELETE permissions.
+     * Tests if permissions are properly normalized when the same paths are set for READ and DELETE permissions.
      */
     @Test
     @DisplayName("Tests cumulative the same permissions for read and delete")
@@ -138,8 +134,7 @@ public class UserTest {
     }
 
     /**
-     * Tests if permissions are properly normalized when the same paths are set for
-     * READ and WRITE permissions.
+     * Tests if permissions are properly normalized when the same paths are set for READ and WRITE permissions.
      */
     @Test
     @DisplayName("Tests cumulative the same permissions for read and write")
@@ -153,8 +148,7 @@ public class UserTest {
     }
 
     /**
-     * Tests if permissions are properly normalized when the same paths are set for
-     * all permissions.
+     * Tests if permissions are properly normalized when the same paths are set for all permissions.
      */
     @Test
     @DisplayName("Tests cumulative the same permissions for all permissions")
@@ -169,8 +163,7 @@ public class UserTest {
     }
 
     /**
-     * Tests if permissions are properly normalized when the READ permissions are
-     * not set, but WRITE are.
+     * Tests if permissions are properly normalized when the READ permissions are not set, but WRITE are.
      */
     @Test
     @DisplayName("Tests if read permissions are the same as write")
@@ -183,8 +176,7 @@ public class UserTest {
     }
 
     /**
-     * Tests if permissions are properly normalized when the READ permissions are
-     * not set, but DELETE are.
+     * Tests if permissions are properly normalized when the READ permissions are not set, but DELETE are.
      */
     @Test
     @DisplayName("Tests if read permissions are the same as delete")
@@ -197,8 +189,7 @@ public class UserTest {
     }
 
     /**
-     * Tests if permissions are properly normalized when different READ and WRITE
-     * permissions are set.
+     * Tests if permissions are properly normalized when different READ and WRITE permissions are set.
      */
     @Test
     @DisplayName("Tests cumulative permissions with different read and write")
@@ -212,8 +203,7 @@ public class UserTest {
     }
 
     /**
-     * Tests if permissions are properly normalized when different READ and DELETE
-     * permissions are set.
+     * Tests if permissions are properly normalized when different READ and DELETE permissions are set.
      */
     @Test
     @DisplayName("Tests cumulative permissions with different read and delete")
@@ -227,8 +217,7 @@ public class UserTest {
     }
 
     /**
-     * Tests if permissions are properly normalized when different WRITE and DELETE
-     * permissions are set.
+     * Tests if permissions are properly normalized when different WRITE and DELETE permissions are set.
      */
     @Test
     @DisplayName("Tests cumulative permissions with different delete and write")

@@ -19,19 +19,17 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
 import com.github.lulewiczg.contentserver.test.utils.TestUtil;
-import com.github.lulewiczg.contentserver.utils.Constants;
-import com.github.lulewiczg.contentserver.utils.SettingsUtil;
 
 /**
  * Tests for SettingsUtil.
- * 
+ *
  * @author lulewiczg
  */
 public class SettingsUtilTest {
     // Grzegorz Brzęczyczykiewicz i Że li Popą
-    private static final byte[] TEST_STRING = new byte[] { 71, 114, 122, 101, 103, 111, 114, 122, 32, 66, 114, 122, -60,
-            -103, 99, 122, 121, 99, 122, 121, 107, 105, 101, 119, 105, 99, 122, 32, 105, 32, -59, -69, 101, 32, 108,
-            105, 32, 80, 111, 112, -60, -123 };
+    private static final byte[] TEST_STRING = new byte[] { 71, 114, 122, 101, 103, 111, 114, 122, 32, 66, 114, 122, -60, -103, 99,
+            122, 121, 99, 122, 121, 107, 105, 101, 119, 105, 99, 122, 32, 105, 32, -59, -69, 101, 32, 108, 105, 32, 80, 111, 112,
+            -60, -123 };
     private ServletContext context = mock(ServletContext.class);
 
     private static final String CONTEXT = TestUtil.LOC + "testContexts/";
@@ -62,7 +60,7 @@ public class SettingsUtilTest {
 
     /**
      * Obtains util instance.
-     * 
+     *
      * @param contextIndex
      *            context index
      * @param server
@@ -81,7 +79,7 @@ public class SettingsUtilTest {
 
     /**
      * Obtains util instance.
-     * 
+     *
      * @param contextIndex
      *            context index
      * @return util

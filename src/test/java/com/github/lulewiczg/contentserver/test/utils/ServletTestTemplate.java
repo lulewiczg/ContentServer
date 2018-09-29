@@ -34,7 +34,7 @@ import com.github.lulewiczg.contentserver.utils.SettingsUtil;
 
 /**
  * Test template for servlet tests.
- * 
+ *
  * @author lulewiczg
  */
 public abstract class ServletTestTemplate {
@@ -51,7 +51,7 @@ public abstract class ServletTestTemplate {
 
     /**
      * Sets up tests
-     * 
+     *
      * @throws Exception
      *             the Exception
      */
@@ -72,7 +72,7 @@ public abstract class ServletTestTemplate {
 
     /**
      * Additional logic to perform in @BeforeEach.
-     * 
+     *
      * @throws Exception
      *             the Exception
      */
@@ -89,7 +89,7 @@ public abstract class ServletTestTemplate {
 
     /**
      * Tests if response is 200 and empty.
-     * 
+     *
      * @throws IOException
      *             the IOException
      */
@@ -102,7 +102,7 @@ public abstract class ServletTestTemplate {
 
     /**
      * Tests if response is 200 and empty and set content type to plain text.
-     * 
+     *
      * @throws IOException
      *             the IOException
      *
@@ -115,8 +115,7 @@ public abstract class ServletTestTemplate {
     }
 
     /**
-     * Tests if response is 200 and empty and set content type to plain text and
-     * with given response.
+     * Tests if response is 200 and empty and set content type to plain text and with given response.
      *
      * @param responsetxt
      *            response text
@@ -131,8 +130,7 @@ public abstract class ServletTestTemplate {
     }
 
     /**
-     * Tests if response is 200 and empty and set content type to JSON and with
-     * given response.
+     * Tests if response is 200 and empty and set content type to JSON and with given response.
      *
      * @param responsetxt
      *            response text
@@ -194,7 +192,7 @@ public abstract class ServletTestTemplate {
 
     /**
      * Checks if response was not modified.
-     * 
+     *
      * @throws IOException
      *             the IOException
      */
@@ -216,7 +214,7 @@ public abstract class ServletTestTemplate {
 
     /**
      * Checks if there was no additional changes to response than error.
-     * 
+     *
      * @throws IOException
      */
     private void responseOk() throws IOException {
@@ -227,7 +225,7 @@ public abstract class ServletTestTemplate {
 
     /**
      * Checks if request was not modified.
-     * 
+     *
      * @throws IOException
      *             the IOException
      */
@@ -240,7 +238,7 @@ public abstract class ServletTestTemplate {
 
     /**
      * Sets up servlet.
-     * 
+     *
      * @throws ServletException
      *             the ServletException
      */

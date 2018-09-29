@@ -20,13 +20,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
 import com.github.lulewiczg.contentserver.test.utils.TestUtil;
-import com.github.lulewiczg.contentserver.utils.Constants;
-import com.github.lulewiczg.contentserver.utils.Persmission;
-import com.github.lulewiczg.contentserver.utils.ResourceUtil;
 
 /**
  * Tests for ResourceUtil.
- * 
+ *
  * @author lulewiczg
  */
 public class ResourceUtilTest {
@@ -108,8 +105,7 @@ public class ResourceUtilTest {
         HttpSession session = mock(HttpSession.class);
         ResourceUtil instance = getInstance(4);
 
-        Exception e = Assertions.assertThrows(AuthenticationException.class,
-                () -> instance.login(user, password, session));
+        Exception e = Assertions.assertThrows(AuthenticationException.class, () -> instance.login(user, password, session));
         assertEquals("Invalid login or password", e.getMessage());
         verify(session, never()).setAttribute(anyString(), anyString());
 
@@ -117,7 +113,7 @@ public class ResourceUtilTest {
 
     /**
      * Obtains util instance.
-     * 
+     *
      * @param contextIndex
      *            context index
      * @param server

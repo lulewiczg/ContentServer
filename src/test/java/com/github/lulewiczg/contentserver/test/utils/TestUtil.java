@@ -23,6 +23,7 @@ import com.github.lulewiczg.contentserver.utils.models.Dir;
 public final class TestUtil {
     public static final String LOC = "src/main/resources/data/";
     private static final String COLON = "\\,";
+    public static final TestSettings MODE = new TestSettings().with(SeleniumLocation.LOCAL).with(TestMode.SELENIUM);
 
     /**
      * Mocks ResourceUtil for tests.

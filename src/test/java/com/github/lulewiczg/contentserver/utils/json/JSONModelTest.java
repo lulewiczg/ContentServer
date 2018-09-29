@@ -12,15 +12,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.github.lulewiczg.contentserver.models.TestModel;
-import com.github.lulewiczg.contentserver.models.TestModelCollections;
-import com.github.lulewiczg.contentserver.models.TestModelCollectionsEmpty;
-import com.github.lulewiczg.contentserver.models.TestModelCollision;
-import com.github.lulewiczg.contentserver.models.TestModelEmpty;
-import com.github.lulewiczg.contentserver.models.TestModelNoFields;
+import com.github.lulewiczg.contentserver.test.models.TestModel;
+import com.github.lulewiczg.contentserver.test.models.TestModelCollections;
+import com.github.lulewiczg.contentserver.test.models.TestModelCollectionsEmpty;
+import com.github.lulewiczg.contentserver.test.models.TestModelCollision;
+import com.github.lulewiczg.contentserver.test.models.TestModelEmpty;
+import com.github.lulewiczg.contentserver.test.models.TestModelNoFields;
 import com.github.lulewiczg.contentserver.test.utils.TestUtil;
-import com.github.lulewiczg.contentserver.utils.json.JSONException;
-import com.github.lulewiczg.contentserver.utils.json.JSONModel;
 
 /**
  * Tests JSON serialization

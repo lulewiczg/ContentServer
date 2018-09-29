@@ -8,11 +8,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
-import com.github.lulewiczg.contentserver.utils.CommonUtil;
-
 /**
  * Test class for CommonUtil.
- * 
+ *
  * @author lulewiczg
  */
 public class CommonUtilTest {

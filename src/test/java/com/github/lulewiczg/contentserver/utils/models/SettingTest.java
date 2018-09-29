@@ -14,11 +14,9 @@ import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.opentest4j.MultipleFailuresError;
 
-import com.github.lulewiczg.contentserver.utils.models.Setting;
-
 /**
  * Tests for Setting model.
- * 
+ *
  * @author lulewiczg
  */
 public class SettingTest {
@@ -48,7 +46,7 @@ public class SettingTest {
 
     /**
      * Tests loading settings for both single and multiple values sent.
-     * 
+     *
      * @param toParse
      *            toParse
      * @throws MultipleFailuresError
@@ -62,7 +60,7 @@ public class SettingTest {
 
     /**
      * Tests loading settings.
-     * 
+     *
      * @param split
      *            data to load
      * @param mapper
