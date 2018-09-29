@@ -2,11 +2,9 @@ package com.github.lulewiczg.contentserver.selenium.en;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -14,15 +12,17 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.DisplayName;
@@ -57,6 +57,7 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
     @Test
     @DisplayName("Navigation is not clickable when it is nowhere to go")
     public void testNavNowhereToGo() {
+        Assumptions.assumeTrue(TestUtil.MODE.getLocation() == SeleniumLocation.LOCAL);
         gotoShortcut(0);
         testNav((i, j) -> false);
         gotoShortcut(1);
@@ -66,6 +67,7 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
     @Test
     @DisplayName("Navigation is not clickable when not permitted")
     public void testNav() {
+        Assumptions.assumeTrue(TestUtil.MODE.getLocation() == SeleniumLocation.LOCAL);
         login(TEST, TEST);
         gotoShortcut(0);
         testNav((i, len) -> false);
@@ -106,16 +108,18 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
         login(TEST, TEST);
         gotoShortcut(0);
         String downloadLink = getDownloadLink(4);
-        HttpGet request = new HttpGet(downloadLink);
-        String auth = TEST + ":" + TEST;
-        byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.ISO_8859_1));
-        String authHeader = "Basic " + new String(encodedAuth);
-        request.setHeader(HttpHeaders.AUTHORIZATION, authHeader);
-
         HttpClient client = HttpClientBuilder.create().build();
+
+        HttpPost authRequest = new HttpPost(TestUtil.MODE.getUrl() + "/rest/login");
+        authRequest.setEntity(new UrlEncodedFormEntity(List.of(new BasicNameValuePair(Constants.Web.LOGIN, TEST),
+                new BasicNameValuePair(Constants.Web.PASSWORD, TEST))));
+        HttpResponse authResponse = client.execute(authRequest);
+        Assertions.assertEquals(200, authResponse.getStatusLine().getStatusCode());
+
+        HttpGet request = new HttpGet(downloadLink);
         HttpResponse response = client.execute(request);
         Assertions.assertEquals(HttpStatus.SC_PARTIAL_CONTENT, response.getStatusLine().getStatusCode());
-        Assertions.assertEquals(Constants.Setting.PLAIN_TEXT, response.getFirstHeader("Content-Type").getValue());
+        Assertions.assertEquals(Constants.Setting.PLAIN_TEXT, response.getFirstHeader("Content-Type").getValue().split("\\;")[0]);
         Assertions.assertEquals("4", response.getFirstHeader("Content-Length").getValue());
 
     }
