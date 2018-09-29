@@ -42,6 +42,26 @@ angular.module('app').controller("fileController",
             $scope.admin = false;
         }
     }
+
+    $scope.deleteFile = function(row) {
+        if (!confirm("siur?")) {
+            return;
+        }
+        debugger;
+        $.post($scope.appName + 'rest/files', {
+            path : row.file.path,
+            delete : true
+        }, function(response) {
+            alert("dupa XD");
+            $scope.files = $scope.files.filter(function(i){
+               return i !== row.file; 
+            });
+            $scope.$apply();
+        }).error(function(result) {
+            alert("dupa :(");
+        });
+    }
+
     $scope.reload = function() {
         $http.get($scope.appName + 'rest/login?path=' + $location.search().path)
         .then(function(result) {

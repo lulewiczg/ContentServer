@@ -27,8 +27,14 @@
  text-decoration: none !important
 }
 
-.download-button img {
+.buttons img {
  width: 20px;
+ margin-right: 10px;
+}
+
+#uploadButton img {
+ width: 50px;
+ transform: rotate(180deg);
 }
 
 #uploadButton img {

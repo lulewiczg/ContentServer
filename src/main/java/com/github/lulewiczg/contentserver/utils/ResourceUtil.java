@@ -273,9 +273,43 @@ public class ResourceUtil {
         if (user.getName().equals(Constants.ADMIN)) {
             return true;
         }
+        List<String> paths = user.getRead();
+        return checkAccess(directory, paths);
+    }
+
+    /**
+     * Checks if user has access to directory
+     *
+     * @param directory
+     *            directory
+     * @param name
+     *            user name
+     * @return true if has access
+     */
+    public boolean hasDeleteAccess(String directory, String name) {
+        User user = getUserByName(name);
+        if (user == null) {
+            return false;
+        }
+        if (user.getName().equals(Constants.ADMIN)) {
+            return true;
+        }
+        List<String> paths = user.getDelete();
+        return checkAccess(directory, paths);
+    }
+
+    /**
+     * Checks access to path.
+     *
+     * @param directory
+     *            directory
+     * @param paths
+     *            paths
+     * @return true if permitted
+     */
+    private boolean checkAccess(String directory, List<String> paths) {
         File f = new File(directory);
         boolean dir = f.exists() && f.isDirectory();
-
         String path;
         try {
             path = f.getCanonicalPath();
@@ -287,7 +321,7 @@ public class ResourceUtil {
             path += Constants.SEP;
         }
         path = CommonUtil.normalizePath(path);
-        for (String s : permissions) {
+        for (String s : paths) {
             if (startsWith(path, s)) {
                 return true;
             }
