@@ -10,6 +10,7 @@ public class ExpectedMsgEN extends ExpectedMsg {
     public ExpectedMsgEN() {
         super("en");
         this.fileName = "File Name";
+        this.modificationDate = "Modification Date";
         this.fileSize = "Size";
         this.options = "Options";
         this.invalidCredentialsError = "User or password is invalid!";

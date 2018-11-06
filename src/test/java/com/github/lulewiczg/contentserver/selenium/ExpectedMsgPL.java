@@ -10,6 +10,7 @@ public class ExpectedMsgPL extends ExpectedMsg {
     public ExpectedMsgPL() {
         super("pl");
         this.fileName = "Nazwa Pliku";
+        this.modificationDate = "Data Modyfikacji";
         this.fileSize = "Rozmiar";
         this.options = "Opcje";
         this.invalidCredentialsError = "Użytkownik lub hasło jest niepoprawne!";

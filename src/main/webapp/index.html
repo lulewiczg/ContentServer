@@ -76,6 +76,7 @@
                     <thead>
                         <tr>
                             <th>{{'table.header.filename' | translate}}</th>
+                            <th>{{'table.header.date' | translate}}</th>
                             <th>{{'table.header.size' | translate}}</th>
                             <th>{{'table.header.options' | translate}}</th>
                         </tr>
@@ -84,6 +85,7 @@
                         <tr ng-repeat="file in files track by file.path">
                             <td class="fileName"><a class="nounderline" ng-href="{{getFileURL(file)}}"
                                 ng-attr-target="{{file.file ? '_self' :undefined}}">{{file.name}}</a></td>
+                            <td class="modDate">{{file.date}}</td>
                             <td class="fileSize">{{file.size}}</td>
                             <td class="downloadBtn"><a ng-show="file.file" class="download-button" target="_blank"
                                 ng-href="{{getFileURL(file)+ '&download=true'}}"><img src="icons/download.png"
