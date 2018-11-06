@@ -1,7 +1,7 @@
 "",									"csv/, jsons/, structure/, testContexts/"
 "jsons",							"collectionsModel.json, emptyCollectionsModel.json, emptyModel.json, model.json"
 "csv",								"context1.csv, context2.csv, context3.csv, context4.csv, directory-listing.csv, file-sizes.csv, logins.csv, logins-invalid.csv, mimes.csv, paths.csv, paths-sort.csv, settings.csv, sha.csv"
-"structure",						"folder1/, folder2/, folder3/"
+"structure",						"folder1/, folder2/, folder3/, !@$%^&()_ =-[][{};',.`.txt"
 "structure/folder1",				"folder1/, folder2/, folder1.txt, folder11.txt"
 "structure/folder1/folder1",		"test.test.txt, test.txt"
 "structure/folder1/folder2",		"test.test.txt, test.txt"

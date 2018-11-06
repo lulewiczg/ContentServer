@@ -62,7 +62,7 @@ public class Log {
         consoleHandler.setFormatter(formatter);
         log.addHandler(consoleHandler);
         try {
-            FileHandler handler = new FileHandler(file.getPath());
+            FileHandler handler = new FileHandler(file.getPath(), 0, 1, true);
             handler.setFormatter(formatter);
             log.addHandler(handler);
         } catch (IOException e) {

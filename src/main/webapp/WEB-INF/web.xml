@@ -105,7 +105,7 @@
         <location>/error</location>
     </error-page>
 
-    <!-- For newer servlet containers -->
+    <!-- For older servlet containers -->
     <error-page>
         <error-code>500</error-code>
         <location>/error</location>

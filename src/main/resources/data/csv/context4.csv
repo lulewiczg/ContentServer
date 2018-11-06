@@ -48,6 +48,7 @@
 "guest",		false,	"folder3/folder2/test.test.txt"
 "guest",		false,	"folder3/folder3/test.txt"
 "guest",		false,	"folder3/folder3/test.test.txt"
+"guest",		false,	"!@$%^&()_ =-[][{};',.`.txt"
 
 "",		false,	"folder1"
 "",		false,	"folder1/."
@@ -99,6 +100,7 @@
 "",		false,	"folder3/folder2/test.test.txt"
 "",		false,	"folder3/folder3/test.txt"
 "",		false,	"folder3/folder3/test.test.txt"
+"",		false,	"!@$%^&()_ =-[][{};',.`.txt"
 
 ,		false,	"folder1"
 ,		false,	"folder1/."
@@ -150,6 +152,7 @@
 ,		false,	"folder3/folder2/test.test.txt"
 ,		false,	"folder3/folder3/test.txt"
 ,		false,	"folder3/folder3/test.test.txt"
+,		false,	"!@$%^&()_ =-[][{};',.`.txt"
 
 "test",		true,	"folder1"
 "test",		true,	"folder1/."
@@ -201,6 +204,7 @@
 "test",		false,	"folder3/folder2/test.test.txt"
 "test",		true,	"folder3/folder3/test.txt"
 "test",		true,	"folder3/folder3/test.test.txt"
+"test",		false,	"!@$%^&()_ =-[][{};',.`.txt"
 
 "test2",	true,	"folder1"
 "test2",	true,	"folder1/."
@@ -252,6 +256,7 @@
 "test2",	true,	"folder3/folder2/test.test.txt"
 "test2",	true,	"folder3/folder3/test.txt"
 "test2",	true,	"folder3/folder3/test.test.txt"
+"test2",		false,	"!@$%^&()_ =-[][{};',.`.txt"
 
 "admin",	true,	"folder1"
 "admin",	true,	"folder1/."
@@ -303,3 +308,4 @@
 "admin",	true,	"folder3/folder2/test.test.txt"
 "admin",	true,	"folder3/folder3/test.txt"
 "admin",	true,	"folder3/folder3/test.test.txt"
+"admin",	true,	"!@$%^&()_ =-[][{};',.`.txt"

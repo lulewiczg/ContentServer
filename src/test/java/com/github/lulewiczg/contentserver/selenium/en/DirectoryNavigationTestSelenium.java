@@ -103,6 +103,15 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
     }
 
     @Test
+    @DisplayName("Opens file with different special chars in name")
+    public void testOpenFileSpecialChars() {
+        login(ADMIN, TEST3);
+        gotoShortcut(0);
+        clickTableItem(4);
+        String text = driver.findElement(By.tagName("body")).getText();
+        Assertions.assertEquals(TEST, text);
+    }
+    @Test
     @DisplayName("Downloads file")
     public void testDownloadFile() throws ClientProtocolException, IOException {
         login(TEST, TEST);
@@ -246,7 +255,7 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
         } else {
             url = TestUtil.MODE.getUrl() + "/?path=" + expectedData.getPath() + Constants.SEP + f.getName();
         }
-        return url.replace(" ", "%20");
+        return url.replace("%", "%25").replace("&", "%26").replace("'", "%27").replace(" ", "%20");
     }
 
     /**

@@ -117,10 +117,14 @@ angular.module('app').controller("fileController", function($http, $location, $s
 
     $scope.getFileURL = function(file) {
         if (file.file) {
-            return $scope.appName + "rest/files?path=" + file.path;
+            return $scope.appName + "rest/files?path=" + $scope.escape(file.path);
         } else {
-            return $scope.appName + "?path=" + file.path;
+            return $scope.appName + "?path=" + $scope.escape(file.path);
         }
+    }
+
+    $scope.escape = function(str) {
+        return str.replace('%', '%25').replace('&', '%26');
     }
 
     $scope.logout = function() {

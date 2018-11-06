@@ -22,7 +22,7 @@ import com.github.lulewiczg.contentserver.utils.models.Dir;
  */
 public final class TestUtil {
     public static final String LOC = "src/main/resources/data/";
-    private static final String COLON = "\\,";
+    private static final String SPLIT_REGEX = "\\, ";
     public static final TestSettings MODE = new TestSettings().with(SeleniumLocation.LOCAL).with(TestMode.SELENIUM);
 
     /**
@@ -65,7 +65,7 @@ public final class TestUtil {
      * @return absolute expected paths
      */
     public static List<String> parsePaths(String basePath, String expected) {
-        return Arrays.stream(expected.split(COLON)).map(String::trim).filter(i -> !i.isEmpty())
+        return Arrays.stream(expected.split(SPLIT_REGEX)).map(String::trim).filter(i -> !i.isEmpty())
                 .map(i -> LOC + basePath + Constants.SEP + i).collect(Collectors.toList());
     }
 
@@ -77,7 +77,7 @@ public final class TestUtil {
      * @return parsed paths
      */
     public static List<Dir> parsePathsPlain(String paths) {
-        return Arrays.stream(paths.split(COLON)).map(String::trim).filter(i -> !i.isEmpty())
+        return Arrays.stream(paths.split(SPLIT_REGEX)).map(String::trim).filter(i -> !i.isEmpty())
                 .map(i -> new Dir(i, 0, i, !i.endsWith(Constants.SEP))).collect(Collectors.toList());
     }
 }
