@@ -25,6 +25,7 @@
 		"header": {
 			"filename": "Nazwa Pliku",
 			"size": "Rozmiar",
+			"date": "Data Modyfikacji",
 			"options": "Opcje"
 		}
 	},

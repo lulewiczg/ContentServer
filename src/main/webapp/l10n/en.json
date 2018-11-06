@@ -25,6 +25,7 @@
 		"header": {
 			"filename": "File Name",
 			"size": "Size",
+			"date": "Modification Date",
 			"options": "Options"
 		}
 	},

@@ -78,6 +78,6 @@ public final class TestUtil {
      */
     public static List<Dir> parsePathsPlain(String paths) {
         return Arrays.stream(paths.split(SPLIT_REGEX)).map(String::trim).filter(i -> !i.isEmpty())
-                .map(i -> new Dir(i, 0, i, !i.endsWith(Constants.SEP))).collect(Collectors.toList());
+                .map(i -> new Dir(i, 0, i, 0, !i.endsWith(Constants.SEP))).collect(Collectors.toList());
     }
 }

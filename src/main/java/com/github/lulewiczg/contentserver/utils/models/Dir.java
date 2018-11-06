@@ -2,10 +2,12 @@ package com.github.lulewiczg.contentserver.utils.models;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.github.lulewiczg.contentserver.utils.CommonUtil;
 import com.github.lulewiczg.contentserver.utils.Constants;
 import com.github.lulewiczg.contentserver.utils.comparators.PathComparator;
 import com.github.lulewiczg.contentserver.utils.json.JSONModel;
@@ -18,6 +20,8 @@ import com.github.lulewiczg.contentserver.utils.json.JSONProperty;
  */
 public class Dir extends JSONModel<Dir> implements Comparable<Dir> {
     private static final String[] UNITS = { "B", "KB", "MB", "GB", "TB" };
+
+    private static final SimpleDateFormat DF = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 
     @JSONProperty(propertyName = "name")
     private String name;
@@ -33,16 +37,38 @@ public class Dir extends JSONModel<Dir> implements Comparable<Dir> {
     @JSONProperty(propertyName = "file")
     private boolean file;
 
+    @JSONProperty(propertyName = "date")
+    private String date;
+
     public String getName() {
         return name;
     }
 
-    public Dir(String name, long size, String path, boolean file) {
-        super();
+    public Dir(String name, long size, String path, long date, boolean file) {
         this.name = name;
         this.sizeLong = size;
         this.path = path;
+        this.date = DF.format(date);
         this.file = file;
+        this.size = formatSize();
+    }
+
+    public Dir(File f) throws IOException {
+        String fName = f.getName();
+        long fSize = 0;
+        boolean isFile;
+        if (f.isDirectory()) {
+            fName += Constants.SEP;
+            isFile = false;
+        } else {
+            fSize = f.length();
+            isFile = true;
+        }
+        this.name = fName;
+        this.sizeLong = fSize;
+        this.path = CommonUtil.normalizePath(f.getCanonicalPath());
+        this.date = DF.format(f.lastModified());
+        this.file = isFile;
         this.size = formatSize();
     }
 
@@ -100,16 +126,7 @@ public class Dir extends JSONModel<Dir> implements Comparable<Dir> {
         if (list != null) {
             List<Dir> files = new ArrayList<>();
             for (File file : list) {
-                String name = file.getName();
-                long size = 0;
-                boolean isFile = true;
-                if (file.isDirectory()) {
-                    name += Constants.SEP;
-                    isFile = false;
-                } else {
-                    size = file.length();
-                }
-                files.add(new Dir(name, size, file.getCanonicalPath().replace("\\", Constants.SEP), isFile));
+                files.add(new Dir(file));
             }
             Collections.sort(files);
             return files;
@@ -156,5 +173,13 @@ public class Dir extends JSONModel<Dir> implements Comparable<Dir> {
         }
         Dir dir2 = (Dir) obj;
         return name.equals(dir2.name) && path.equals(dir2.path);
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

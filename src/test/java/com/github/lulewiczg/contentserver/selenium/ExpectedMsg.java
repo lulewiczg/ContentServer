@@ -9,6 +9,7 @@ package com.github.lulewiczg.contentserver.selenium;
 public abstract class ExpectedMsg {
 
     protected String fileName;
+    protected String modificationDate;
     protected String fileSize;
     protected String options;
     protected String invalidCredentialsError;
@@ -106,5 +107,9 @@ public abstract class ExpectedMsg {
 
     public ExpectedMsg(String lang) {
         this.lang = lang;
+    }
+
+    public String getModificationDate() {
+        return modificationDate;
     }
 }

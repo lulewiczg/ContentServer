@@ -91,10 +91,9 @@ public class ResourceServletTest extends ServletTestTemplate {
     @DisplayName("Directory listing")
     public void testListDir() throws IOException, ServletException {
         when(request.getParameter(Constants.Web.PATH)).thenReturn(base + "folder1");
-        List<Dir> dirs = Arrays.asList(new Dir("folder1/", 0, base + "folder1/" + "folder1", false),
-                new Dir("folder2/", 0, base + "folder1/" + "folder2", false),
-                new Dir("folder1.txt", 0, base + "folder1/" + "folder1.txt", true),
-                new Dir(FILE11, 4, base + "folder1/" + FILE11, true));
+        List<Dir> dirs = Arrays.asList(new Dir(new File(base + "folder1/folder1")),
+                new Dir(new File(base + "folder1/folder2")), new Dir(new File(base + "folder1/folder1.txt")),
+                new Dir(new File(base + "folder1/folder11.txt")));
         servlet.doGet(request, response);
 
         verifyZeroInteractions(resourceUtil);

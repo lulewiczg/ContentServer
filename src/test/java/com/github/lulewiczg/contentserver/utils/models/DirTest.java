@@ -25,7 +25,7 @@ public class DirTest {
     @ParameterizedTest(name = "''{0}'' should be formatted to ''{1}''")
     @CsvFileSource(resources = "/data/csv/file-sizes.csv")
     public void testRead(Long size, String expected) {
-        String formatted = new Dir("", size, "", true).getSize();
+        String formatted = new Dir("", size, "", 0, true).getSize();
         Assertions.assertEquals(expected, formatted);
     }
 

@@ -111,6 +111,7 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
         String text = driver.findElement(By.tagName("body")).getText();
         Assertions.assertEquals(TEST, text);
     }
+
     @Test
     @DisplayName("Downloads file")
     public void testDownloadFile() throws ClientProtocolException, IOException {
@@ -128,7 +129,8 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
         HttpGet request = new HttpGet(downloadLink);
         HttpResponse response = client.execute(request);
         Assertions.assertEquals(HttpStatus.SC_PARTIAL_CONTENT, response.getStatusLine().getStatusCode());
-        Assertions.assertEquals(Constants.Setting.PLAIN_TEXT, response.getFirstHeader("Content-Type").getValue().split("\\;")[0]);
+        Assertions.assertEquals(Constants.Setting.PLAIN_TEXT,
+                response.getFirstHeader("Content-Type").getValue().split("\\;")[0]);
         Assertions.assertEquals("4", response.getFirstHeader("Content-Length").getValue());
 
     }
@@ -191,7 +193,8 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
         WebElement table = driver.findElement(By.xpath("//table[contains(@class,'content-table')]"));
         List<String> headers = table.findElements(By.tagName("th")).stream().map(WebElement::getText)
                 .collect(Collectors.toList());
-        List<String> expectedHeaders = List.of(msg.getFileName(), msg.getFileSize(), msg.getOptions());
+        List<String> expectedHeaders = List.of(msg.getFileName(), msg.getModificationDate(), msg.getFileSize(),
+                msg.getOptions());
         Assertions.assertEquals(expectedHeaders, headers);
 
         File[] files = getSortedFiles(path);
@@ -208,11 +211,15 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
             String expectedUrl = getExpectedURL(expectedData, f);
             Assertions.assertEquals(expectedUrl, nameCol.findElement(By.tagName("a")).getAttribute("href"));
 
-            WebElement sizeCol = row.findElement(By.xpath("td[2]"));
-            String expectedSize = new Dir(null, f.length(), null, f.isFile()).getSize();
+            WebElement modCol = row.findElement(By.xpath("td[2]"));
+            String expectedDate = new Dir(null, f.length(), null, f.lastModified(), f.isFile()).getDate();
+            Assertions.assertEquals(expectedDate, modCol.getText());
+
+            WebElement sizeCol = row.findElement(By.xpath("td[3]"));
+            String expectedSize = new Dir(null, f.length(), null, f.lastModified(), f.isFile()).getSize();
             Assertions.assertEquals(expectedSize, sizeCol.getText());
 
-            WebElement downloadCol = row.findElement(By.xpath("td[3]"));
+            WebElement downloadCol = row.findElement(By.xpath("td[4]"));
             String expectedDownloadUrl = expectedUrl + "&download=true";
             WebElement downloadButton = downloadCol.findElement(By.tagName("a"));
             Assertions.assertEquals(expectedDownloadUrl, downloadButton.getAttribute("href"));
@@ -232,7 +239,8 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
         File[] files = Paths.get(path).toFile().listFiles();
 
         Map<String, File> tmpMap = Arrays.stream(files).collect(Collectors.toMap(i -> getFileName(i), i -> i));
-        List<Dir> tmpList = tmpMap.entrySet().stream().map(i -> new Dir(getFileName(i.getValue()), 0, "", i.getValue().isFile()))
+        List<Dir> tmpList = tmpMap.entrySet().stream()
+                .map(i -> new Dir(getFileName(i.getValue()), 0, "", i.getValue().lastModified(), i.getValue().isFile()))
                 .collect(Collectors.toList());
         Collections.sort(tmpList, new PathComparator());
         files = tmpList.stream().map(i -> tmpMap.get(i.getName())).collect(Collectors.toList()).toArray(new File[] {});
@@ -289,7 +297,8 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
      */
     private String getPath() {
         List<NameValuePair> args = parseUrl();
-        String path = args.stream().filter(i -> i.getName().equals("path")).map(NameValuePair::getValue).findFirst().get();
+        String path = args.stream().filter(i -> i.getName().equals("path")).map(NameValuePair::getValue).findFirst()
+                .get();
         return path;
     }
 
@@ -322,8 +331,8 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
         Assertions.assertAll(IntStream.range(0, elements.size()).boxed().map(i -> () -> {
             WebElement el = elements.get(i);
             NavigationData crumb = data.get(i);
-            Assertions.assertTrue(el.getAttribute("class").contains("disabled") != crumb.isEnabled(),
-                    String.format("Breadcrumb %s should %sbe clickable", crumb.getLabel(), crumb.isEnabled() ? "" : "not "));
+            Assertions.assertTrue(el.getAttribute("class").contains("disabled") != crumb.isEnabled(), String
+                    .format("Breadcrumb %s should %sbe clickable", crumb.getLabel(), crumb.isEnabled() ? "" : "not "));
             Assertions.assertEquals(crumb.getLabel(), el.getText(), "Labels shoud be the same");
             String attribute = el.findElement(By.tagName("a")).getAttribute("href");
             Assertions.assertEquals(getSlashUrl(crumb), attribute, "URLs shoud be the same");
