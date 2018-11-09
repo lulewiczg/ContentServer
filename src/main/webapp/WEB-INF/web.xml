@@ -68,6 +68,21 @@
         <url-pattern>/error</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>UploadServlet</servlet-name>
+        <servlet-class>com.github.lulewiczg.contentserver.web.servlets.UploadServlet</servlet-class>
+        <multipart-config>
+            <max-file-size>-1</max-file-size>
+            <max-request-size>-1</max-request-size>
+            <file-size-threshold>-1</file-size-threshold>
+        </multipart-config>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UploadServlet</servlet-name>
+        <url-pattern>/rest/upload</url-pattern>
+    </servlet-mapping>
+
+
     <filter>
         <filter-name>EncodingFilter</filter-name>
         <filter-class>com.github.lulewiczg.contentserver.web.filters.EncodingFilter</filter-class>
@@ -83,7 +98,7 @@
     </filter>
     <filter-mapping>
         <filter-name>ResourceFilter</filter-name>
-        <url-pattern>/rest/files/*</url-pattern>
+        <url-pattern>/rest/files/*,/rest/upload</url-pattern>
     </filter-mapping>
 
     <filter>

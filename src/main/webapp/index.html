@@ -17,6 +17,7 @@
 <script type="text/javascript" src="js/fileController.js"></script>
 <script type="text/javascript" src="js/loginController.js"></script>
 <script type="text/javascript" src="js/settingsController.js"></script>
+<script type="text/javascript" src="js/uploadController.js"></script>
 
 <link rel="icon" type="image/gif" href="icon.jpeg" />
 
@@ -70,6 +71,7 @@
                 ng-href="{{path.disabled ? '' : '?path='+path.path}}">{{path.name}}/</a></li>
         </ul>
         <h2 id="folderTitle">{{actualFolder}}/ :</h2>
+        <button ng-click="upload()">Upload</button>
         <div class="modal-body">
             <form name="form">
                 <table class="table table-striped table-hover content-table">

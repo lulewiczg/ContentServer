@@ -38,7 +38,7 @@ public class ContextServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType(Constants.Setting.PLAIN_TEXT);
-        String path = CommonUtil.normalizePath(CommonUtil.getContextPath(context));
+        String path = CommonUtil.getContextPath(context);
         resp.getWriter().write(path);
     }
 }

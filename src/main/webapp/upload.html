@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Upload popup</title>
+</head>
+<div class="modal-header">
+    <div class="modal-body upload-box">
+        <div class="container">
+            <h2 class="popup-title">{{'upload.title' | translate}}</h2>
+            <form name="form" method="post" enctype="multipart/form-data" action="rest/upload">
+                <div class="form-group row">
+                    <label for="upload" class="col-sm-2 col-form-label">{{'upload.file' | translate}}</label>
+                    <div class="col-sm-3">
+                        <input id="upload" name="file" class="form-control" type="file"
+                            placeholder="{{'upload.file' | translate}}" required multiple>
+                    </div>
+                    <input id="path" name="path" class="form-control" type="hidden" value="{{location}}">
+                </div>
+
+                <div class="modal-footer">
+                    <div class="form-group row">
+                        <div class="col-sm-1"></div>
+                        <div class="col-sm-2">
+                            <input id="uploadModalBtn" class="btn form-control btn-warning"
+                                value="{{'upload.upload' | translate}}" type="submit">
+                        </div>
+                        <div class="col-sm-2">
+                            <button id="closeBtn" class="btn form-control btn-info" ng-click="close() ">{{'popup.close'
+                                | translate}}</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

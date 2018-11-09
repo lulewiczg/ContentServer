@@ -166,6 +166,21 @@ angular.module('app').controller("fileController", function($http, $location, $s
         });
     };
 
+    $scope.upload = function() {
+        $modal.open({
+            templateUrl : 'upload.html',
+            controller : 'uploadController',
+            size : 'm',
+            resolve : {
+                items : function() {
+                    return $scope.folders[$scope.folders.length - 1].path;
+                }
+            }
+        }).result.then(function(result) {
+            console.log(result);
+        });
+    };
+
     $scope.getLogsUrl = function() {
         return $scope.appName + "rest/files?path=" + $scope.context + "WEB-INF/logs/log.txt";
     }
