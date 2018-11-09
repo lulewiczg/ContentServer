@@ -15,11 +15,12 @@ import javax.servlet.http.Part;
 
 import com.github.lulewiczg.contentserver.utils.CommonUtil;
 import com.github.lulewiczg.contentserver.utils.Constants;
+import com.github.lulewiczg.contentserver.utils.ResourceUtil;
 import com.github.lulewiczg.contentserver.utils.SettingsUtil;
 
 /**
  * Servlet for file upload
- * 
+ *
  * @author lulewiczg
  *
  */
@@ -28,16 +29,17 @@ public class UploadServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
-     * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest,
-     *      javax.servlet.http.HttpServletResponse)
+     * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String destLocation = req.getParameter(Constants.Web.PATH);
+        String user = (String) req.getSession().getAttribute(Constants.Web.USER);
         if (destLocation == null || destLocation.isEmpty()) {
             resp.sendError(400, String.format("todo"));
             return;
         }
+        ResourceUtil.get(req.getServletContext()).hasReadAccess(destLocation, user);
         Collection<Part> parts = req.getParts();
         int bufferSize = SettingsUtil.get(req.getServletContext()).getBufferSize();
         for (Part p : parts) {
@@ -45,15 +47,14 @@ public class UploadServlet extends HttpServlet {
             if (name == null) {
                 continue;
             }
-            uploadFile(CommonUtil.normalizePath(destLocation + Constants.SEP + name), bufferSize, p.getInputStream(),
-                    resp);
+            uploadFile(CommonUtil.normalizePath(destLocation + Constants.SEP + name), bufferSize, p.getInputStream(), resp);
         }
         resp.sendRedirect(req.getServletContext().getContextPath() + "/?path=" + destLocation);
     }
 
     /**
      * Uploads file
-     * 
+     *
      * @param location
      *            file location
      * @param bufferSize
@@ -65,8 +66,7 @@ public class UploadServlet extends HttpServlet {
      * @throws IOException
      *             the IOException
      */
-    private void uploadFile(String location, int bufferSize, InputStream stream, HttpServletResponse resp)
-            throws IOException {
+    private void uploadFile(String location, int bufferSize, InputStream stream, HttpServletResponse resp) throws IOException {
         int bytesRead;
         File f = new File(location);
         if (f.exists()) {
@@ -82,7 +82,7 @@ public class UploadServlet extends HttpServlet {
 
     /**
      * Obtains submitted file name
-     * 
+     *
      * @param part
      *            part
      * @return file name

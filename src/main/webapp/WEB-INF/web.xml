@@ -98,8 +98,19 @@
     </filter>
     <filter-mapping>
         <filter-name>ResourceFilter</filter-name>
-        <url-pattern>/rest/files/*,/rest/upload</url-pattern>
+        <url-pattern>/rest/files/*</url-pattern>
+        <url-pattern>/rest/upload/*</url-pattern>
     </filter-mapping>
+
+    <filter>
+        <filter-name>UploadFilter</filter-name>
+        <filter-class>com.github.lulewiczg.contentserver.web.filters.UploadFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>UploadFilter</filter-name>
+        <url-pattern>/rest/upload/*</url-pattern>
+    </filter-mapping>
+
 
     <filter>
         <filter-name>AdminFilter</filter-name>

@@ -21,6 +21,11 @@
 		"loginBtn": "Log in",
 		"password": "Password"
 	},
+	"upload:": {
+	    "title" : "Upload",
+	    "file" : "Uploaded files",
+	    "upload" : "upload"
+	},
 	"table": {
 		"header": {
 			"filename": "File Name",

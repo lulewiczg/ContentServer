@@ -31,6 +31,16 @@
  width: 20px;
 }
 
+#uploadButton img {
+ width: 40px;
+ transform: rotate(180deg);
+}
+
+#upload {
+ background-color: white;
+ height: inherit;
+}
+
 input.ng-dirty.setting-input, select.ng-dirty.setting-input {
  border-color: #ff6a6a;
  outline: 0;

@@ -169,6 +169,24 @@ public class Log {
     }
 
     /**
+     * Logs write access granted event.
+     *
+     * @param path
+     *            content path
+     * @param session
+     *            session
+     * @param req
+     *            request
+     */
+    public void logWriteGranted(String path, HttpSession session, ServletRequest req) {
+        if (log.isLoggable(Level.FINE)) {
+            String str = String.format("[USER: %s, %s] wrote [%s]", session.getAttribute(Constants.Setting.USER),
+                    req.getRemoteAddr(), path);
+            write(str, Level.FINE);
+        }
+    }
+
+    /**
      * Logs access denied event.
      *
      * @param path
@@ -181,6 +199,24 @@ public class Log {
     public void logAccessDenied(String path, HttpSession session, ServletRequest req) {
         if (log.isLoggable(Level.FINE)) {
             String str = String.format("[USER: %s, %s] denied for [%s]", session.getAttribute(Constants.Setting.USER),
+                    req.getRemoteAddr(), path);
+            write(str, Level.FINE);
+        }
+    }
+
+    /**
+     * Logs access denied event.
+     *
+     * @param path
+     *            content path
+     * @param session
+     *            session
+     * @param req
+     *            request
+     */
+    public void logWriteDenied(String path, HttpSession session, ServletRequest req) {
+        if (log.isLoggable(Level.FINE)) {
+            String str = String.format("[USER: %s, %s] denied write for [%s]", session.getAttribute(Constants.Setting.USER),
                     req.getRemoteAddr(), path);
             write(str, Level.FINE);
         }

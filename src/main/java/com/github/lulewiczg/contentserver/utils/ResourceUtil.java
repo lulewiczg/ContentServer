@@ -223,7 +223,7 @@ public class ResourceUtil {
     }
 
     /**
-     * Checks if user has access to directory
+     * Checks if user has access to read directory
      *
      * @param directory
      *            directory
@@ -236,6 +236,40 @@ public class ResourceUtil {
         if (user == null) {
             return false;
         }
+        List<String> permissions = user.getRead();
+        return checkPermissions(directory, user, permissions);
+    }
+
+    /**
+     * Checks if user has access to write directory
+     *
+     * @param directory
+     *            directory
+     * @param name
+     *            user name
+     * @return true if has access
+     */
+    public boolean hasWriteAccess(String directory, String name) {
+        User user = getUserByName(name);
+        if (user == null) {
+            return false;
+        }
+        List<String> permissions = user.getWrite();
+        return checkPermissions(directory, user, permissions);
+    }
+
+    /**
+     * Checks if user has permission to given directory
+     *
+     * @param directory
+     *            directory
+     * @param user
+     *            user
+     * @param permissions
+     *            permission
+     * @return true if has permission
+     */
+    private boolean checkPermissions(String directory, User user, List<String> permissions) {
         if (user.getName().equals(Constants.ADMIN)) {
             return true;
         }
@@ -253,7 +287,7 @@ public class ResourceUtil {
             path += Constants.SEP;
         }
         path = CommonUtil.normalizePath(path);
-        for (String s : user.getRead()) {
+        for (String s : permissions) {
             if (startsWith(path, s)) {
                 return true;
             }

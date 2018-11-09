@@ -21,6 +21,11 @@
 		"loginBtn": "Zaloguj",
 		"password": "Hasło"
 	},
+	"upload": {
+        "title" : "Wrzuć plik",
+        "file" : "Pliki",
+        "upload" : "Wrzuć"
+    },
 	"table": {
 		"header": {
 			"filename": "Nazwa Pliku",
