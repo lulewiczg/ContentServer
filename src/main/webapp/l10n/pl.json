@@ -22,7 +22,7 @@
 		"password": "Hasło"
 	},
 	"upload": {
-        "title" : "Wrzuć plik",
+        "title" : "Wrzuć pliki",
         "file" : "Pliki",
         "upload" : "Wrzuć"
     },

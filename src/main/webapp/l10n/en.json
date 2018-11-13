@@ -22,9 +22,9 @@
 		"password": "Password"
 	},
 	"upload:": {
-	    "title" : "Upload",
+	    "title" : "Upload Files",
 	    "file" : "Uploaded files",
-	    "upload" : "upload"
+	    "upload" : "Upload"
 	},
 	"table": {
 		"header": {
