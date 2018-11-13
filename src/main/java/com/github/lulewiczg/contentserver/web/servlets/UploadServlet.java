@@ -72,9 +72,9 @@ public class UploadServlet extends HttpServlet {
         if (f.exists()) {
             resp.sendError(400, String.format("todo"));
         }
-        try (stream; BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(f))) {
+        try (InputStream input = stream; BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(f))) {
             byte[] buff = new byte[bufferSize];
-            while ((bytesRead = stream.read(buff)) != -1) {
+            while ((bytesRead = input.read(buff)) != -1) {
                 output.write(buff, 0, bytesRead);
             }
         }

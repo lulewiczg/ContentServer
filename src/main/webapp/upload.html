@@ -9,15 +9,17 @@
         <div class="container">
             <h2 class="popup-title">{{'upload.title' | translate}}</h2>
             <iframe id="hiddenFrame" name="hiddenFrame" class="hide"></iframe>
-            <form id="uploadForm" name="form" method="post" enctype="multipart/form-data" target="hiddenFrame" action="rest/upload">
                 <div class="form-group row">
+                <form id="uploadForm" name="form" method="post" enctype="multipart/form-data" target="hiddenFrame"
+                    action="rest/upload">
                     <label for="upload" class="col-sm-1 col-form-label">{{'upload.file' | translate}}</label>
                     <div class="col-sm-4">
                         <input id="upload" name="file" class="form-control" type="file"
                             placeholder="{{'upload.file' | translate}}" required multiple>
                     </div>
                     <input id="path" name="path" class="form-control" type="hidden" value="{{location}}">
-                </div>
+                </form>
+            </div>
 
                 <div class="modal-footer">
                     <div class="form-group row">
@@ -32,7 +34,6 @@
                         </div>
                     </div>
                 </div>
-            </form>
         </div>
     </div>
 </div>
