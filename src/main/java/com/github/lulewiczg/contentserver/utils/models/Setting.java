@@ -60,23 +60,18 @@ public class Setting extends JSONModel<Setting> implements Comparable<Setting> {
 
     /**
      * Parses settings to save.
-     * 
+     *
      * @param data
      *            data to save
      * @return parsed settings
      */
-    public static List<Setting> load(Map<String, Object> data) {
+    public static List<Setting> load(Map<String, String[]> data) {
         // Maybe change this later?
         List<Setting> settings = new ArrayList<>();
-        Set<Entry<String, Object>> entrySet = data.entrySet();
-        for (Map.Entry<String, Object> e : entrySet) {
+        Set<Entry<String, String[]>> entrySet = data.entrySet();
+        for (Entry<String, String[]> e : entrySet) {
             String key = e.getKey();
-            String value;
-            if (e.getValue().getClass().isArray()) {
-                value = ((String[]) e.getValue())[0];
-            } else {
-                value = e.getValue().toString();
-            }
+            String value = e.getValue()[0];
             Setting parsed;
             if (key.equals(Constants.Setting.BUFFER_SIZE)) {
                 value = parseBuffSize(value);
@@ -91,7 +86,7 @@ public class Setting extends JSONModel<Setting> implements Comparable<Setting> {
 
     /**
      * Parses buffer size.
-     * 
+     *
      * @param value
      *            value
      * @return parsed value

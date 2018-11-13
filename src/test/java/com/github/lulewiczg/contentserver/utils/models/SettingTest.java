@@ -54,8 +54,8 @@ public class SettingTest {
      */
     private void test(String toParse) throws MultipleFailuresError {
         String[] split = toParse.split("\\,");
-        testParam(split, i -> new String[] { i }, i -> ((String[]) i)[0]);
-        testParam(split, i -> i, i -> i.toString());
+        testParam(split, i -> new String[] { i });
+        testParam(split, i -> new String[] { i });
     }
 
     /**
@@ -70,15 +70,14 @@ public class SettingTest {
      * @throws MultipleFailuresError
      *             the MultipleFailuresError
      */
-    private void testParam(String[] split, Function<String, Object> mapper, Function<Object, String> unmapper)
-            throws MultipleFailuresError {
-        Map<String, Object> map = IntStream.range(0, split.length - 1).filter(i -> i % 2 == 0).boxed()
+    private void testParam(String[] split, Function<String, String[]> mapper) throws MultipleFailuresError {
+        Map<String, String[]> map = IntStream.range(0, split.length - 1).filter(i -> i % 2 == 0).boxed()
                 .collect(Collectors.toMap(i -> split[i].trim(), i -> mapper.apply(split[i + 1].trim())));
         List<Setting> settings = Setting.load(map);
         Assertions.assertEquals(map.size(), settings.size());
         Assertions.assertAll(settings.stream().map(i -> () -> {
-            Object val = map.get(i.getName());
-            Assertions.assertEquals(unmapper.apply(val), i.getValue());
+            String[] val = map.get(i.getName());
+            Assertions.assertEquals(val[0], i.getValue());
         }));
     }
 }

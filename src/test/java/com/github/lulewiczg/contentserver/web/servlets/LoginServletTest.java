@@ -18,11 +18,11 @@ import org.junit.jupiter.api.Test;
 
 import com.github.lulewiczg.contentserver.test.utils.ServletTestTemplate;
 import com.github.lulewiczg.contentserver.utils.Constants;
-import com.github.lulewiczg.contentserver.web.servlets.LoginServlet;
+import com.github.lulewiczg.contentserver.utils.models.UserPermissions;
 
 /**
  * Tests LoginServlet.
- * 
+ *
  * @author lulewiczg
  */
 public class LoginServletTest extends ServletTestTemplate {
@@ -31,7 +31,7 @@ public class LoginServletTest extends ServletTestTemplate {
 
     /**
      * Sets up tested object.
-     * 
+     *
      * @see com.github.lulewiczg.contentserver.test.utils.ServletTestTemplate#additionalBefore()
      */
     @Override
@@ -46,7 +46,7 @@ public class LoginServletTest extends ServletTestTemplate {
 
         servlet.doGet(request, response);
 
-        verifyOkPlainTextEmpty();
+        verifyOkJSON(new UserPermissions(null, false).toJSON());
     }
 
     @Test
@@ -56,7 +56,7 @@ public class LoginServletTest extends ServletTestTemplate {
 
         servlet.doGet(request, response);
 
-        verifyOk(TEST);
+        verifyOkJSON(new UserPermissions(TEST, false).toJSON());
     }
 
     @Test
