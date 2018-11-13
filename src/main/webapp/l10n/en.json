@@ -22,9 +22,13 @@
 		"password": "Password"
 	},
 	"upload:": {
-	    "title" : "Upload Files",
-	    "file" : "Uploaded files",
-	    "upload" : "Upload"
+		"title": "Upload Files",
+		"file": "Uploaded files",
+		"upload": "Upload",
+		"result": {
+			"success": "Files uploaded successfully!",
+			"error": "Could not upload files!"
+		}
 	},
 	"table": {
 		"header": {

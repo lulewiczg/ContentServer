@@ -22,10 +22,14 @@
 		"password": "Hasło"
 	},
 	"upload": {
-        "title" : "Wrzuć pliki",
-        "file" : "Pliki",
-        "upload" : "Wrzuć"
-    },
+		"title": "Wrzuć pliki",
+		"file": "Pliki",
+		"upload": "Wrzuć",
+		"result": {
+			"success": "Pliki wrzucone!",
+			"error": "Nie można wrzucić plików!"
+		}
+	},
 	"table": {
 		"header": {
 			"filename": "Nazwa Pliku",

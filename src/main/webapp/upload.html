@@ -4,11 +4,12 @@
 <meta charset="UTF-8">
 <title>Upload popup</title>
 </head>
-<div class="modal-header">
+<div class="modal-header" ng-init="init()">
     <div class="modal-body upload-box">
         <div class="container">
             <h2 class="popup-title">{{'upload.title' | translate}}</h2>
-            <form id="uploadForm" name="form" method="post" enctype="multipart/form-data" action="rest/upload">
+            <iframe id="hiddenFrame" name="hiddenFrame" class="hide"></iframe>
+            <form id="uploadForm" name="form" method="post" enctype="multipart/form-data" target="hiddenFrame" action="rest/upload">
                 <div class="form-group row">
                     <label for="upload" class="col-sm-1 col-form-label">{{'upload.file' | translate}}</label>
                     <div class="col-sm-4">
@@ -22,8 +23,8 @@
                     <div class="form-group row">
                         <div class="col-sm-1"></div>
                         <div class="col-sm-2">
-                            <input id="uploadModalBtn" class="btn form-control btn-warning"
-                                value="{{'upload.upload' | translate}}" type="submit">
+                            <button id="uploadModalBtn" ng-disabled="!valid" class="btn form-control btn-warning">{{'upload.upload'
+                                | translate}}</button>
                         </div>
                         <div class="col-sm-2">
                             <button id="closeBtn" class="btn form-control btn-info" ng-click="close() ">{{'popup.close'
