@@ -73,7 +73,7 @@
                 ng-href="{{path.disabled ? '' : '?path='+path.path}}">{{path.name}}/</a></li>
         </ul>
         <h2 id="folderTitle">
-            {{actualFolder}}/ : <a id="uploadButton" href="#" ng-click="upload()"><img src="icons/download.png"
+            {{actualFolder}}/ : <a id="uploadButton" href="#" ng-show="uploadAllowed" ng-click="upload()"><img src="icons/download.png"
                 alt="Upload icon" /></a>
         </h2>
         <div class="modal-body">

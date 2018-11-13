@@ -1,4 +1,5 @@
-angular.module('app').controller("fileController", function($http, $location, $scope, $modal, $window, $translate) {
+angular.module('app').controller("fileController", 
+        function($http, $location, $scope, $modal, $window, $translate) {
     $scope.files = [];
     $scope.user;
     $scope.initPerformed = false;
@@ -9,6 +10,8 @@ angular.module('app').controller("fileController", function($http, $location, $s
     $scope.context;
     $scope.appName = ''
     $scope.roots = [];
+    $scope.uploadAllowed = false;
+    $scope.actualPath;
 
     $scope.getLocale = function() {
         var lang = navigator.languages ? navigator.languages[0] : (navigator.language || navigator.userLanguage);
@@ -21,13 +24,6 @@ angular.module('app').controller("fileController", function($http, $location, $s
             var loc = window.location.pathname.indexOf('/', 1);
             $scope.appName = window.location.pathname.substring(0, loc + 1);
         }
-        $http.get($scope.appName + 'rest/login').then(function(result) {
-            $scope.user = result.data;
-            if ($scope.user == "") {
-                $scope.user = undefined;
-            }
-            $scope.resolveAdmin();
-        });
     };
 
     $scope.resolveAdmin = function() {
@@ -47,6 +43,15 @@ angular.module('app').controller("fileController", function($http, $location, $s
         }
     }
     $scope.reload = function() {
+        $http.get($scope.appName + 'rest/login?path=' + $location.search().path)
+        .then(function(result) {
+            $scope.user = result.data.name;
+            if ($scope.user == "") {
+                $scope.user = undefined;
+            }
+            $scope.uploadAllowed = result.data.uploadAllowed;
+            $scope.resolveAdmin();
+        });
         if (!$scope.initPerformed) {
             $scope.initPerformed = true;
             $http.get($scope.appName + 'rest/roots').then(function(result) {
