@@ -38,6 +38,8 @@ public final class Constants {
             public static final String NOT_FOUND = "Resource \"%s\" not found";
             public static final String USER_ALREADY_LOGGED = "User already logged in";
             public static final String INVALID_CREDENTIALS = "Invalid user or password";
+            public static final String UPLOAD_DIR_NOT_FOUND = "Upload directory not specified";
+            public static final String FILE_ALREADY_EXIST = "File %s already exists";
 
             private Errors() {
             }

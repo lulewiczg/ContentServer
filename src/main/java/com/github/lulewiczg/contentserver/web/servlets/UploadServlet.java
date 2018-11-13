@@ -15,7 +15,6 @@ import javax.servlet.http.Part;
 
 import com.github.lulewiczg.contentserver.utils.CommonUtil;
 import com.github.lulewiczg.contentserver.utils.Constants;
-import com.github.lulewiczg.contentserver.utils.ResourceUtil;
 import com.github.lulewiczg.contentserver.utils.SettingsUtil;
 
 /**
@@ -34,12 +33,10 @@ public class UploadServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String destLocation = req.getParameter(Constants.Web.PATH);
-        String user = (String) req.getSession().getAttribute(Constants.Web.USER);
         if (destLocation == null || destLocation.isEmpty()) {
-            resp.sendError(400, String.format("todo"));
+            resp.sendError(400, Constants.Web.Errors.UPLOAD_DIR_NOT_FOUND);
             return;
         }
-        ResourceUtil.get(req.getServletContext()).hasReadAccess(destLocation, user);
         Collection<Part> parts = req.getParts();
         int bufferSize = SettingsUtil.get(req.getServletContext()).getBufferSize();
         for (Part p : parts) {
@@ -49,7 +46,6 @@ public class UploadServlet extends HttpServlet {
             }
             uploadFile(CommonUtil.normalizePath(destLocation + Constants.SEP + name), bufferSize, p.getInputStream(), resp);
         }
-        resp.sendRedirect(req.getServletContext().getContextPath() + "/?path=" + destLocation);
     }
 
     /**
@@ -70,7 +66,9 @@ public class UploadServlet extends HttpServlet {
         int bytesRead;
         File f = new File(location);
         if (f.exists()) {
-            resp.sendError(400, String.format("todo"));
+            resp.sendError(400,
+                    String.format(Constants.Web.Errors.FILE_ALREADY_EXIST, CommonUtil.normalizePath(f.getCanonicalPath())));
+            return;
         }
         try (InputStream input = stream; BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(f))) {
             byte[] buff = new byte[bufferSize];
@@ -88,7 +86,7 @@ public class UploadServlet extends HttpServlet {
      * @return file name
      */
     private static String getFileName(Part part) {
-        for (String cd : part.getHeader("content-disposition").split(";")) {
+        for (String cd : part.getHeader(Constants.Web.Headers.CONTENT_DISPOSITION).split(";")) {
             if (cd.trim().startsWith("filename")) {
                 String fileName = cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
                 return fileName.substring(fileName.lastIndexOf('/') + 1).substring(fileName.lastIndexOf('\\') + 1);

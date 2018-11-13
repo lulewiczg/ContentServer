@@ -155,7 +155,6 @@ public abstract class ServletTestTemplate {
     protected void verifyError(int code, String error) throws IOException {
         verifyZeroInteractions(writer);
         requestOk();
-        verify(response).setContentType(Constants.Setting.PLAIN_TEXT);
         verify(response, times(1)).sendError(eq(code), eq(error));
         responseError();
     }
