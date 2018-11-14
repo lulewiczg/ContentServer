@@ -18,7 +18,6 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.Part;
 
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -45,14 +44,6 @@ public class UploadServletTest extends ServletTestTemplate {
     private UploadServlet servlet = spy(UploadServlet.class);
 
     /**
-     * Prepares upload directory.
-     */
-    @BeforeAll
-    public static void beforeAll() {
-        new File(TRASH).mkdirs();
-    }
-
-    /**
      * Cleans up upload directory.
      * 
      * @throws IOException
@@ -60,7 +51,8 @@ public class UploadServletTest extends ServletTestTemplate {
      */
     @AfterAll
     public static void afterAll() throws IOException {
-        Files.walk(Paths.get(TRASH)).map(Path::toFile).sorted((f1, f2) -> -f1.compareTo(f2)).forEach(File::delete);
+        Files.walk(Paths.get(TRASH)).filter(i -> !i.getFileName().endsWith("trash")).map(Path::toFile)
+                .sorted((f1, f2) -> -f1.compareTo(f2)).forEach(File::delete);
     }
 
     /**

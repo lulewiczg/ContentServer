@@ -59,9 +59,9 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
     public void testNavNowhereToGo() {
         Assumptions.assumeTrue(TestUtil.MODE.getLocation() == SeleniumLocation.LOCAL);
         gotoShortcut(0);
-        testNav((i, j) -> false);
+        testNav((i, j) -> false, false);
         gotoShortcut(1);
-        testNav((i, j) -> false);
+        testNav((i, j) -> false, false);
     }
 
     @Test
@@ -70,15 +70,18 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
         Assumptions.assumeTrue(TestUtil.MODE.getLocation() == SeleniumLocation.LOCAL);
         login(TEST, TEST);
         gotoShortcut(0);
-        testNav((i, len) -> false);
+        testNav((i, len) -> false, false);
         clickTableItem(1);
-        testNav((i, len) -> i == len - 2);
+        testNav((i, len) -> i == len - 2, false);
         goUp();
         clickTableItem(1);
-        testNav((i, len) -> i == len - 2);
+        testNav((i, len) -> i == len - 2, false);
 
         gotoShortcut(1);
-        testNav((i, len) -> false);
+        testNav((i, len) -> false, false);
+
+        gotoShortcut(2);
+        testNav((i, len) -> false, true);
     }
 
     @Test
@@ -87,7 +90,7 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
         Assumptions.assumeTrue(TestUtil.MODE.getLocation() == SeleniumLocation.LOCAL);
         login(ADMIN, TEST3);
         while (getBreadcrumbs().size() > 2) {
-            testNav((i, len) -> i != len - 1);
+            testNav((i, len) -> i != len - 1, true);
             goUp();
         }
     }
@@ -143,12 +146,12 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
      * @throws MultipleFailuresError
      *             the MultipleFailuresError
      */
-    private void testNav(BiFunction<Integer, Integer, Boolean> f) throws MultipleFailuresError {
+    private void testNav(BiFunction<Integer, Integer, Boolean> f, boolean uploadAllowed) throws MultipleFailuresError {
         String baseUrl = getUrl();
         String path = getPath();
         List<NavigationData> navData = buildNavData(baseUrl, path, f);
         NavigationData actualData = navData.get(navData.size() - 1);
-        assertBreadcrumbs(navData);
+        assertBreadcrumbs(navData, uploadAllowed);
         assertListedDirs(path, actualData);
     }
 
@@ -320,8 +323,10 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
      * @throws MultipleFailuresError
      *             the MultipleFailuresError
      */
-    private void assertBreadcrumbs(List<NavigationData> data) throws MultipleFailuresError {
+    private void assertBreadcrumbs(List<NavigationData> data, boolean uploadAllowed) throws MultipleFailuresError {
         List<WebElement> elements = getBreadcrumbs();
+        Assertions.assertEquals(uploadAllowed, driver.findElement(By.id("uploadButton")).isDisplayed(),
+                "Upload button is not valid");
         String actualFolder = driver.findElement(By.id("folderTitle")).getText();
         WebElement lastNavData = elements.get(elements.size() - 1);
 
