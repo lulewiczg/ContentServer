@@ -45,6 +45,16 @@ public class ResourceUtilTest {
         verify(context, times(1)).getAttribute(eq(ResourceUtil.NAME));
     }
 
+    @DisplayName("Write permissions with no admin")
+    @ParameterizedTest(name = DESC)
+    @CsvFileSource(resources = "/data/csv/context1-write.csv")
+    public void testWriteNoAdmin(String name, boolean access, String path) {
+        ResourceUtil instance = getInstance(1);
+
+        assertEquals(access, instance.hasWriteAccess(STRUCTURE + path, name));
+        verify(context, times(1)).getAttribute(eq(ResourceUtil.NAME));
+    }
+
     @DisplayName("Read permissions")
     @ParameterizedTest(name = DESC)
     @CsvFileSource(resources = "/data/csv/context2.csv")
@@ -52,6 +62,15 @@ public class ResourceUtilTest {
         ResourceUtil instance = getInstance(2);
 
         assertEquals(access, instance.hasReadAccess(STRUCTURE + path, name));
+    }
+
+    @DisplayName("Write permissions")
+    @ParameterizedTest(name = DESC)
+    @CsvFileSource(resources = "/data/csv/context2-write.csv")
+    public void testWrite(String name, boolean access, String path) {
+        ResourceUtil instance = getInstance(2);
+
+        assertEquals(access, instance.hasWriteAccess(STRUCTURE + path, name));
     }
 
     @DisplayName("Read permissions with extended user")
@@ -63,10 +82,28 @@ public class ResourceUtilTest {
         assertEquals(access, instance.hasReadAccess(STRUCTURE + path, name));
     }
 
+    @DisplayName("Read permissions with extended user")
+    @ParameterizedTest(name = DESC)
+    @CsvFileSource(resources = "/data/csv/context3-write.csv")
+    public void testWriteExtended(String name, boolean access, String path) {
+        ResourceUtil instance = getInstance(3);
+
+        assertEquals(access, instance.hasReadAccess(STRUCTURE + path, name));
+    }
+
     @DisplayName("Read permissions with extended user and different permissions")
     @ParameterizedTest(name = DESC)
     @CsvFileSource(resources = "/data/csv/context4.csv")
     public void testReadExtendedWriteDelete(String name, boolean access, String path) {
+        ResourceUtil instance = getInstance(4);
+
+        assertEquals(access, instance.hasReadAccess(STRUCTURE + path, name));
+    }
+
+    @DisplayName("Read permissions with extended user and different permissions")
+    @ParameterizedTest(name = DESC)
+    @CsvFileSource(resources = "/data/csv/context4-write.csv")
+    public void testWriteExtendedWriteDelete(String name, boolean access, String path) {
         ResourceUtil instance = getInstance(4);
 
         assertEquals(access, instance.hasReadAccess(STRUCTURE + path, name));
@@ -105,7 +142,8 @@ public class ResourceUtilTest {
         HttpSession session = mock(HttpSession.class);
         ResourceUtil instance = getInstance(4);
 
-        Exception e = Assertions.assertThrows(AuthenticationException.class, () -> instance.login(user, password, session));
+        Exception e = Assertions.assertThrows(AuthenticationException.class,
+                () -> instance.login(user, password, session));
         assertEquals("Invalid login or password", e.getMessage());
         verify(session, never()).setAttribute(anyString(), anyString());
 
