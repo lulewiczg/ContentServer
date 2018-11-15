@@ -105,25 +105,25 @@ public class UploadSeleniumTest extends SeleniumTestTemplate {
         WebElement input = driver.findElement(By.id(UPLOAD_ID));
         input.sendKeys(CommonUtil.normalizePath((base + Constants.SEP + TestUtil.LOC + "upload/testFile.txt"))
                 .replace(Constants.SEP, "\\"));
-        input.sendKeys(CommonUtil.normalizePath((base + Constants.SEP + TestUtil.LOC + "upload/testFile2.txt")).replace(Constants.SEP,
-                "\\"));
+        input.sendKeys(CommonUtil.normalizePath((base + Constants.SEP + TestUtil.LOC + "upload/testFile2.txt"))
+                .replace(Constants.SEP, "\\"));
         new WebDriverWait(driver, 1).until(ExpectedConditions.elementToBeClickable(button));
         Assertions.assertTrue(button.isEnabled());
         paths.add(CommonUtil.normalizePath(getPath() + "/testFile.txt"));
-        paths.add(CommonUtil.normalizePath(getPath() + "/testFile2.txt"));//TODO sprawdzic czemu zle sortyuje
+        paths.add(CommonUtil.normalizePath(getPath() + "/testFile2.txt"));
         button.click();
         assertAlert(msg.getUploadSuccess());
 
         Thread.sleep(1000);
-        String url = getUrl();
+        String url = getUrl() + getPath();
         clickTableItem(1);
         String text = driver.findElement(By.tagName("body")).getText();
-        Assertions.assertEquals("test123456789", text);
+        Assertions.assertEquals("qwerty", text);
 
         driver.get(url);
         clickTableItem(2);
         String text2 = driver.findElement(By.tagName("body")).getText();
-        Assertions.assertEquals("qwerty", text2);
+        Assertions.assertEquals("test123456789", text2);
     }
 
     @Test
