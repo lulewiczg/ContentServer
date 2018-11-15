@@ -14,13 +14,11 @@ import java.util.stream.IntStream;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.junit.jupiter.api.Assertions;
@@ -40,7 +38,6 @@ import com.github.lulewiczg.contentserver.test.utils.TestUtil;
 import com.github.lulewiczg.contentserver.utils.Constants;
 import com.github.lulewiczg.contentserver.utils.comparators.PathComparator;
 import com.github.lulewiczg.contentserver.utils.models.Dir;
-import com.google.common.base.Charsets;
 
 /**
  * Selenium tests for navigation through directories.
@@ -284,38 +281,6 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
     }
 
     /**
-     * Returns base URL.
-     *
-     * @return URL
-     */
-    private String getUrl() {
-        List<NameValuePair> args = parseUrl();
-        return args.stream().filter(i -> i.getValue() == null).map(NameValuePair::getName).findFirst().get() + "?path=";
-    }
-
-    /**
-     * Returns path to file
-     *
-     * @return path
-     */
-    private String getPath() {
-        List<NameValuePair> args = parseUrl();
-        String path = args.stream().filter(i -> i.getName().equals("path")).map(NameValuePair::getValue).findFirst()
-                .get();
-        return path;
-    }
-
-    /**
-     * Parses URL
-     *
-     * @return name-value pairs
-     */
-    private List<NameValuePair> parseUrl() {
-        List<NameValuePair> args = URLEncodedUtils.parse(driver.getCurrentUrl(), Charsets.US_ASCII, '?', '&');
-        return args;
-    }
-
-    /**
      * Tests breadcrumbs.
      *
      * @param data
@@ -325,7 +290,7 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
      */
     private void assertBreadcrumbs(List<NavigationData> data, boolean uploadAllowed) throws MultipleFailuresError {
         List<WebElement> elements = getBreadcrumbs();
-        Assertions.assertEquals(uploadAllowed, driver.findElement(By.id("uploadButton")).isDisplayed(),
+        Assertions.assertEquals(uploadAllowed, driver.findElement(By.id(UPLOAD_BUTTON_ID)).isDisplayed(),
                 "Upload button is not valid");
         String actualFolder = driver.findElement(By.id("folderTitle")).getText();
         WebElement lastNavData = elements.get(elements.size() - 1);

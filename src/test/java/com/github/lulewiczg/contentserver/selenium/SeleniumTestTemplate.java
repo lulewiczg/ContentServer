@@ -6,6 +6,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
@@ -25,6 +27,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.github.lulewiczg.contentserver.test.utils.TestMode;
 import com.github.lulewiczg.contentserver.test.utils.TestUtil;
+import com.google.common.base.Charsets;
 
 /**
  * Template for selenium tests.
@@ -34,6 +37,7 @@ import com.github.lulewiczg.contentserver.test.utils.TestUtil;
 public abstract class SeleniumTestTemplate {
 
     private static final String LOGIN_BOX = "login-box";
+    protected static final String UPLOAD_BOX = "upload-box";
     private static final String POPUP_TITLE = "popup-title";
     private static final String HREF = "href";
     protected static final String LOGIN_BUTTON_ID = "loginBtn";
@@ -44,10 +48,13 @@ public abstract class SeleniumTestTemplate {
     protected static final String CLOSE_BTN_ID = "closeBtn";
     protected static final String SAVE_BTN_ID = "saveBtn";
     protected static final String SHORTCUTS_BUTTON_ID = "shortcutsBtn";
+    protected static final String UPLOAD_BUTTON_ID = "uploadButton";
     protected static final String LOGO_ID = "logo";
     protected static final String LOGIN_MODAL_BUTTON_ID = "loginModalBtn";
+    protected static final String UPLOAD_MODAL_BUTTON_ID = "uploadModalBtn";
     protected static final String LOGIN_ID = "login";
     protected static final String PASSWORD_ID = "password";
+    protected static final String UPLOAD_ID = "upload";
     protected static final String TEST3 = "test3";
     protected static final String ADMIN = "admin";
     protected static final String TEST = "test";
@@ -119,6 +126,23 @@ public abstract class SeleniumTestTemplate {
         WebElement loginButton = loginBox.findElement(By.id(LOGIN_MODAL_BUTTON_ID));
         Assertions.assertNotNull(loginButton);
         Assertions.assertEquals(msg.getLoginButton(), loginButton.getText());
+        WebElement closeButton = loginBox.findElement(By.id(CLOSE_BTN_ID));
+        Assertions.assertNotNull(closeButton);
+        Assertions.assertEquals(msg.getCloseButton(), closeButton.getText());
+    }
+
+    /**
+     * Checks if upload popup is opened.
+     */
+    protected void assertUploadPopup() {
+        WebElement loginBox = getElementIfPresent(driver, By.className(UPLOAD_BOX));
+        Assertions.assertNotNull(loginBox);
+        WebElement title = loginBox.findElement(By.className(POPUP_TITLE));
+        Assertions.assertNotNull(title);
+        Assertions.assertEquals(msg.getUploadTitle(), title.getText());
+        WebElement uploadButton = loginBox.findElement(By.id(UPLOAD_MODAL_BUTTON_ID));
+        Assertions.assertNotNull(uploadButton);
+        Assertions.assertEquals(msg.getUpload(), uploadButton.getText());
         WebElement closeButton = loginBox.findElement(By.id(CLOSE_BTN_ID));
         Assertions.assertNotNull(closeButton);
         Assertions.assertEquals(msg.getCloseButton(), closeButton.getText());
@@ -291,7 +315,8 @@ public abstract class SeleniumTestTemplate {
         if (a != null) {
             element = a;
         }
-        return ((JavascriptExecutor) driver).executeScript("return jQuery(arguments[0]).text();", element).toString().trim();
+        return ((JavascriptExecutor) driver).executeScript("return jQuery(arguments[0]).text();", element).toString()
+                .trim();
     }
 
     /**
@@ -332,8 +357,8 @@ public abstract class SeleniumTestTemplate {
      */
     protected void login(String name, String password) {
         loginInternal(name, password);
-        new WebDriverWait(driver, 5)
-                .until(ExpectedConditions.not(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.id(LOGIN_MODAL_BUTTON_ID))));
+        new WebDriverWait(driver, 5).until(ExpectedConditions
+                .not(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.id(LOGIN_MODAL_BUTTON_ID))));
         WebElement loginBox = getElementIfPresent(driver, By.className(LOGIN_BOX));
         Assertions.assertNull(loginBox);
     }
@@ -345,7 +370,16 @@ public abstract class SeleniumTestTemplate {
         clickButton(SETTINGS_BUTTON_ID);
         assertSettingsPopup();
         new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.id(SAVE_BTN_ID)));
+    }
 
+    /**
+     * Opens settings box.
+     */
+    protected void openUploadWindow() {
+        clickButton(UPLOAD_BUTTON_ID);
+        assertUploadPopup();
+        new WebDriverWait(driver, 5)
+                .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.id(UPLOAD_BUTTON_ID)));
     }
 
     /**
@@ -439,8 +473,8 @@ public abstract class SeleniumTestTemplate {
      *            index
      */
     protected void clickTableItem(int index) {
-        WebElement el = driver
-                .findElement(By.xpath(String.format("(//table[contains(@class,'content-table')]//tr)[%s]/td[1]/a", index + 1)));
+        WebElement el = driver.findElement(
+                By.xpath(String.format("(//table[contains(@class,'content-table')]//tr)[%s]/td[1]/a", index + 1)));
         Assertions.assertNotNull(el, "Table item not found");
         el.click();
     }
@@ -453,8 +487,8 @@ public abstract class SeleniumTestTemplate {
      * @return link
      */
     protected String getDownloadLink(int index) {
-        WebElement el = driver
-                .findElement(By.xpath(String.format("(//table[contains(@class,'content-table')]//tr)[%s]/td[1]/a", index + 1)));
+        WebElement el = driver.findElement(
+                By.xpath(String.format("(//table[contains(@class,'content-table')]//tr)[%s]/td[1]/a", index + 1)));
         Assertions.assertNotNull(el, "Table item not found");
         return el.getAttribute(HREF);
     }
@@ -474,5 +508,37 @@ public abstract class SeleniumTestTemplate {
     protected void goUp() {
         List<WebElement> breadcrumbs = getBreadcrumbs();
         breadcrumbs.get(breadcrumbs.size() - 2).click();
+    }
+
+    /**
+     * Returns base URL.
+     *
+     * @return URL
+     */
+    protected String getUrl() {
+        List<NameValuePair> args = parseUrl();
+        return args.stream().filter(i -> i.getValue() == null).map(NameValuePair::getName).findFirst().get() + "?path=";
+    }
+
+    /**
+     * Parses URL
+     *
+     * @return name-value pairs
+     */
+    public List<NameValuePair> parseUrl() {
+        List<NameValuePair> args = URLEncodedUtils.parse(driver.getCurrentUrl(), Charsets.US_ASCII, '?', '&');
+        return args;
+    }
+
+    /**
+     * Returns path to file
+     *
+     * @return path
+     */
+    protected String getPath() {
+        List<NameValuePair> args = parseUrl();
+        String path = args.stream().filter(i -> i.getName().equals("path")).map(NameValuePair::getValue).findFirst()
+                .get();
+        return path;
     }
 }

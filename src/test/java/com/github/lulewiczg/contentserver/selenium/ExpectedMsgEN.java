@@ -28,5 +28,10 @@ public class ExpectedMsgEN extends ExpectedMsg {
         this.closeButton = "Close";
         this.settingsTitle = "Settings";
         this.save = "Save";
+        this.uploadTitle = "Upload Files";
+        this.uploadLabel = "Uploaded files";
+        this.upload = "Upload";
+        this.uploadSuccess = "Files uploaded successfully!";
+        this.uploadError = "Could not upload files!";
     }
 }

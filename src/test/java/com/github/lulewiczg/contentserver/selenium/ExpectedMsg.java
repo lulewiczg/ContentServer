@@ -28,6 +28,11 @@ public abstract class ExpectedMsg {
     protected String closeButton;
     protected String settingsTitle;
     protected String save;
+    protected String uploadTitle;
+    protected String uploadLabel;
+    protected String upload;
+    protected String uploadSuccess;
+    protected String uploadError;
 
     public String getSettingsTitle() {
         return settingsTitle;
@@ -112,4 +117,25 @@ public abstract class ExpectedMsg {
     public String getModificationDate() {
         return modificationDate;
     }
+
+    public String getUploadTitle() {
+        return uploadTitle;
+    }
+
+    public String getUploadLabel() {
+        return uploadLabel;
+    }
+
+    public String getUpload() {
+        return upload;
+    }
+
+    public String getUploadSuccess() {
+        return uploadSuccess;
+    }
+
+    public String getUploadError() {
+        return uploadError;
+    }
+
 }

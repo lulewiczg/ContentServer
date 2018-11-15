@@ -21,7 +21,7 @@
 		"loginBtn": "Log in",
 		"password": "Password"
 	},
-	"upload:": {
+	"upload": {
 		"title": "Upload Files",
 		"file": "Uploaded files",
 		"upload": "Upload",

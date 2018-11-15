@@ -28,5 +28,10 @@ public class ExpectedMsgPL extends ExpectedMsg {
         this.closeButton = "Zamknij";
         this.settingsTitle = "Ustawienia";
         this.save = "Zapisz";
+        this.uploadTitle = "Wrzuć pliki";
+        this.uploadLabel = "Pliki";
+        this.upload = "Wrzuć";
+        this.uploadSuccess = "Pliki wrzucone!";
+        this.uploadError = "Nie można wrzucić plików!";
     }
 }
