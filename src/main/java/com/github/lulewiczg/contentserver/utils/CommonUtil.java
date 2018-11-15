@@ -1,7 +1,7 @@
 package com.github.lulewiczg.contentserver.utils;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -59,8 +59,8 @@ public final class CommonUtil {
         MessageDigest md;
         try {
             md = MessageDigest.getInstance("SHA-1");
-            textBytes = text.getBytes("UTF-8");
-        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            textBytes = text.getBytes(StandardCharsets.UTF_8);
+        } catch (NoSuchAlgorithmException e) {
             throw new AuthenticationException("Hash algoritm not found", e);
         }
 

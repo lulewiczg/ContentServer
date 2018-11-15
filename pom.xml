@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ContentServer</groupId>
     <artifactId>ContentServer</artifactId>
-    <version>0.4</version>
+    <version>0.5</version>
     <name>ContentServer</name>
     <packaging>war</packaging>
     <description>Web app to serve content</description>
