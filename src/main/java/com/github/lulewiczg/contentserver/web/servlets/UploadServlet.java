@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.util.Collection;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,12 +25,15 @@ import com.github.lulewiczg.contentserver.utils.SettingsUtil;
  * @author lulewiczg
  *
  */
+@WebServlet(name = "UploadServlet", urlPatterns = "/rest/upload")
+@MultipartConfig(fileSizeThreshold = -1, maxFileSize = -1, maxRequestSize = -1)
 public class UploadServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest,
+     *      javax.servlet.http.HttpServletResponse)
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -44,7 +49,8 @@ public class UploadServlet extends HttpServlet {
             if (name == null) {
                 continue;
             }
-            uploadFile(CommonUtil.normalizePath(destLocation + Constants.SEP + name), bufferSize, p.getInputStream(), resp);
+            uploadFile(CommonUtil.normalizePath(destLocation + Constants.SEP + name), bufferSize, p.getInputStream(),
+                    resp);
         }
     }
 
@@ -62,15 +68,17 @@ public class UploadServlet extends HttpServlet {
      * @throws IOException
      *             the IOException
      */
-    private void uploadFile(String location, int bufferSize, InputStream stream, HttpServletResponse resp) throws IOException {
+    private void uploadFile(String location, int bufferSize, InputStream stream, HttpServletResponse resp)
+            throws IOException {
         int bytesRead;
         File f = new File(location);
         if (f.exists()) {
-            resp.sendError(400,
-                    String.format(Constants.Web.Errors.FILE_ALREADY_EXIST, CommonUtil.normalizePath(f.getCanonicalPath())));
+            resp.sendError(400, String.format(Constants.Web.Errors.FILE_ALREADY_EXIST,
+                    CommonUtil.normalizePath(f.getCanonicalPath())));
             return;
         }
-        try (InputStream input = stream; BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(f))) {
+        try (InputStream input = stream;
+                BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(f))) {
             byte[] buff = new byte[bufferSize];
             while ((bytesRead = input.read(buff)) != -1) {
                 output.write(buff, 0, bytesRead);

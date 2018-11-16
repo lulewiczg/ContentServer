@@ -9,6 +9,7 @@ import java.util.Properties;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,6 +24,7 @@ import com.github.lulewiczg.contentserver.utils.models.Setting;
  *
  * @author lulewiczg
  */
+@WebServlet(name = "SettingsServlet", urlPatterns = "/rest/settings")
 public class SettingsServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;

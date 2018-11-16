@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +25,7 @@ import com.github.lulewiczg.contentserver.utils.models.Dir;
  *
  * @author lulewiczg
  */
+@WebServlet(name = "ResourceServlet", urlPatterns = "/rest/files")
 public class ResourceServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;

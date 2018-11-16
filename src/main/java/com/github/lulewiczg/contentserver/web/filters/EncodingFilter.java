@@ -8,6 +8,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
 
 import com.github.lulewiczg.contentserver.utils.Constants;
 
@@ -16,6 +17,7 @@ import com.github.lulewiczg.contentserver.utils.Constants;
  *
  * @author Grzegorz
  */
+@WebFilter(filterName = "EncodingFilter", urlPatterns = "/rest/*")
 public class EncodingFilter implements Filter {
 
     /**
