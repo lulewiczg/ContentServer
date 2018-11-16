@@ -43,11 +43,13 @@ public class LoginServlet extends HttpServlet {
         String path = req.getParameter(Constants.Web.PATH);
         String user = (String) session.getAttribute(Constants.Web.USER);
         boolean upload = false;
+        boolean delete = false;
         if (path != null) {
             upload = ResourceUtil.get(context).hasWriteAccess(path, user);
+            delete = ResourceUtil.get(context).hasWriteAccess(path, user);
         }
         resp.setContentType(Constants.Setting.APPLICATION_JSON);
-        resp.getWriter().write(new UserPermissions(user, upload).toJSON());
+        resp.getWriter().write(new UserPermissions(user, upload, delete).toJSON());
     }
 
     /**

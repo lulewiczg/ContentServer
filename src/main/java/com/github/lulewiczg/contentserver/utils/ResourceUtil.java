@@ -258,6 +258,25 @@ public class ResourceUtil {
         return checkPermissions(directory, user, permissions);
     }
 
+
+    /**
+     * Checks if user has access delete to directory
+     *
+     * @param directory
+     *            directory
+     * @param name
+     *            user name
+     * @return true if has access
+     */
+    public boolean hasDeleteAccess(String directory, String name) {
+        User user = getUserByName(name);
+        if (user == null) {
+            return false;
+        }
+        List<String> permissions = user.getDelete();
+        return checkPermissions(directory, user, permissions);
+    }
+
     /**
      * Checks if user has permission to given directory
      *
@@ -273,29 +292,7 @@ public class ResourceUtil {
         if (user.getName().equals(Constants.ADMIN)) {
             return true;
         }
-        List<String> paths = user.getRead();
-        return checkAccess(directory, paths);
-    }
-
-    /**
-     * Checks if user has access to directory
-     *
-     * @param directory
-     *            directory
-     * @param name
-     *            user name
-     * @return true if has access
-     */
-    public boolean hasDeleteAccess(String directory, String name) {
-        User user = getUserByName(name);
-        if (user == null) {
-            return false;
-        }
-        if (user.getName().equals(Constants.ADMIN)) {
-            return true;
-        }
-        List<String> paths = user.getDelete();
-        return checkAccess(directory, paths);
+        return checkAccess(directory, permissions);
     }
 
     /**

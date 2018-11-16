@@ -30,6 +30,11 @@
 			"error": "Nie można wrzucić plików!"
 		}
 	},
+	"delete": {
+		"confirm": "Na pewno chcesz usunąć %s?",
+		"success": "Plik %s usunięty",
+		"error": "Nie można usunąć pliku"
+	},
 	"table": {
 		"header": {
 			"filename": "Nazwa Pliku",

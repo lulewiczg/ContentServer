@@ -16,6 +16,9 @@ public class UserPermissions extends JSONModel<UserPermissions> {
     @JSONProperty(propertyName = "uploadAllowed")
     private boolean upload;
 
+    @JSONProperty(propertyName = "deleteAllowed")
+    private boolean delete;
+
     public String getName() {
         return name;
     }
@@ -24,9 +27,14 @@ public class UserPermissions extends JSONModel<UserPermissions> {
         return upload;
     }
 
-    public UserPermissions(String name, boolean upload) {
+    public boolean isDelete() {
+        return delete;
+    }
+
+    public UserPermissions(String name, boolean upload, boolean delete) {
         this.name = name;
         this.upload = upload;
+        this.delete = delete;
     }
 
 }

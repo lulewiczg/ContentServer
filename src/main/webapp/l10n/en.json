@@ -30,6 +30,11 @@
 			"error": "Could not upload files!"
 		}
 	},
+	"delete": {
+		"confirm": "Are you sure you want to delete %s?",
+		"success": "File %s deleted successfully",
+		"error": "Delete failed"
+	},
 	"table": {
 		"header": {
 			"filename": "File Name",

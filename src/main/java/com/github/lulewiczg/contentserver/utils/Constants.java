@@ -18,7 +18,6 @@ public final class Constants {
         public static final String PASSWORD = "password";
         public static final String PATH = "path";
         public static final String DOWNLOAD = "download";
-        public static final String DELETE = "delete";
 
         public static class Headers {
             public static final String CONTENT_LENGTH = "Content-Length";
@@ -42,6 +41,7 @@ public final class Constants {
             public static final String UPLOAD_DIR_NOT_FOUND = "Upload directory not specified";
             public static final String FILE_ALREADY_EXIST = "File %s already exists";
             public static final String DIRECTORY_DELETE = "Can not delete directory";
+            public static final String DELETE_FAILED = "Error while deleting file";
 
             private Errors() {
             }

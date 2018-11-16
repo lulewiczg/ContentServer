@@ -11,6 +11,7 @@ angular.module('app').controller("fileController",
     $scope.appName = ''
     $scope.roots = [];
     $scope.uploadAllowed = false;
+    $scope.deleteAllowed = false;
     $scope.actualPath;
 
     $scope.getLocale = function() {
@@ -44,21 +45,20 @@ angular.module('app').controller("fileController",
     }
 
     $scope.deleteFile = function(row) {
-        if (!confirm("siur?")) {
+        if (!confirm($translate.instant("delete.confirm").replace('%s', row.file.path))) {
             return;
         }
-        debugger;
-        $.post($scope.appName + 'rest/files', {
-            path : row.file.path,
-            delete : true
+        $.post($scope.appName + 'rest/delete', {
+            path : row.file.path
         }, function(response) {
-            alert("dupa XD");
+            alert($translate.instant("delete.success").replace('%s', row.file.path));
             $scope.files = $scope.files.filter(function(i){
                return i !== row.file; 
             });
             $scope.$apply();
         }).error(function(result) {
-            alert("dupa :(");
+            alert($translate.instant("delete.error"));
+            console.log(result);
         });
     }
 
@@ -70,6 +70,7 @@ angular.module('app').controller("fileController",
                 $scope.user = undefined;
             }
             $scope.uploadAllowed = result.data.uploadAllowed;
+            $scope.deleteAllowed = result.data.deleteAllowed;
             $scope.resolveAdmin();
         });
         if (!$scope.initPerformed) {

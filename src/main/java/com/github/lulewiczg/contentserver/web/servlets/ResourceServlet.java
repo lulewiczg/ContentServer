@@ -16,8 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.github.lulewiczg.contentserver.utils.CommonUtil;
 import com.github.lulewiczg.contentserver.utils.Constants;
 import com.github.lulewiczg.contentserver.utils.Constants.Setting;
-import com.github.lulewiczg.contentserver.utils.Log;
-import com.github.lulewiczg.contentserver.utils.ResourceUtil;
 import com.github.lulewiczg.contentserver.utils.SettingsUtil;
 import com.github.lulewiczg.contentserver.utils.models.Dir;
 
@@ -68,58 +66,6 @@ public class ResourceServlet extends HttpServlet {
         } else {
             display(request, response, f);
         }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String delete = request.getParameter(Constants.Web.DELETE);
-        String path = request.getParameter(Constants.Web.PATH);
-        path = SettingsUtil.decodeParam(path);
-        if (path == null) {
-            response.setContentType(Constants.Setting.PLAIN_TEXT);
-            response.sendError(404, String.format(Constants.Web.Errors.NOT_FOUND, path));
-            return;
-        }
-        path = CommonUtil.normalizePath(path);
-        if (delete != null && delete.equals("true")) {
-            processDelete(request, response, path);
-            return;
-        }
-    }
-
-    /**
-     * Process delete. DELETE method not working WTF?!
-     *
-     * @param request
-     *            request
-     * @param response
-     *            response
-     * @param path
-     *            path
-     * @throws IOException
-     *             the IOException
-     */
-    private void processDelete(HttpServletRequest request, HttpServletResponse response, String path) throws IOException {
-        String user = (String) request.getSession().getAttribute(Constants.Web.USER);
-        boolean ok = ResourceUtil.get(getServletContext()).hasDeleteAccess(path, user);
-        if (!ok) {
-            Log.getLog().logError(String.format("Tried to delete %s without permissions!", path));
-            response.sendError(401, String.format(Constants.Web.Errors.ACCESS_DENIED_TO, path));
-            return;
-        }
-
-        File file = new File(path);
-        if (file.isDirectory()) {
-            Log.getLog().logError("Tried to delete directory!");
-            response.sendError(401, Constants.Web.Errors.DIRECTORY_DELETE);
-            return;
-        }
-        if (!file.delete()) {
-            Log.getLog().logError("Delete failed!");
-            response.sendError(401, "dupa");
-            return;
-        }
-        Log.getLog().logError("File deleted!");
     }
 
     /**

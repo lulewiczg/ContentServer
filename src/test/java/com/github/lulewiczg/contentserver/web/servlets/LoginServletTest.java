@@ -46,7 +46,7 @@ public class LoginServletTest extends ServletTestTemplate {
 
         servlet.doGet(request, response);
 
-        verifyOkJSON(new UserPermissions(null, false).toJSON());
+        verifyOkJSON(new UserPermissions(null, false, false).toJSON());
     }
 
     @Test
@@ -56,7 +56,7 @@ public class LoginServletTest extends ServletTestTemplate {
 
         servlet.doGet(request, response);
 
-        verifyOkJSON(new UserPermissions(TEST, false).toJSON());
+        verifyOkJSON(new UserPermissions(TEST, false, false).toJSON());
     }
 
     @Test
@@ -69,7 +69,7 @@ public class LoginServletTest extends ServletTestTemplate {
 
         servlet.doGet(request, response);
 
-        verifyOkJSON(new UserPermissions(TEST, true).toJSON());
+        verifyOkJSON(new UserPermissions(TEST, true, false).toJSON());
     }
 
     @Test

@@ -95,7 +95,7 @@
                             <td class="fileSize">{{file.size}}</td>
                             <td class="buttons"><a ng-show="file.file" class="download-button" target="_blank"
                                 ng-href="{{getFileURL(file)+ '&download=true'}}"><img src="icons/download.png"
-                                    alt="Download icon"></img></a> <a ng-show="file.file" ng-click="deleteFile(this)"
+                                    alt="Download icon"></img></a> <a ng-show="file.file && deleteAllowed" ng-click="deleteFile(this)"
                                 class="delete-button" href="#"><img src="icons/delete.png"
                                     alt="Delete icon"></img></a></td>
                         </tr>
