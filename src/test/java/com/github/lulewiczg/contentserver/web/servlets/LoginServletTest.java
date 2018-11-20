@@ -66,12 +66,26 @@ public class LoginServletTest extends ServletTestTemplate {
         when(request.getParameter(Constants.Web.PATH)).thenReturn(TEST2);
         when(request.getServletContext()).thenReturn(context);
         when(resourceUtil.hasWriteAccess(TEST2, TEST)).thenReturn(true);
+        when(resourceUtil.hasDeleteAccess(TEST2, TEST)).thenReturn(false);
 
         servlet.doGet(request, response);
 
         verifyOkJSON(new UserPermissions(TEST, true, false).toJSON());
     }
 
+    @Test
+    @DisplayName("Gets current user all permissions")
+    public void testGetUserWithPathAndPermissions() throws IOException, ServletException {
+        when(session.getAttribute(Constants.Web.USER)).thenReturn(TEST);
+        when(request.getParameter(Constants.Web.PATH)).thenReturn(TEST2);
+        when(request.getServletContext()).thenReturn(context);
+        when(resourceUtil.hasWriteAccess(TEST2, TEST)).thenReturn(true);
+        when(resourceUtil.hasDeleteAccess(TEST2, TEST)).thenReturn(true);
+
+        servlet.doGet(request, response);
+
+        verifyOkJSON(new UserPermissions(TEST, true, true).toJSON());
+    }
     @Test
     @DisplayName("Logs in without login")
     public void testLoginwithoutLogin() throws IOException, ServletException {

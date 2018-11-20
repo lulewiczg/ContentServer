@@ -57,12 +57,12 @@ public class DeleteServlet extends HttpServlet {
         Log.getLog().logInfo(String.format("Processing %s for delete", path));
         if (file.isDirectory()) {
             Log.getLog().logError("Tried to delete directory!");
-            response.sendError(401, Constants.Web.Errors.DIRECTORY_DELETE);
+            response.sendError(400, Constants.Web.Errors.DIRECTORY_DELETE);
             return;
         }
-        if (!file.delete()) {
+        if (!file.exists() || !file.delete()) {
             Log.getLog().logError("Delete failed!");
-            response.sendError(400, Constants.Web.Errors.DIRECTORY_DELETE);
+            response.sendError(400, Constants.Web.Errors.DELETE_FAILED);
             return;
         }
         Log.getLog().logError("File deleted!");

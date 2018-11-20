@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.github.lulewiczg.contentserver.test.utils.ServletTestTemplate;
+import com.github.lulewiczg.contentserver.test.utils.TestUtil;
 import com.github.lulewiczg.contentserver.utils.CommonUtil;
 import com.github.lulewiczg.contentserver.utils.Constants;
 
@@ -38,7 +38,6 @@ public class UploadServletTest extends ServletTestTemplate {
     private static final String SOMETEXT = "sometext";
     private static final String SOMETEXT2 = "sometext2";
 
-    private static final String TRASH = "src/main/resources/data/upload/trash/";
     private static final String UPLOAD_DIR = "src/main/resources/data/upload/";
 
     private UploadServlet servlet = spy(UploadServlet.class);
@@ -51,8 +50,7 @@ public class UploadServletTest extends ServletTestTemplate {
      */
     @AfterAll
     public static void afterAll() throws IOException {
-        Files.walk(Paths.get(TRASH)).filter(i -> !i.getFileName().endsWith("trash")).map(Path::toFile)
-                .sorted((f1, f2) -> -f1.compareTo(f2)).forEach(File::delete);
+     TestUtil.clearTrash();
     }
 
     /**
@@ -77,7 +75,7 @@ public class UploadServletTest extends ServletTestTemplate {
 
     @Test
     @DisplayName("Upload file with null path")
-    public void testUploadWithNukkPath() throws IOException, ServletException {
+    public void testUploadWithNullPath() throws IOException, ServletException {
         when(session.getAttribute(Constants.Web.USER)).thenReturn(TEST);
         when(request.getParameter(Constants.Web.PATH)).thenReturn(null);
         servlet.doPost(request, response);
@@ -102,7 +100,7 @@ public class UploadServletTest extends ServletTestTemplate {
     @DisplayName("Upload 1 file")
     public void testUploadFile() throws IOException, ServletException {
         when(session.getAttribute(Constants.Web.USER)).thenReturn(TEST);
-        when(request.getParameter(Constants.Web.PATH)).thenReturn(TRASH);
+        when(request.getParameter(Constants.Web.PATH)).thenReturn(TestUtil.TRASH);
         when(request.getServletContext()).thenReturn(context);
         when(settingsUtil.getBufferSize()).thenReturn(100);
 
@@ -122,7 +120,7 @@ public class UploadServletTest extends ServletTestTemplate {
     @DisplayName("Upload file with null name")
     public void testUploadNullFile() throws IOException, ServletException {
         when(session.getAttribute(Constants.Web.USER)).thenReturn(TEST);
-        when(request.getParameter(Constants.Web.PATH)).thenReturn(TRASH);
+        when(request.getParameter(Constants.Web.PATH)).thenReturn(TestUtil.TRASH);
         when(request.getServletContext()).thenReturn(context);
         when(settingsUtil.getBufferSize()).thenReturn(100);
 
@@ -163,7 +161,7 @@ public class UploadServletTest extends ServletTestTemplate {
     @DisplayName("Upload multiple files")
     public void testUploadMultipleFiles() throws IOException, ServletException {
         when(session.getAttribute(Constants.Web.USER)).thenReturn(TEST);
-        when(request.getParameter(Constants.Web.PATH)).thenReturn(TRASH);
+        when(request.getParameter(Constants.Web.PATH)).thenReturn(TestUtil.TRASH);
         when(request.getServletContext()).thenReturn(context);
         when(settingsUtil.getBufferSize()).thenReturn(100);
 
@@ -201,7 +199,7 @@ public class UploadServletTest extends ServletTestTemplate {
      *             the IOException
      */
     private void verifyFileExists(Object file, String expected) throws IOException {
-        verifyFileExists(file, TRASH, expected);
+        verifyFileExists(file, TestUtil.TRASH, expected);
     }
 
     /**

@@ -46,7 +46,7 @@ public class LoginServlet extends HttpServlet {
         boolean delete = false;
         if (path != null) {
             upload = ResourceUtil.get(context).hasWriteAccess(path, user);
-            delete = ResourceUtil.get(context).hasWriteAccess(path, user);
+            delete = ResourceUtil.get(context).hasDeleteAccess(path, user);
         }
         resp.setContentType(Constants.Setting.APPLICATION_JSON);
         resp.getWriter().write(new UserPermissions(user, upload, delete).toJSON());

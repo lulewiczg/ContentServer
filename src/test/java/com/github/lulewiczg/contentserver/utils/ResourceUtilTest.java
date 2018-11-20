@@ -55,6 +55,16 @@ public class ResourceUtilTest {
         verify(context, times(1)).getAttribute(eq(ResourceUtil.NAME));
     }
 
+    @DisplayName("Delete permissions with no admin")
+    @ParameterizedTest(name = DESC)
+    @CsvFileSource(resources = "/data/csv/context1-delete.csv")
+    public void testDeleteNoAdmin(String name, boolean access, String path) {
+        ResourceUtil instance = getInstance(1);
+
+        assertEquals(access, instance.hasDeleteAccess(STRUCTURE + path, name));
+        verify(context, times(1)).getAttribute(eq(ResourceUtil.NAME));
+    }
+
     @DisplayName("Read permissions")
     @ParameterizedTest(name = DESC)
     @CsvFileSource(resources = "/data/csv/context2.csv")
@@ -73,6 +83,15 @@ public class ResourceUtilTest {
         assertEquals(access, instance.hasWriteAccess(STRUCTURE + path, name));
     }
 
+    @DisplayName("Delete permissions")
+    @ParameterizedTest(name = DESC)
+    @CsvFileSource(resources = "/data/csv/context2-delete.csv")
+    public void testDelete(String name, boolean access, String path) {
+        ResourceUtil instance = getInstance(2);
+
+        assertEquals(access, instance.hasDeleteAccess(STRUCTURE + path, name));
+    }
+
     @DisplayName("Read permissions with extended user")
     @ParameterizedTest(name = DESC)
     @CsvFileSource(resources = "/data/csv/context3.csv")
@@ -82,13 +101,22 @@ public class ResourceUtilTest {
         assertEquals(access, instance.hasReadAccess(STRUCTURE + path, name));
     }
 
-    @DisplayName("Read permissions with extended user")
+    @DisplayName("Write permissions with extended user")
     @ParameterizedTest(name = DESC)
     @CsvFileSource(resources = "/data/csv/context3-write.csv")
     public void testWriteExtended(String name, boolean access, String path) {
         ResourceUtil instance = getInstance(3);
 
-        assertEquals(access, instance.hasReadAccess(STRUCTURE + path, name));
+        assertEquals(access, instance.hasWriteAccess(STRUCTURE + path, name));
+    }
+
+    @DisplayName("Delete permissions with extended user")
+    @ParameterizedTest(name = DESC)
+    @CsvFileSource(resources = "/data/csv/context3-delete.csv")
+    public void testDeleteExtended(String name, boolean access, String path) {
+        ResourceUtil instance = getInstance(3);
+
+        assertEquals(access, instance.hasDeleteAccess(STRUCTURE + path, name));
     }
 
     @DisplayName("Read permissions with extended user and different permissions")
@@ -100,13 +128,22 @@ public class ResourceUtilTest {
         assertEquals(access, instance.hasReadAccess(STRUCTURE + path, name));
     }
 
-    @DisplayName("Read permissions with extended user and different permissions")
+    @DisplayName("Write permissions with extended user and different permissions")
     @ParameterizedTest(name = DESC)
     @CsvFileSource(resources = "/data/csv/context4-write.csv")
     public void testWriteExtendedWriteDelete(String name, boolean access, String path) {
         ResourceUtil instance = getInstance(4);
 
-        assertEquals(access, instance.hasReadAccess(STRUCTURE + path, name));
+        assertEquals(access, instance.hasWriteAccess(STRUCTURE + path, name));
+    }
+
+    @DisplayName("Delete permissions with extended user and different permissions")
+    @ParameterizedTest(name = DESC)
+    @CsvFileSource(resources = "/data/csv/context4-delete.csv")
+    public void testDeleteExtendedWriteDelete(String name, boolean access, String path) {
+        ResourceUtil instance = getInstance(4);
+
+        assertEquals(access, instance.hasDeleteAccess(STRUCTURE + path, name));
     }
 
     @Test

@@ -107,6 +107,7 @@
         <filter-name>ResourceFilter</filter-name>
         <url-pattern>/rest/files/*</url-pattern>
         <url-pattern>/rest/upload/*</url-pattern>
+        <url-pattern>/rest/delete/*</url-pattern>
     </filter-mapping>
 
     <filter>

@@ -4,6 +4,11 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,9 +26,10 @@ import com.github.lulewiczg.contentserver.utils.models.Dir;
  * @author lulewiczg
  */
 public final class TestUtil {
+    public static final String TRASH = "src/main/resources/data/upload/trash/";
     public static final String LOC = "src/main/resources/data/";
     private static final String SPLIT_REGEX = "\\, ";
-    public static final TestSettings MODE = new TestSettings().with(SeleniumLocation.LOCAL).with(TestMode.SELENIUM);
+    public static final TestSettings MODE = new TestSettings().with(SeleniumLocation.LOCAL);
 
     /**
      * Mocks ResourceUtil for tests.
@@ -79,5 +85,16 @@ public final class TestUtil {
     public static List<Dir> parsePathsPlain(String paths) {
         return Arrays.stream(paths.split(SPLIT_REGEX)).map(String::trim).filter(i -> !i.isEmpty())
                 .map(i -> new Dir(i, 0, i, 0, !i.endsWith(Constants.SEP))).collect(Collectors.toList());
+    }
+
+    /**
+     * Clears trash directory.
+     * 
+     * @throws IOException
+     *             the IOException
+     */
+    public static void clearTrash() throws IOException {
+        Files.walk(Paths.get(TRASH)).filter(i -> !i.getFileName().endsWith("trash")).map(Path::toFile)
+                .sorted((f1, f2) -> -f1.compareTo(f2)).forEach(File::delete);
     }
 }
