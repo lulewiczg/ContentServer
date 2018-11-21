@@ -33,6 +33,9 @@ public abstract class ExpectedMsg {
     protected String upload;
     protected String uploadSuccess;
     protected String uploadError;
+    protected String deleteConfirm;
+    protected String deleteSuccess;
+    protected String deleteFailed;
 
     public String getSettingsTitle() {
         return settingsTitle;
@@ -136,6 +139,18 @@ public abstract class ExpectedMsg {
 
     public String getUploadError() {
         return uploadError;
+    }
+
+    public String getDeleteConfirm() {
+        return deleteConfirm;
+    }
+
+    public String getDeleteSuccess() {
+        return deleteSuccess;
+    }
+
+    public String getDeleteFailed() {
+        return deleteFailed;
     }
 
 }

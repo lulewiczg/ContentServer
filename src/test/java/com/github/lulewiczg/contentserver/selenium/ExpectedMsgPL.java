@@ -33,5 +33,8 @@ public class ExpectedMsgPL extends ExpectedMsg {
         this.upload = "Wrzuć";
         this.uploadSuccess = "Pliki wrzucone!";
         this.uploadError = "Nie można wrzucić plików!";
+        this.deleteConfirm = "Na pewno chcesz usunąć %s?";
+        this.deleteSuccess = "Plik %s usunięty";
+        this.deleteFailed = "Nie można usunąć pliku";
     }
 }

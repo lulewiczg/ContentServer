@@ -58,6 +58,8 @@ public abstract class SeleniumTestTemplate {
     protected static final String TEST3 = "test3";
     protected static final String ADMIN = "admin";
     protected static final String TEST = "test";
+    protected static final String DOWNLOAD_BTN_ID = "downloadBtn";
+    protected static final String DELETE_BTN_ID = "deleteBtn";
     protected WebDriver driver;
     protected ExpectedMsg msg;
 
@@ -73,7 +75,7 @@ public abstract class SeleniumTestTemplate {
         prof.setPreference("intl.accept_languages", msg.getLang());
         opt.setProfile(prof);
         driver = new FirefoxDriver(opt);
-        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
         driver.manage().timeouts().pageLoadTimeout(5, TimeUnit.SECONDS);
         driver.manage().timeouts().setScriptTimeout(5, TimeUnit.SECONDS);
 

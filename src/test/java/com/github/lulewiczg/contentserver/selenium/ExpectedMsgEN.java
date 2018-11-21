@@ -33,5 +33,8 @@ public class ExpectedMsgEN extends ExpectedMsg {
         this.upload = "Upload";
         this.uploadSuccess = "Files uploaded successfully!";
         this.uploadError = "Could not upload files!";
+        this.deleteConfirm = "Are you sure you want to delete %s?";
+        this.deleteSuccess = "File %s deleted successfully";
+        this.deleteFailed = "Delete failed";
     }
 }

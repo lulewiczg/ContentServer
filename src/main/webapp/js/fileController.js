@@ -51,14 +51,13 @@ angular.module('app').controller("fileController",
         $.post($scope.appName + 'rest/delete', {
             path : row.file.path
         }, function(response) {
-            alert($translate.instant("delete.success").replace('%s', row.file.path));
             $scope.files = $scope.files.filter(function(i){
                return i !== row.file; 
             });
             $scope.$apply();
         }).error(function(result) {
-            alert($translate.instant("delete.error"));
             console.log(result);
+            alert($translate.instant("delete.error"));
         });
     }
 

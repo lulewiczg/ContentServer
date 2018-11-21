@@ -56,9 +56,9 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
     public void testNavNowhereToGo() {
         Assumptions.assumeTrue(TestUtil.MODE.getLocation() == SeleniumLocation.LOCAL);
         gotoShortcut(0);
-        testNav((i, j) -> false, false);
+        testNav((i, j) -> false, false, false);
         gotoShortcut(1);
-        testNav((i, j) -> false, false);
+        testNav((i, j) -> false, false, false);
     }
 
     @Test
@@ -67,18 +67,20 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
         Assumptions.assumeTrue(TestUtil.MODE.getLocation() == SeleniumLocation.LOCAL);
         login(TEST, TEST);
         gotoShortcut(0);
-        testNav((i, len) -> false, false);
+        testNav((i, len) -> false, false, false);
         clickTableItem(1);
-        testNav((i, len) -> i == len - 2, false);
+        testNav((i, len) -> i == len - 2, false, false);
         goUp();
         clickTableItem(1);
-        testNav((i, len) -> i == len - 2, false);
+        testNav((i, len) -> i == len - 2, false, false);
 
         gotoShortcut(1);
-        testNav((i, len) -> false, false);
+        testNav((i, len) -> false, false, false);
 
         gotoShortcut(2);
-        testNav((i, len) -> false, true);
+        testNav((i, len) -> false, true, false);
+        clickTableItem(1);
+        testNav((i, len) -> i == len - 2, true, true);
     }
 
     @Test
@@ -87,7 +89,7 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
         Assumptions.assumeTrue(TestUtil.MODE.getLocation() == SeleniumLocation.LOCAL);
         login(ADMIN, TEST3);
         while (getBreadcrumbs().size() > 2) {
-            testNav((i, len) -> i != len - 1, true);
+            testNav((i, len) -> i != len - 1, true, true);
             goUp();
         }
     }
@@ -140,16 +142,21 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
      *
      * @param f
      *            function to set enabled setting
+     * @param uploadAllowed
+     *            upload allowed
+     * @param deleteAllowed
+     *            delete allowed
      * @throws MultipleFailuresError
      *             the MultipleFailuresError
      */
-    private void testNav(BiFunction<Integer, Integer, Boolean> f, boolean uploadAllowed) throws MultipleFailuresError {
+    private void testNav(BiFunction<Integer, Integer, Boolean> f, boolean uploadAllowed, boolean deleteAllowed)
+            throws MultipleFailuresError {
         String baseUrl = getUrl();
         String path = getPath();
         List<NavigationData> navData = buildNavData(baseUrl, path, f);
         NavigationData actualData = navData.get(navData.size() - 1);
         assertBreadcrumbs(navData, uploadAllowed);
-        assertListedDirs(path, actualData);
+        assertListedDirs(path, actualData, deleteAllowed);
     }
 
     /**
@@ -186,10 +193,13 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
      *            current file path
      * @param expectedData
      *            expected navigation data
+     * @param delete
+     *            delete allowed
      * @throws MultipleFailuresError
      *             the MultipleFailuresError
      */
-    private void assertListedDirs(String path, NavigationData expectedData) throws MultipleFailuresError {
+    private void assertListedDirs(String path, NavigationData expectedData, boolean delete)
+            throws MultipleFailuresError {
         WebElement table = driver.findElement(By.xpath("//table[contains(@class,'content-table')]"));
         List<String> headers = table.findElements(By.tagName("th")).stream().map(WebElement::getText)
                 .collect(Collectors.toList());
@@ -219,12 +229,22 @@ public class DirectoryNavigationTestSelenium extends SeleniumTestTemplate {
             String expectedSize = new Dir(null, f.length(), null, f.lastModified(), f.isFile()).getSize();
             Assertions.assertEquals(expectedSize, sizeCol.getText());
 
-            WebElement downloadCol = row.findElement(By.xpath("td[4]"));
+            WebElement optionsCol = row.findElement(By.xpath("td[4]"));
             String expectedDownloadUrl = expectedUrl + "&download=true";
-            WebElement downloadButton = downloadCol.findElement(By.tagName("a"));
+            WebElement downloadButton = optionsCol.findElement(By.id(DOWNLOAD_BTN_ID));
             Assertions.assertEquals(expectedDownloadUrl, downloadButton.getAttribute("href"));
             String imgSrc = downloadButton.findElement(By.tagName("img")).getAttribute("src");
             Assertions.assertEquals(TestUtil.MODE.getUrl() + "/icons/download.png", imgSrc);
+
+            WebElement deleteButton = optionsCol.findElement(By.id(DELETE_BTN_ID));
+            Assertions.assertNotNull(deleteButton);
+            if (delete && f.isFile()) {
+                Assertions.assertTrue(deleteButton.isDisplayed());
+                String delImgSrc = deleteButton.findElement(By.tagName("img")).getAttribute("src");
+                Assertions.assertEquals(TestUtil.MODE.getUrl() + "/icons/delete.png", delImgSrc);
+            } else {
+                Assertions.assertFalse(deleteButton.isDisplayed());
+            }
         }));
     }
 

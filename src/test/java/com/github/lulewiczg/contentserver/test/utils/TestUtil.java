@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 import javax.servlet.ServletContext;
@@ -28,8 +29,9 @@ import com.github.lulewiczg.contentserver.utils.models.Dir;
 public final class TestUtil {
     public static final String TRASH = "src/main/resources/data/upload/trash/";
     public static final String LOC = "src/main/resources/data/";
+    private static final String TXT = ".txt";
     private static final String SPLIT_REGEX = "\\, ";
-    public static final TestSettings MODE = new TestSettings().with(SeleniumLocation.LOCAL);
+    public static final TestSettings MODE = new TestSettings().with(SeleniumLocation.LOCAL).with(TestMode.SELENIUM);
 
     /**
      * Mocks ResourceUtil for tests.
@@ -85,6 +87,42 @@ public final class TestUtil {
     public static List<Dir> parsePathsPlain(String paths) {
         return Arrays.stream(paths.split(SPLIT_REGEX)).map(String::trim).filter(i -> !i.isEmpty())
                 .map(i -> new Dir(i, 0, i, 0, !i.endsWith(Constants.SEP))).collect(Collectors.toList());
+    }
+
+    /**
+     * Creates test files.
+     * 
+     * @param num
+     *            number of files
+     * @return files
+     * 
+     * @throws IOException
+     *             the IOException
+     */
+    public static Stack<String> createFiles(int num) throws IOException {
+        return createFiles(num, TestUtil.TRASH);
+    }
+
+    /**
+     * Creates test files.
+     * 
+     * @param num
+     *            number of files
+     * @param path
+     *            path to create
+     * @return files
+     * 
+     * @throws IOException
+     *             the IOException
+     */
+    public static Stack<String> createFiles(int num, String path) throws IOException {
+        Stack<String> files = new Stack<>();
+        for (int i = 0; i < num; i++) {
+            String name = System.nanoTime() + TXT;
+            files.add(name);
+            Files.createFile(Paths.get(path + name));
+        }
+        return files;
     }
 
     /**

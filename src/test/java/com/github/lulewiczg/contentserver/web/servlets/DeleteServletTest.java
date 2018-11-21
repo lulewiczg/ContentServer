@@ -5,8 +5,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Stack;
 
 import javax.servlet.ServletException;
@@ -28,10 +26,9 @@ import com.github.lulewiczg.contentserver.utils.Constants;
  */
 public class DeleteServletTest extends ServletTestTemplate {
 
-    private static final String TXT = ".txt";
     private DeleteServlet servlet = spy(DeleteServlet.class);
 
-    private static Stack<String> files = new Stack<>();
+    private static Stack<String> files;
 
     /**
      * Cleans up upload directory.
@@ -52,11 +49,7 @@ public class DeleteServletTest extends ServletTestTemplate {
      */
     @BeforeAll
     public static void beforeAll() throws IOException {
-        for (int i = 0; i < 2; i++) {
-            String name = System.currentTimeMillis() + TXT;
-            files.add(name);
-            Files.createFile(Paths.get(TestUtil.TRASH + name));
-        }
+        files = TestUtil.createFiles(2);
     }
 
     /**
